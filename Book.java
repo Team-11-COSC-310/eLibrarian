@@ -42,4 +42,7 @@ public class Book {
     public String IsBookAvailable() {
         return this.IsAvailable ? "Yes" : "No";
     }
+    public String toString( ) {
+        return ID + " " + BookTitle + " " + BookAuthor;
+    }
 }
