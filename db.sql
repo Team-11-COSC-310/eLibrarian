@@ -14,14 +14,15 @@ CREATE TABLE `users` (
 CREATE TABLE `books` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,     /*MIGHT WANT ISBN of book? Perhaps unique to each library?*/
-    'author' VARCHAR(255) NOT NULL,
+    `author` VARCHAR(255) NOT NULL,
     `content` TEXT NOT NULL,         /*NEED AN IMAGE later. Might want to track which librarian added it*/
-    'waitlist' VARCHAR (255) NOT NULL, /*this is for the list OF USERS on it's waitlist*/
+    `waitlist` VARCHAR (255) NOT NULL, /*this is for the list OF USERS on it's waitlist*/
     PRIMARY KEY (`id`)
 ); 
 
 /*We need a table for the admin users --the librarians of the library. They inherit everything the users have*/
 CREATE TABLE `librarians` (
+    `email` varchar(50) Not null,
     `username` VARCHAR(50) NOT NULL,
     FOREIGN KEY (`email`) REFERENCES `users`(`email`)
 );
