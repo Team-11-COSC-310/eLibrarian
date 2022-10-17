@@ -31,17 +31,17 @@ CREATE TABLE `librarians` (
 INSERT INTO users (email, password, enable) VALUES ("johnbooks@book.com", "imthelibrarian", 1);
 INSERT INTO users (email, password, enable) VALUES ("iheartbooks@book.com", "ilovebooks14", 1);
 /*We need to hardcode books in now that we have users to rent them*/
-INSERT INTO books (title, author, content) VALUES ("Harry Potter and the Philosopher's Stone","J.K. Rowling", "This is the first of 7 in J.K. Rowling's epic wizard saga!", 5);
-INSERT INTO books (title, author, content) VALUES ("Harry Potter and the Chamber of Secrets","J.K. Rowling", "This is the second of 7 in J.K. Rowling's epic wizard saga!", 5);
-INSERT INTO books (title, author, content) VALUES ("Harry Potter and the Prisoner of Azkaban","J.K. Rowling", "This is the third of 7 in J.K. Rowling's epic wizard saga!", 5);
-INSERT INTO books (title, author, content) VALUES ("Harry Potter and the Goblet of Fire","J.K. Rowling", "This is the fourth of 7 in J.K. Rowling's epic wizard saga!", 5);
-INSERT INTO books (title, author, content) VALUES ("Harry Potter and the Order of the Phoenix","J.K. Rowling", "This is the fifth of 7 in J.K. Rowling's epic wizard saga!", 5);
-INSERT INTO books (title, author, content) VALUES ("Harry Potter and the Half Blood Prince","J.K. Rowling", "This is the sixth of 7 in J.K. Rowling's epic wizard saga!", 5);
-INSERT INTO books (title, author, content) VALUES ("Harry Potter and the Deathly Hallows","J.K. Rowling", "This is the finale of J.K. Rowling's epic wizard saga!", 5);
-INSERT INTO books (title, author, content) VALUES ("The Hobbit","J.R.R. Tolkien", "This is Tolkien's most popular work aside from LOTR", 5);
-INSERT INTO books (title, author, content) VALUES ("The Lord of the Rings: The Fellowship of the Ring","J.R.R. Tolkien", "This is the first of 3 in Tolkien's epic fanatasy trilogy!", 5);
-INSERT INTO books (title, author, content) VALUES ("The Lord of the Rings: The Tale of Two Towers","J.R.R. Tolkien", "This is the second of 3 in Tolkien's epic fanatasy trilogy!", 5);
-INSERT INTO books (title, author, content) VALUES ("The Lord of the Rings: The Return of the King","J.R.R. Tolkien", "This is the finale of Tolkien's epic fanatasy trilogy!", 5);
+INSERT INTO books (title, author) VALUES ("Harry Potter and the Philosopher's Stone","J.K. Rowling", "This is the first of 7 in J.K. Rowling's epic wizard saga!");
+INSERT INTO books (title, author) VALUES ("Harry Potter and the Chamber of Secrets","J.K. Rowling", "This is the second of 7 in J.K. Rowling's epic wizard saga!");
+INSERT INTO books (title, author) VALUES ("Harry Potter and the Prisoner of Azkaban","J.K. Rowling", "This is the third of 7 in J.K. Rowling's epic wizard saga!");
+INSERT INTO books (title, author) VALUES ("Harry Potter and the Goblet of Fire","J.K. Rowling", "This is the fourth of 7 in J.K. Rowling's epic wizard saga!");
+INSERT INTO books (title, author) VALUES ("Harry Potter and the Order of the Phoenix","J.K. Rowling", "This is the fifth of 7 in J.K. Rowling's epic wizard saga!");
+INSERT INTO books (title, author) VALUES ("Harry Potter and the Half Blood Prince","J.K. Rowling", "This is the sixth of 7 in J.K. Rowling's epic wizard saga!");
+INSERT INTO books (title, author) VALUES ("Harry Potter and the Deathly Hallows","J.K. Rowling", "This is the finale of J.K. Rowling's epic wizard saga!");
+INSERT INTO books (title, author) VALUES ("The Hobbit","J.R.R. Tolkien", "This is Tolkien's most popular work aside from LOTR");
+INSERT INTO books (title, author) VALUES ("The Lord of the Rings: The Fellowship of the Ring","J.R.R. Tolkien", "This is the first of 3 in Tolkien's epic fanatasy trilogy!");
+INSERT INTO books (title, author) VALUES ("The Lord of the Rings: The Tale of Two Towers","J.R.R. Tolkien", "This is the second of 3 in Tolkien's epic fanatasy trilogy!");
+INSERT INTO books (title, author) VALUES ("The Lord of the Rings: The Return of the King","J.R.R. Tolkien", "This is the finale of Tolkien's epic fanatasy trilogy!");
 
 /*Librarians -- Admin*/
 INSERT INTO librarians (email) VALUES ("johnbooks@book.com"); /*SHOULD make johnbooks into an admin
