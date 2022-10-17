@@ -1,4 +1,10 @@
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
+
+
 //Login class will contain every data which needs for authentication of user.
 //From user input, this class check user account data from database and send authentication for users to go to main menu. 
 public class Login {
@@ -8,13 +14,27 @@ public class Login {
 	Scanner reader = new Scanner(System.in);
 	//This constructor suggests users enter their email and password. This also check if this user has already account or not. 
 	//If they have, return T, if not, F. 
-     public Login(){
-    	 System.out.println("Enter your email: ");
-    	 setEmail(reader.nextLine());
-    	 System.out.println("Enter your password: ");
-    	 setPassword(reader.nextLine());
+     public Login() throws SQLException{
+    	 //Ask input from user
+    	 System.out.println("what is your Email: ");
+    	 setEmail(reader.next());
+    	 System.out.println("What is your Password: ");
+    	 setPassword(reader.next());
      }
      
+     //get database connection
+     public Connection getConnect() throws SQLException {
+    	 dbconnct conn_o = new dbconnct();
+    	 Connection conn = conn_o.dbc();
+    	 return conn;
+     }
+     //get ResultSet from database with query 
+     public ResultSet getResultSet() throws SQLException {
+    	 Statement stmt = getConnect().createStatement();
+    	 ResultSet rs = stmt.executeQuery("select * from employees");
+    	 return rs;
+     }
+ 
      //get this login session's email
      public String getEmail(){
     	 return UserEmail;
@@ -26,8 +46,18 @@ public class Login {
      }
      
      //check if this login session's email is in the database
-     public boolean HasEmail() {
-    	 return true;
+     public boolean HasEmail() throws SQLException{
+    	//get password from input by getPassword function and get resultSet.
+    	 String uEmail = getEmail();
+         ResultSet r = getResultSet();
+        //Use while loop to check existence until the end of the email column
+		 while(r.next()) {
+			   if(r.getString("name").equals(uEmail)) {
+				   return true;
+			   }
+			}
+		 System.out.println("email not found!");
+		 return false;
      }
      
      //Ask this login session's password
@@ -40,12 +70,22 @@ public class Login {
      }
      
      //check if this login session's password is in the database
-     public boolean HasPassword() {
-    	 return true;
+     public boolean HasPassword() throws SQLException {
+    	 //get password from input by getPassword function and get resultSet.
+    	 String uPassword = getPassword();
+         ResultSet r = getResultSet();
+         //Use while loop to check existence until the end of the password column
+		 while(r.next()) {
+			   if(r.getString(2).equals(uPassword)) {
+				   return true;
+			   }
+			} 
+		 System.out.println("password not found!");
+		 return false;
      }
      
      //check if this login info match with the database info
-     public boolean HasRegistry() {
+     public boolean HasRegistry() throws SQLException {
     	 if(HasEmail()&&HasPassword()) {
     		 return this.authentication = true;
     	 }else {
