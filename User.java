@@ -1,4 +1,8 @@
 import java.util.*;
+/* This is the User class
+Used for displaying user info,
+adding users to a book's waitlist
+create user?*/
 
 public class User {
     private String uE; //User email
