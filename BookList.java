@@ -1,3 +1,7 @@
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
 public class BookList {
@@ -12,7 +16,10 @@ public class BookList {
     public BookList() {
         this(new ArrayList<Book>());
     }
-
+    public boolean CompareBook(Book book) {
+        
+        return true;
+    }
     public boolean AddBook(Book book) {
         if(book != null && !book.equals("")) {
             System.out.println("Can't be empty");
