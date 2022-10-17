@@ -17,7 +17,7 @@ public class BookList {
     public BookList() {
         this(new ArrayList<Book>());
     }
-    public boolean CompareBook(Book book1, Book book2) {
+    public boolean CompareAddBook(Book book1, Book book2) {
         if(book1.getBookTitle().equals(book2.getBookTitle())) {
             System.out.println("Title name is already in the book list.");
             return false;
@@ -29,32 +29,54 @@ public class BookList {
         return true;
     }
     public boolean AddBook(Book book) {
-        if(book != null && !book.equals("")) {
-            System.out.println("Can't be empty");
-        }
-        for(Book book1: Books) {
-            if(this.CompareBook(book1, book) == false) {
-                return false;
-            }
-        }
-        Books.add(book);
-        return true;
-    }
-    public boolean RemoveBook(Book book) {
-        if(book != null && !book.equals("")) {
+        if(book.getBookTitle().equals("") || book.getBookAuthor().equals("")) {
             System.out.println("Can't be empty");
             return false;
         }
-        Books.remove(book);
-       return true;
+        for(Book book1: Books) {
+            if(this.CompareAddBook(book1, book) == false) {
+                return false;
+            }
+        }
+        if(book.IsBookAvailable().equals("No")) {
+            book.setIsAvailable(true);
+        }
+        this.Books.add(book);
+        return true;
+    }
+    public boolean CompareBook(Book book1, Book book2) {
+        if(book1.getBookTitle().equals(book2.getBookTitle()) && book1.getBookAuthor().equals(book2.getBookAuthor())) {
+            return true;
+        }
+        return false;
+    }
+    public boolean RemoveBook(Book book) {
+        if(book.getBookTitle().equals("") || book.getBookAuthor().equals("")) {
+            System.out.println("Can't be empty");
+            return false;
+        }
+        for(Book book1: Books) {
+            if(CompareBook(book1, book) == false) {
+                System.out.println("Book doesn't exist in the book list.");
+                return false;
+            }
+        }
+        this.Books.remove(book);
+        return true;
     }
     public boolean EditBook(int index, Book book) {
         if(book != null && !book.equals("")) {
             System.out.println("Can't be empty");
             return false;
         }
-        Books.set(index, book);
-       return true;
+        for(Book book1: Books) {
+            if(CompareBook(book1, book) == false) {
+                System.out.println("Book doesn't exist in the book list.");
+                return false;
+            }
+        }
+        this.Books.set(index, book);
+        return true;
     }
     public boolean BookSearch(Book book) {
         for(int i = 0; i < Books.size(); i++) {
