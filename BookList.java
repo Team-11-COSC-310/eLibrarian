@@ -81,9 +81,11 @@ public class BookList {
     public boolean BookSearch(Book book) {
         for(int i = 0; i < Books.size(); i++) {
             if(Books.contains(book)) {
+                System.out.println(book.toString() + " is in the book list.");
                 return true;
             }
         }
+        System.out.println(book.toString() + " is not in the book list.");
         return false;
     }
     public Book getBookFromLibrary(Book book) {
