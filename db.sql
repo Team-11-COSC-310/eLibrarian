@@ -16,6 +16,7 @@ CREATE TABLE `books` (
     `title` VARCHAR(255) NOT NULL,     /*MIGHT WANT ISBN of book? Perhaps unique to each library?*/
     'author' VARCHAR(255) NOT NULL,
     `content` TEXT NOT NULL,         /*NEED AN IMAGE later. Might want to track which librarian added it*/
+    'waitlist' VARCHAR (255) NOT NULL, /*this is for the list OF USERS on it's waitlist*/
     PRIMARY KEY (`id`)
 ); 
 
