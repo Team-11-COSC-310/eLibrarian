@@ -21,34 +21,42 @@ public class BookList {
         Books.add(book);
        return true;
     }
-    public boolean BookSearch(Book Title) {
-        for(Book Title: Books) {
-            if(Book.getBookTitle().equals(Title)) {
+    public boolean RemoveBook(Book book) {
+        if(book != null && !book.equals("")) {
+            System.out.println("Can't be empty");
+            return false;
+        }
+        Books.remove(book);
+       return true;
+    }
+    public boolean EditBook(int index, Book book) {
+        if(book != null && !book.equals("")) {
+            System.out.println("Can't be empty");
+            return false;
+        }
+        Books.set(index, book);
+       return true;
+    }
+    public boolean BookSearch(Book book) {
+        for(int i = 0; i < Books.size(); i++) {
+            if(Books.contains(book)) {
                 return true;
             }
         }
         return false;
     }
+    public Book getBookFromLibrary(Book book) {
+        if(BookSearch(book)) {
+            book.setIsAvailable(false);
+            RemoveBook(book);
+            return book;
+        }
+        return null;
+    }
     // public void BookEdit(int ID, String name, String Author) {
     //     book.setBookTitle(ID, name);
     //     book.setBookAuthor(ID, Author);
     // }
-    // public boolean BookRemove(int ID) {
-    //     if(Books.containsKey(ID)) {
-    //         Books.remove(ID);
-    //         return true;
-    //   }
-    //       return false;
-    //   }
-    // public Book getBookFromLibrary(int ID) {
-    //     Book book = null;
-    //     if(!Books.containsKey(ID))
-    //         return book;
-    //     if(Books.containsKey(ID)) {
-    //         book = Books.get(ID);
-    //         book.setIsAvailable();
-    //     }
-    //     return book;
-    // }
+
     
 }
