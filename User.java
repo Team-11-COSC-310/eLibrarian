@@ -30,6 +30,6 @@ public class User {
     }
     //format user info nicely to string
     public String toString( ) {
-        return uE + " " + uP;
+        return "Email: " + uE + "\nPassword: " + uP;
     }
 }
