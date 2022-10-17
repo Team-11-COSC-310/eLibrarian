@@ -7,7 +7,7 @@ public class dbconnct {
 	public static void main (String[] args) throws SQLException {
 		Login l1 = new Login();
 		if(l1.HasRegistry()) {
-			System.out.println("Login Successed!");
+			System.out.println("Login Success!");
 		}else {
 			System.out.println("No account matched...");
 		}
