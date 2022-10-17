@@ -9,6 +9,7 @@ public class BookList {
     // private ArrayList<String> Books = new ArrayList<>();
     // Scanner reader = new Scanner(System.in);
     private ArrayList<Book> Books = new ArrayList<Book>();
+    private int count;
 
     public BookList(ArrayList<Book> Books) {
         this.Books.addAll(Books);
@@ -16,17 +17,28 @@ public class BookList {
     public BookList() {
         this(new ArrayList<Book>());
     }
-    public boolean CompareBook(Book book) {
-        
+    public boolean CompareBook(Book book1, Book book2) {
+        if(book1.getBookTitle().equals(book2.getBookTitle())) {
+            System.out.println("Title name is already in the book list.");
+            return false;
+        }
+        if(book1.getBookAuthor().equals(book2.getBookAuthor())) {
+            System.out.println("Author name is already in the book list.");
+            return false;
+        }
         return true;
     }
     public boolean AddBook(Book book) {
         if(book != null && !book.equals("")) {
             System.out.println("Can't be empty");
-            return false;
+        }
+        for(Book book1: Books) {
+            if(this.CompareBook(book1, book) == false) {
+                return false;
+            }
         }
         Books.add(book);
-       return true;
+        return true;
     }
     public boolean RemoveBook(Book book) {
         if(book != null && !book.equals("")) {
