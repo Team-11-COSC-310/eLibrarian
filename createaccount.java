@@ -5,22 +5,25 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class createaccount {
-    public static void main(String[] args) {
+    private String userEmail;
+	private String userPassword;
+    
+     public createaccount() throws SQLException {
+		super();
+		userEmail=super.getEmail();
+		userPassword=super.getPassword();
+		Register(userEmail,userPassword);
+		System.out.println("Registration successed!");
+	    }
 
-        System.out.println("What is your email address? ");
-        Scanner input = new Scanner(System.in);
-        String email = input.next();
-        System.out.println("What is your password? ");
-        Scanner input1 = new Scanner(System.in);
-        String password = input.next();
-
-        String sql = "insert into users" + "(email, password)" + "values (?, ?)";
-        stmt = conn.prepareStatement(sql);
-
+    public void Register(String email, String password) throws SQLException{
+        String sql = "insert into users(email, password)" + "values (?, ?)";
+        PreparedStatement stmt = getConnect().prepareStatement(sql);
         stmt.setString(1, email);
         stmt.setString(2, password);
-
         stmt.executeUpdate();
-        //text
-    }
-}
+        }
+  }
+
+
+
