@@ -33,7 +33,7 @@ public class Login {
 	// get ResultSet from database with query
 	public ResultSet getResultSet() throws SQLException {
 		Statement stmt = getConnect().createStatement();
-		ResultSet rs = stmt.executeQuery("select * from employees");
+		ResultSet rs = stmt.executeQuery("select * from users");
 		return rs;
 	}
 
@@ -42,7 +42,7 @@ public class Login {
 		return UserEmail;
 	}
 
-	// set this login session's email (input from user)
+	// set this login session's email
 	public String setEmail(String Eml) {
 		return this.UserEmail = Eml;
 	}
@@ -54,7 +54,7 @@ public class Login {
 		ResultSet r = getResultSet();
 		// Use while loop to check existence until the end of the email column
 		while (r.next()) {
-			if (r.getString("name").equals(uEmail)) {
+			if (r.getString("email").equals(uEmail)) {
 				return true;
 			}
 		}
@@ -67,7 +67,6 @@ public class Login {
 		return UserPassword;
 	}
 
-    // set this login session's password (input from user)
 	public String setPassword(String pass) {
 		return this.UserPassword = pass;
 	}
@@ -79,7 +78,7 @@ public class Login {
 		ResultSet r = getResultSet();
 		// Use while loop to check existence until the end of the password column
 		while (r.next()) {
-			if (r.getString(2).equals(uPassword)) {
+			if (r.getString("password").equals(uPassword)) {
 				return true;
 			}
 		}
@@ -97,3 +96,7 @@ public class Login {
 	}
 
 }
+
+
+
+
