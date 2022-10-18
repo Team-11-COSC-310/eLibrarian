@@ -42,7 +42,7 @@ public class Login {
 		return UserEmail;
 	}
 
-	// set this login session's email
+	// set this login session's email (input from user)
 	public String setEmail(String Eml) {
 		return this.UserEmail = Eml;
 	}
@@ -66,7 +66,8 @@ public class Login {
 	public String getPassword() {
 		return UserPassword;
 	}
-
+	
+        // Set this session's password data (user's input)
 	public String setPassword(String pass) {
 		return this.UserPassword = pass;
 	}
