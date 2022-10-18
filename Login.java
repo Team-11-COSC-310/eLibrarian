@@ -16,11 +16,16 @@ public class Login {
 	// check if this user has already account or not.
 	// If they have, return T, if not, F.
 	public Login() throws SQLException {
-		// Ask input from user
+			// Ask input from user
 		System.out.println("what is your Email: ");
 		setEmail(reader.next());
 		System.out.println("What is your Password: ");
 		setPassword(reader.next());
+	if(HasRegistry()) {
+		System.out.println("Login Success!");
+		}else {
+			System.out.println("No account matched...");
+		}
 	}
 
 	// get database connection
