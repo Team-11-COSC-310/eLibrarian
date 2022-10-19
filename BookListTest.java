@@ -15,7 +15,7 @@ public class BookListTest {
 		System.out.println(Books.BookSearch(book2));
 		System.out.println(Books.EditBook(0, book2_1));
 		System.out.println(book2_1.toString());
-		System.out.println(Books.EditBook(book2_1, 3, E, F, 1, true));
+		System.out.println(Books.EditBook(book2_1, 3, "E", "F", 1, true));
 		Books.print();
 		System.out.println(Books.RemoveBook(book1));
 		System.out.println(Books.RemoveBook(book2));
