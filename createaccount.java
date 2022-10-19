@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class createaccount {
+public class createaccount extends Login {
     private String userEmail;
 	private String userPassword;
     
