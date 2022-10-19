@@ -87,6 +87,7 @@ public class BookList {
     	book.setBookAuthor(Author);
     	book.setIsAvailable(avaliability);
     	book.setwl(waitlist);
+    	System.out.println(book.toString() + " value has been updated in the book list.");
     	return true;
     }
     public boolean BookSearch(Book book) {
