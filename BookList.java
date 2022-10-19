@@ -45,8 +45,8 @@ public class BookList {
         this.Books.add(book);
         return true;
     }
-    public boolean CompareBook(Book book1, Book book2) {
-        if(book1.getID() == book2.getID() && book1.getBookTitle().equals(book2.getBookTitle()) && book1.getBookAuthor().equals(book2.getBookAuthor()) && book1.getwl() == book2.getwl()) {
+    public boolean CompareBook(Book book) {
+        if(Books.contains(book)) {
             return true;
         }
         return false;
@@ -57,7 +57,7 @@ public class BookList {
             return false;
         }
         for(Book book1: Books) {
-            if(CompareBook(book1, book) == false) {
+            if(CompareBook(book) == false) {
                 System.out.println("Book doesn't exist in the book list.");
                 return false;
             }
@@ -72,7 +72,7 @@ public class BookList {
             return false;
         }
         for(Book book1: Books) {
-            if(CompareBook(book1, book) == true) {
+            if(CompareBook(book) == true) {
                 System.out.println("Book already exist in the book list.");
                 return false;
             }
@@ -99,10 +99,12 @@ public class BookList {
         }
         return null;
     }
-    // public void BookEdit(int ID, String name, String Author) {
-    //     book.setBookTitle(ID, name);
-    //     book.setBookAuthor(ID, Author);
-    // }
+    public void print() {
+    	System.out.println("Books in the book list are: ");
+    	for(Book book: Books) {
+    		System.out.println(book.toString());
+    	}
+    }
 
     
 }
