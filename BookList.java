@@ -81,6 +81,14 @@ public class BookList {
         this.Books.set(index, book);
         return true;
     }
+    public boolean EditBook(Book book, int ID, String Title, String Author, int waitlist, boolean avaliability) {
+    	book.setID(ID);
+    	book.setBookTitle(Title);
+    	book.setBookAuthor(Author);
+    	book.setIsAvailable(avaliability);
+    	book.setwl(waitlist);
+    	return true;
+    }
     public boolean BookSearch(Book book) {
         for(int i = 0; i < Books.size(); i++) {
             if(Books.contains(book)) {
