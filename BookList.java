@@ -30,7 +30,7 @@ public class BookList {
     }
     public boolean AddBook(Book book) {
         if(book.getBookTitle().equals("") || book.getBookAuthor().equals("")) {
-            System.out.println("Can't be empty");
+            System.out.println("Book can't be empty");
             return false;
         }
         for(Book book1: Books) {
@@ -41,18 +41,19 @@ public class BookList {
         if(book.IsBookAvailable().equals("No")) {
             book.setIsAvailable(true);
         }
+        System.out.println(book.toString() + " is added into book list.");
         this.Books.add(book);
         return true;
     }
     public boolean CompareBook(Book book1, Book book2) {
-        if(book1.getBookTitle().equals(book2.getBookTitle()) && book1.getBookAuthor().equals(book2.getBookAuthor())) {
+        if(book1.getID() == book2.getID() && book1.getBookTitle().equals(book2.getBookTitle()) && book1.getBookAuthor().equals(book2.getBookAuthor()) && book1.getwl() == book2.getwl()) {
             return true;
         }
         return false;
     }
     public boolean RemoveBook(Book book) {
         if(book.getBookTitle().equals("") || book.getBookAuthor().equals("")) {
-            System.out.println("Can't be empty");
+            System.out.println("Book can't be empty");
             return false;
         }
         for(Book book1: Books) {
@@ -61,20 +62,22 @@ public class BookList {
                 return false;
             }
         }
+        System.out.println(book  + " has been removed from the book list.");
         this.Books.remove(book);
         return true;
     }
     public boolean EditBook(int index, Book book) {
-        if(book != null && !book.equals("")) {
-            System.out.println("Can't be empty");
+        if(book == null && book.equals("")) {
+            System.out.println("Book can't be empty");
             return false;
         }
         for(Book book1: Books) {
-            if(CompareBook(book1, book) == false) {
-                System.out.println("Book doesn't exist in the book list.");
+            if(CompareBook(book1, book) == true) {
+                System.out.println("Book already exist in the book list.");
                 return false;
             }
         }
+        System.out.println(book.toString() + " has replace index "+ index + " and added into the book list.");
         this.Books.set(index, book);
         return true;
     }

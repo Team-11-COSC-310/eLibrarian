@@ -30,7 +30,7 @@ public class Book {
     public String getBookAuthor() {
         return BookAuthor;
     }
-    public String getwl() {
+    public int getwl() {
         return wl;
     }
     public void setID(int ID) {
