@@ -100,16 +100,21 @@ public class BookList {
         System.out.println(book.toString() + " is not in the book list.");
         return false;
     }
-    public Book getBookFromLibrary(Book book) {
+    public boolean getBookFromLibrary(Book book) {
         if(BookSearch(book)) {
-            book.setIsAvailable(false);
-            RemoveBook(book);
-            return book;
-        }
-        return null;
+            if(book.IsBookAvailable().equals("Yes")) {
+                book.setIsAvailable(false);
+                System.out.println("Successfully borrowed " + book.toString() + " from the library.");
+                return true;
+            } else {
+                System.out.println(book.toString() + " is not avaiable, please join the waitlist.");
+                return false;
+            }
+        } 
+        return false;
     }
     public void print() {
-    	System.out.println("Books in the book list are: ");
+    	System.out.println("Books in the library book list are: ");
     	for(Book book: Books) {
     		System.out.println(book.toString());
     	}

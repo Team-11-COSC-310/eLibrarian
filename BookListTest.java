@@ -23,8 +23,10 @@ public class BookListTest {
 		System.out.println(Books.AddBook(book2));
 		System.out.println(Books.AddBook(book2_1));
 		Books.print();
-		System.out.println(Books.getBookFromLibrary(book2_1).toString());
+		Books.getBookFromLibrary(book2_1);
 		System.out.println(book2_1.IsBookAvailable());
+		Books.getBookFromLibrary(book2_1);
+		Books.getBookFromLibrary(book1);
 		Books.print();
 	}
 
