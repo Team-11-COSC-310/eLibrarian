@@ -88,14 +88,34 @@ public class BookList extends connecttodb {
         System.out.println(book.toString() + " is not in the book list.");
         return false;
     }
-    //public Book getBookFromLibrary(Book book) throws ClassNotFoundException, SQLException {
-    //    if(BookSearch(book)) {
-     //       book.setAvailability(false);
-     //       RemoveBook(book);
-     //       return book;
-     //   }
-      //  return null;
-    //}
+    // public boolean getBookFromLibrary(Book book) {
+    //     if(BookSearch(book)) {
+    //         if(book.IsBookAvailable().equals("Yes")) {
+    //             book.setIsAvailable(false);
+    //             System.out.println("Successfully borrowed " + book.toString() + " from the library.");
+    //             return true;
+    //         } else {
+    //             System.out.println(book.toString() + " is not avaiable, please join the waitlist.");
+    //             return false;
+    //         }
+    //     } 
+    //     System.out.println(book.toString() + " is not in the library book list, please add the book into the book list.");
+    //     return false;
+    // }
+    // public boolean returnBook(Book book) {
+    //     if(BookSearch(book)) {
+    //         if(book.IsBookAvailable().equals("No")) {
+    //             book.setIsAvailable(true);
+    //             System.out.println("Successfully return " + book.toString() + " to the library.");
+    //             return true;
+    //         } else {
+    //             System.out.println(book.toString() + " is already in the library.");
+    //             return false;
+    //         }
+    //     } 
+    //     System.out.println(book.toString() + " is not in the library book list, please add the book into the book list.");
+    //     return false;
+    // }
     public String inventory() throws SQLException, ClassNotFoundException{
         String invent="";
         ResultSet list = getResultSet("select * from books");//should be every title and author
@@ -111,8 +131,4 @@ public class BookList extends connecttodb {
 		}
         return invent;
     }
-    // public void BookEdit(int ID, String name, String Author) {
-    //     book.setBookTitle(ID, name);
-    //     book.setBookAuthor(ID, Author);
-    // }
 }
