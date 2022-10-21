@@ -28,6 +28,8 @@ public class BookListTest {
 		Books.getBookFromLibrary(book2_1);
 		Books.getBookFromLibrary(book1);
 		Books.print();
+		Books.returnBook(book2_1);
+		Books.print();
 	}
 
 }

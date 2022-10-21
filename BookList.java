@@ -111,6 +111,21 @@ public class BookList {
                 return false;
             }
         } 
+        System.out.println(book.toString() + " is not in the library book list, please add the book into the book list.");
+        return false;
+    }
+    public boolean returnBook(Book book) {
+        if(BookSearch(book)) {
+            if(book.IsBookAvailable().equals("No")) {
+                book.setIsAvailable(true);
+                System.out.println("Successfully return " + book.toString() + " to the library.");
+                return true;
+            } else {
+                System.out.println(book.toString() + " is already in the library.");
+                return false;
+            }
+        } 
+        System.out.println(book.toString() + " is not in the library book list, please add the book into the book list.");
         return false;
     }
     public void print() {
