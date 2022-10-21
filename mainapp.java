@@ -12,7 +12,7 @@ public class mainapp {
 		boolean uirun = true;//user INPUT info loop
 		boolean brun = true;//book view loop
 		boolean arun = true;//action INPUT loop
-		
+		boolean librun = true;
 		
 
 		//need these to eval the user's input
@@ -23,6 +23,7 @@ public class mainapp {
 		String s = new String("S"); //<--/ Search for specific book
 		String u = new String("U"); //<--/ View User Account's info
 		String wait = new String("W"); //<--/ Join waitlist for book
+		String Lib = new String("Librarian");
 
 		int a = 1; //need to keep track of attempts to login
 		int createattempts = 1; //need to keep track of attempts to create a profile
@@ -48,6 +49,8 @@ public class mainapp {
 				Login log0 = new Login(a, uname);
 				//if info correct, login! If not, tell user, and prompt again
 				if(log0.HasRegistry()) {
+				
+					
 					a = 1;//resets attempt number incase had to reenter password
 					System.out.println("________________________________________________________________________\n"+
 					                   "| |------------------------------------------------------------------| |\n"+
@@ -55,12 +58,22 @@ public class mainapp {
 					                   "| |                      Welcome to the Main Menu.                   | |\n"+
 					                   "| |       ENTER 'B' to view the list of books from the database.     | |\n"+
 					                   "| |         ENTER 'S' to search for a book from the database.        | |\n"+
-					                   "| |                ENTER 'U' to view your account info.              | |\n"+
-					                   "| |                                                     'Q' to quit. | |\n"+
+					                   "| |                ENTER 'U' to view your account info.              | |\n"+                                                                
+					                   "| |            Enter 'Librarian' to access librarian page            | |\n"+
+					                   "| |				                                        'Q' to quit. | |\n"+
 					                   "|_|__________________________________________________________________|_|\n");
-					while (mmrun) { //MAIN MENU LOOP asks user for B, S or U
-						LoggedIn li = new LoggedIn(a2);//get user's choice to look at books, search for specific book, or view account info
-						if(li.getChoice().equals(listbooks)) {
+					while (mmrun) { //MAIN MENU LOOP asks user for B, S, U, or Librarian
+						LoggedIn li = new LoggedIn(a2);//get user's choice to look at books, search for specific book, or view account info, or edit/add books as librarian
+						if(li.getChoice().equals(Lib)){
+							if(log0.HasLibrarianEmail()) {
+								while(librun) {
+								LibrarianAction lib1 = new LibrarianAction();
+								librun=false;
+								}
+							}else {
+								System.out.println("You don't have access to the Librarian page!!");
+								break;
+							}}else if(li.getChoice().equals(listbooks)) {
 							a2 = 1;//resets attempt number incase had to re-enter input
 							String bookinfo ="";
 							while (dbrun) { //DATABASE LOOP gets books from database
@@ -193,11 +206,12 @@ public class mainapp {
 														"| |------------------------------------------------------------------| |\n"+
 														"| |                                                                  | |\n"+
 														"| |                      Welcome to the Main Menu.                   | |\n"+
-					                   					"| |       ENTER 'B' to view the list of books from the database.     | |\n"+
-					                   					"| |         ENTER 'S' to search for a book from the database.        | |\n"+
-					                   					"| |                ENTER 'U' to view your account info.              | |\n"+
-														"| |                                                     'Q' to quit. | |\n"+
-														"|_|__________________________________________________________________|_|\n");
+										                "| |       ENTER 'B' to view the list of books from the database.     | |\n"+
+										                "| |         ENTER 'S' to search for a book from the database.        | |\n"+
+										                "| |                ENTER 'U' to view your account info.              | |\n"+                                                                
+										                "| |                                                                  | |\n"+
+										                "| |				                                    'Q' to quit.  | |\n"+
+										                "|_|__________________________________________________________________|_|\n");
 										arun = false;
 										brun = false;//quit book veiw loop
 										dbrun = false;//go back
@@ -236,7 +250,8 @@ public class mainapp {
 									Welcome w1 = new Welcome(2);//run START welcome to get input
 								}
 							}
-						} else if (li.getChoice().equals(q)){ 
+						
+						}else if (li.getChoice().equals(q)){ 
 							//quit from main menu
 							System.out.println("Quitting...Goodbye!");
 							mmrun = false;//exit main menu loop
@@ -316,7 +331,7 @@ public class mainapp {
 					}
 				}	
 
-			}	
+			}
 			else if (w.getInput().equals(q)){ 
 				//quit from welcome screen
 				System.out.println("Quitting...Goodbye!");
@@ -334,9 +349,9 @@ public class mainapp {
 	
 	public Connection dbc() throws SQLException, ClassNotFoundException{
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/db";
+		String url = "jdbc:mysql://localhost:3306/LibMan";
 		String username = "root";
-		String password ="cosc310_T11";
+		String password ="kkato41496746";
 		Connection con = DriverManager.getConnection(url,username,password);
 		return con;
 	}

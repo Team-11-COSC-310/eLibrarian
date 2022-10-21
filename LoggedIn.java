@@ -7,7 +7,7 @@ public class LoggedIn {
 
     public LoggedIn(int attempt) {
         if (attempt == 1) {
-            System.out.println("What would you like to do? (enter 'B','S' or 'U'): ");
+            System.out.println("What would you like to do? (enter 'B','S','U','Librarian'): ");
 		    setChoice(reader.next());
         }
         
@@ -19,4 +19,5 @@ public class LoggedIn {
 	public String setChoice(String Eml) {
 		return this.userChoice = Eml;
 	}
+	
 }

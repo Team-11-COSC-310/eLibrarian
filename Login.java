@@ -11,6 +11,12 @@ public class Login extends connecttodb{
 	private String UserPassword;
 	private boolean authentication;
 	Scanner reader = new Scanner(System.in);
+	
+	//This constructor doesnt require any parameter
+	public Login() {
+		
+	}
+	
 
 	// This constructor suggests users enter their email and password. This also
 	// check if this user has already account or not.
@@ -57,6 +63,19 @@ public class Login extends connecttodb{
 		}
 		return false;
 	}
+	
+	public boolean HasLibrarianEmail() throws SQLException, ClassNotFoundException{
+		// get password from input by getPassword function and get resultSet.
+				String uEmail = getEmail();
+				ResultSet r = getResultSet("select * from librarians");
+				// Use while loop to check existence until the end of the email column
+				while (r.next()) {
+					if (r.getString("email").equals(uEmail)) {
+						return true;
+					}
+				}
+				return false;
+	}
 
 	// Ask this login session's password
 	public String getPassword() {
@@ -82,6 +101,9 @@ public class Login extends connecttodb{
 		System.out.println("The password you have entered is incorrect.");
 		return false;
 	}
+	
+
+		
 
 	// check if this login info match with the database info
 	public boolean HasRegistry() throws SQLException, ClassNotFoundException {
