@@ -3,13 +3,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.Scanner;
 
-public class BookList {
-    // private ArrayList<ArrayList<String>> BookList = new ArrayList();
-    // private ArrayList<String> Books = new ArrayList<>();
-    // Scanner reader = new Scanner(System.in);
+public class BookList extends connecttodb {
     private ArrayList<Book> Books = new ArrayList<Book>();
     private int count;
+    Scanner reader = new Scanner(System.in);
 
     public BookList(ArrayList<Book> Books) {
         this.Books.addAll(Books);
@@ -17,6 +16,7 @@ public class BookList {
     public BookList() {
         this(new ArrayList<Book>());
     }
+
     public boolean CompareAddBook(Book book1, Book book2) {
         if(book1.getBookTitle().equals(book2.getBookTitle())) {
             System.out.println("Title name is already in the book list.");
@@ -28,9 +28,9 @@ public class BookList {
         }
         return true;
     }
-    public boolean AddBook(Book book) {
+    public boolean AddBook(Book book) throws ClassNotFoundException, SQLException {
         if(book.getBookTitle().equals("") || book.getBookAuthor().equals("")) {
-            System.out.println("Book can't be empty");
+            System.out.println("Can't be empty");
             return false;
         }
         for(Book book1: Books) {
@@ -38,57 +38,45 @@ public class BookList {
                 return false;
             }
         }
-        if(book.IsBookAvailable().equals("No")) {
-            book.setIsAvailable(true);
-        }
-        System.out.println(book.toString() + " is added into book list.");
+        //if(book.IsBookAvailable().equals("No")) {
+         //   book.setAvailability(true);
+        //}
         this.Books.add(book);
         return true;
     }
-    public boolean CompareBook(Book book) {
-        if(Books.contains(book)) {
+    public boolean CompareBook(Book book1, Book book2) {
+        if(book1.getBookTitle().equals(book2.getBookTitle()) && book1.getBookAuthor().equals(book2.getBookAuthor())) {
             return true;
         }
         return false;
     }
     public boolean RemoveBook(Book book) {
         if(book.getBookTitle().equals("") || book.getBookAuthor().equals("")) {
-            System.out.println("Book can't be empty");
+            System.out.println("Can't be empty");
             return false;
         }
         for(Book book1: Books) {
-            if(CompareBook(book) == false) {
+            if(CompareBook(book1, book) == false) {
                 System.out.println("Book doesn't exist in the book list.");
                 return false;
             }
         }
-        System.out.println(book  + " has been removed from the book list.");
         this.Books.remove(book);
         return true;
     }
     public boolean EditBook(int index, Book book) {
-        if(book == null && book.equals("")) {
-            System.out.println("Book can't be empty");
+        if(book != null && !book.equals("")) {
+            System.out.println("Can't be empty");
             return false;
         }
         for(Book book1: Books) {
-            if(CompareBook(book) == true) {
-                System.out.println("Book already exist in the book list.");
+            if(CompareBook(book1, book) == false) {
+                System.out.println("Book doesn't exist in the book list.");
                 return false;
             }
         }
-        System.out.println(book.toString() + " has replace index "+ index + " and added into the book list.");
         this.Books.set(index, book);
         return true;
-    }
-    public boolean EditBook(Book book, int ID, String Title, String Author, int waitlist, boolean avaliability) {
-    	book.setID(ID);
-    	book.setBookTitle(Title);
-    	book.setBookAuthor(Author);
-    	book.setIsAvailable(avaliability);
-    	book.setwl(waitlist);
-    	System.out.println(book.toString() + " value has been updated in the book list.");
-    	return true;
     }
     public boolean BookSearch(Book book) {
         for(int i = 0; i < Books.size(); i++) {
@@ -100,40 +88,31 @@ public class BookList {
         System.out.println(book.toString() + " is not in the book list.");
         return false;
     }
-    public boolean getBookFromLibrary(Book book) {
-        if(BookSearch(book)) {
-            if(book.IsBookAvailable().equals("Yes")) {
-                book.setIsAvailable(false);
-                System.out.println("Successfully borrowed " + book.toString() + " from the library.");
-                return true;
-            } else {
-                System.out.println(book.toString() + " is not avaiable, please join the waitlist.");
-                return false;
-            }
-        } 
-        System.out.println(book.toString() + " is not in the library book list, please add the book into the book list.");
-        return false;
+    //public Book getBookFromLibrary(Book book) throws ClassNotFoundException, SQLException {
+    //    if(BookSearch(book)) {
+     //       book.setAvailability(false);
+     //       RemoveBook(book);
+     //       return book;
+     //   }
+      //  return null;
+    //}
+    public String inventory() throws SQLException, ClassNotFoundException{
+        String invent="";
+        ResultSet list = getResultSet("select * from books");//should be every title and author
+		// Use while loop to add every book's title and its author to a big string
+		while (list.next()) { 
+            invent += "| | ";//new line               
+			invent += list.getString(2);//title 
+            invent += " ---- ";//space
+            invent += list.getString(3);//author
+            invent += " ---- ";//space
+            invent += list.getString(1);//id 
+            invent += "\n";//new line
+		}
+        return invent;
     }
-    public boolean returnBook(Book book) {
-        if(BookSearch(book)) {
-            if(book.IsBookAvailable().equals("No")) {
-                book.setIsAvailable(true);
-                System.out.println("Successfully return " + book.toString() + " to the library.");
-                return true;
-            } else {
-                System.out.println(book.toString() + " is already in the library.");
-                return false;
-            }
-        } 
-        System.out.println(book.toString() + " is not in the library book list, please add the book into the book list.");
-        return false;
-    }
-    public void print() {
-    	System.out.println("Books in the library book list are: ");
-    	for(Book book: Books) {
-    		System.out.println(book.toString());
-    	}
-    }
-
-    
+    // public void BookEdit(int ID, String name, String Author) {
+    //     book.setBookTitle(ID, name);
+    //     book.setBookAuthor(ID, Author);
+    // }
 }

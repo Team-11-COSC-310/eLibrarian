@@ -1,35 +1,56 @@
-import java.util.*;
-/* This is the User class
-Used for displaying user info,
-adding users to a book's waitlist
-create user?*/
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
 
-public class User {
-    private String uE; //User email
-    private String uP; //User password
+public class User extends connecttodb {
+    private int ID;
+    private String Email;
+    private String Password;
+    Scanner reader = new Scanner(System.in);
 
-    public User(String uE, String uP) {
-        this.uE = uE;
-        this.uP = uP;
+    public User(int ID, String email, String password) {
+        this.ID = ID;
+        this.Email = email;
+        this.Password = password;
     }
     public User() {
-        uE = "";
-        uP = "";
+        ID = 0;
+        Email = "";
+        Password = "";
     }
-    public String getuE() {
-        return uE;
+    public int getID() {
+        return ID;
     }
-    public String getuP() {
-        return uP;
+    public String getEmail() {
+        return Email;
     }
-    public void setuE(String uE) {
-        this.uE = uE;
+    public String getPasword() {
+        return Password;
     }
-    public void setuP(String uP) {
-        this.uP = uP;
+    public void setID(int ID) {
+        this.ID = ID;
     }
-    //format user info nicely to string
-    public String toString( ) {
-        return "Email: " + uE + "\nPassword: " + uP;
+    public void setEmail(String Email) {
+        this.Email = Email;
+    }
+    public void setPassword(String Password) {
+        this.Password = Password;
+    }
+
+    public String info(String uemail) throws SQLException, ClassNotFoundException {
+        String sql = "select * from books where id ='"+uemail+"'";
+        String info="";
+        ResultSet list = getResultSet(sql);//should be every title and author  
+		while (list.next()) {
+            info += "| | ";//new line               
+			info += list.getString(1);//id
+            info += " ---- ";//space
+            info += list.getString(2);//email
+            info += " ---- ";//space
+            info += list.getString(3);//pass
+            info += "\n";//new line
+        } 
+        return info;
     }
 }
+
