@@ -88,34 +88,14 @@ public class BookList extends connecttodb {
         System.out.println(book.toString() + " is not in the book list.");
         return false;
     }
-    // public boolean getBookFromLibrary(Book book) {
-    //     if(BookSearch(book)) {
-    //         if(book.IsBookAvailable().equals("Yes")) {
-    //             book.setIsAvailable(false);
-    //             System.out.println("Successfully borrowed " + book.toString() + " from the library.");
-    //             return true;
-    //         } else {
-    //             System.out.println(book.toString() + " is not avaiable, please join the waitlist.");
-    //             return false;
-    //         }
-    //     } 
-    //     System.out.println(book.toString() + " is not in the library book list, please add the book into the book list.");
-    //     return false;
-    // }
-    // public boolean returnBook(Book book) {
-    //     if(BookSearch(book)) {
-    //         if(book.getAvailability == false) {
-    //             book.setAvailability(true);
-    //             System.out.println("Successfully return " + book.toString() + " to the library.");
-    //             return true;
-    //         } else {
-    //             System.out.println(book.toString() + " is already in the library.");
-    //             return false;
-    //         }
-    //     } 
-    //     System.out.println(book.toString() + " is not in the library book list, please add the book into the book list.");
-    //     return false;
-    // }
+    //public Book getBookFromLibrary(Book book) throws ClassNotFoundException, SQLException {
+    //    if(BookSearch(book)) {
+     //       book.setAvailability(false);
+     //       RemoveBook(book);
+     //       return book;
+     //   }
+      //  return null;
+    //}
     public String inventory() throws SQLException, ClassNotFoundException{
         String invent="";
         ResultSet list = getResultSet("select * from books");//should be every title and author
@@ -131,4 +111,24 @@ public class BookList extends connecttodb {
 		}
         return invent;
     }
+    public String searchInventory(String sInput) throws SQLException, ClassNotFoundException{
+        String invent="";
+        //should be all books matching these titles or authors
+        ResultSet list = getResultSet("select * from books where title = \""+sInput+"\" or author = \""+sInput+"\"");
+		// Use while loop to add every book's info to a big string
+		while (list.next()) { 
+            invent += "| | ";//new line               
+			invent += list.getString(2);//title 
+            invent += " ---- ";//space
+            invent += list.getString(3);//author
+            invent += " ---- ";//space
+            invent += list.getString(1);//id 
+            invent += "\n";//new line
+		}
+        return invent;
+    }
+    // public void BookEdit(int ID, String name, String Author) {
+    //     book.setBookTitle(ID, name);
+    //     book.setBookAuthor(ID, Author);
+    // }
 }

@@ -57,6 +57,19 @@ public class Login extends connecttodb{
 		}
 		return false;
 	}
+	// check if this login session's email is in the database
+	public boolean HasAdminEmail() throws SQLException, ClassNotFoundException {
+		// get password from input by getPassword function and get resultSet.
+		String uEmail = getEmail();
+		ResultSet r = getResultSet("select * from librarians");
+		// Use while loop to check existence until the end of the email column
+		while (r.next()) {
+			if (r.getString("email").equals(uEmail)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// Ask this login session's password
 	public String getPassword() {
@@ -85,7 +98,10 @@ public class Login extends connecttodb{
 
 	// check if this login info match with the database info
 	public boolean HasRegistry() throws SQLException, ClassNotFoundException {
-		if (HasEmail() && HasPassword()) {
+		if (HasAdminEmail() && HasPassword()) {
+			return this.authentication = true; //authenticates if admin logs in ONLY USED BY ADMIN SCREEN
+		}
+		else if (HasEmail() && HasPassword()) { //authenticates if anyone logs in
 			return this.authentication = true;
 		} else {
 			return this.authentication = false;
