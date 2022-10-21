@@ -104,8 +104,8 @@ public class BookList extends connecttodb {
     // }
     // public boolean returnBook(Book book) {
     //     if(BookSearch(book)) {
-    //         if(book.IsBookAvailable().equals("No")) {
-    //             book.setIsAvailable(true);
+    //         if(book.getAvailability == false) {
+    //             book.setAvailability(true);
     //             System.out.println("Successfully return " + book.toString() + " to the library.");
     //             return true;
     //         } else {
