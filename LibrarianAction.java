@@ -8,8 +8,8 @@ public class LibrarianAction extends Login{
 	private String id;
 	private String author;
 	private String content;
-	private String waitlist;
 	public String in;
+    public String in2;
 	Scanner input = new Scanner(System.in);
 	
      public LibrarianAction(int att, String uname) throws SQLException, ClassNotFoundException {
@@ -60,17 +60,33 @@ public class LibrarianAction extends Login{
 	}
 	
 	public void EditBook() throws ClassNotFoundException, SQLException {
-		System.out.println("Select your editing action: 'Delete'");
-		if(input.nextLine().equals("Delete")) {
+		System.out.println("Select your editing action: Enter 'Delete' to delete a book.");
+        in2 = input.nextLine();//Get input
+		if(in2.equals("Delete")) {//if input equals delete
 		    System.out.println("Enter the name of the book you want to delete: ");
 		    setBookname(input.nextLine());
-			String sql = "Delete from books where title = '"+getBookname()+"'";
-			PreparedStatement stmt = getConnect().prepareStatement(sql);
+			while (HasBook(getBookname())) { //if that name exists then delete it from the db.
+                String sql = "Delete from books where title = '"+getBookname()+"'";
+			    PreparedStatement stmt = getConnect().prepareStatement(sql);
 				
-			stmt.executeUpdate();
-			System.out.println(getBookname()+" was deleted from database.");
+			    stmt.executeUpdate();
+			    System.out.println(getBookname()+" was deleted from database.");
+            }
 		}
 		return;
+	}
+    // check if this book is in the database
+	public boolean HasBook(String input) throws SQLException, ClassNotFoundException {
+		// get title from input by getBookname function and get resultSet.
+		String uinput = input;
+		ResultSet r = getResultSet("select * from books");//get all books
+		// Use while loop to check existence until the end of the title column
+		while (r.next()) { 
+			if (r.getString("title").equals(uinput)) {//check all titles
+				return true; //if input MATCHES TITLE in database
+			}
+		}
+		return false;
 	}
 		
     public String getBookname() {

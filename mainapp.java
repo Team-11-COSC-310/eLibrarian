@@ -9,6 +9,7 @@ public class mainapp {
 		boolean mmrun = true;//show main menu loop
 		boolean dbrun = true;//show DATABASE of books loop
 		boolean urun = true;//show user INFO loop
+		boolean arun2 = true;//search action INPUT loop
 		boolean srun = true;//show book SEARCH loop
 		boolean sbrun = true;//show search results and view selected book
 		boolean uirun = true;//user INPUT info loop
@@ -36,6 +37,9 @@ public class mainapp {
 		int a2 = 1; //need to keep track of attempts from main menu.
 		String uname = "";//keep track of username
 		int status = 1;//trackss if user already on waitlist
+		int wtime = 0;//waitime for book in days = wlist users * 21 days
+		int searchwaitliststatus = 1;//need status to check waitlist status in the search for book loop
+		int wtime2 = 0;//waitime for book in days = wlist users * 21 days in SEARCH LOOP
 
 		while (run) { //Start up loop
 			//run welcome display
@@ -49,7 +53,9 @@ public class mainapp {
 						       "| |                    (Input IS case sensitive).                    | |\n"+
 						       "| |                                                     'Q' to quit. | |\n"+
 						       "|_|__________________________________________________________________|_|\n");
-			Welcome w = new Welcome(1);//run START welcome to get input
+			Welcome w = new Welcome(1);//run START welcome to get input L,C or A
+			mmrun = true;//resets main menu loop in case you back out from admin
+			librun = true;//resets admin page if you have visited it already and try go into it again.
 			
 			//if they enter L, then go to login
 			if (w.getInput().equals(l)) { 
@@ -65,10 +71,12 @@ public class mainapp {
 					                   "| |       ENTER 'B' to view the list of books from the database.     | |\n"+
 					                   "| |         ENTER 'S' to search for a book from the database.        | |\n"+
 					                   "| |                ENTER 'U' to view your account info.              | |\n"+
-					                   "| |                                                     'Q' to quit. | |\n"+
+									   "| |                                                                  | |\n"+
+					                   "| | 'C' to log out and go back.                         'Q' to quit. | |\n"+
 					                   "|_|__________________________________________________________________|_|\n");
 					while (mmrun) { //MAIN MENU LOOP asks user for B, S or U
 						LoggedIn li = new LoggedIn(a2);//get user's choice to look at books, search for specific book, or view account info
+						
 						if(li.getChoice().equals(listbooks)) {
 							a2 = 1;//resets attempt number incase had to re-enter input
 							String bookinfo ="";
@@ -88,13 +96,14 @@ public class mainapp {
 											   "| |                                                                  | |\n"+
 											   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       "|_|__________________________________________________________________|_|\n");
-								status = 1;//checks if they've borrowed the book already or joined its waitlist
+								status = 1;//resets the user's status on if they've rented a book or joined its waitlist
 								while (brun) { //BOOK LOOP asks user for book id
 									ViewBook vb = new ViewBook();//ask user to select a book by id
 									if (vb.getInput().equals(q)) { //if they press Q to quit
 										System.out.println("Quitting...Goodbye!");
 										brun = false;//quit view book loop
 										dbrun = false;//quit db loop
+										mmrun = false;//quit mm loop
 										run = false;//quit main loop
 									} 
 									else if (vb.HasID()) { //if the id matches a book in the database
@@ -120,7 +129,7 @@ public class mainapp {
 
 											//IF book UNAVAILABLE AND they enter W and FIRST TRY
 											if (!userBook.getAvailability() && action.getInput().equals(wait) && status == 1) {
-												int wtime = userBook.getWL() *21;// wait time = 3 weeks times amount of people on list
+												wtime = userBook.getWL() *21;// wait time = 3 weeks times amount of people on list
 												userBook.changeWL(userBook.getWL()+1, vb.getInput());//update waitlist to include user BEFORE finding wtime
 												System.out.println("________________________________________________________________________\n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
@@ -129,7 +138,7 @@ public class mainapp {
 													   "|_|__________________________________________________________________|_|\n");
 												status = 2;//can't join waitlist again
 
-												wait(1000);//wait 10 seconds to print database
+												wait(2000);//wait 2 seconds to print database
 												//reprint db and prompt book id again
 												System.out.println("________________________________________________________________________\n"+
 													   "| |------------------------------------------------------------------| |\n"+
@@ -146,15 +155,36 @@ public class mainapp {
 											}
 											//IF book UNAVAILABLE AND they are ALREADY ON waitlist
 											else if (!userBook.getAvailability() && action.getInput().equals(wait) && status == 2) {
-												int wtime = userBook.getWL() *21;// wait time = 3 weeks times amount of people on list
 												System.out.println("________________________________________________________________________\n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
 						                       	       "| |       You are already on the waitlist. You are number "+userBook.getWL()+".      \n"+
 						                       	       "| |              The estimated wait time is "+wtime+" day(s).              \n"+
 													   "|_|__________________________________________________________________|_|\n");
 
-												wait(1000);//wait 10 seconds to print database
+												wait(2000);//wait 2 seconds to print database
 												//reprint db and prompt book id again
+												System.out.println("________________________________________________________________________\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |                            Database:                             | |\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |Book Name, Author, ID:                                            | |\n"+
+													   "| |------------------------------------------------------------------| |\n"
+														+bookinfo+
+													   "| |                                                                  | |\n"+
+													   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+												arun = false;//exit action loop
+												//GO BACK TO DATABASE
+											}//IF book UNAVAILABLE AND they are ALREADY BORROWED BOOK
+											else if (!userBook.getAvailability() && action.getInput().equals(wait) && status == 3) {
+												System.out.println("________________________________________________________________________\n"+
+																		 "| |------------------------------------------------------------------| |\n"+
+																	  "| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
+																	  "| |                    It is due back in 21 day(s).                  | |\n"+
+																   "|_|__________________________________________________________________|_|\n");
+												
+												wait(2000);//wait 2 seconds to print database
+												//reprint results and prompt book id again
 												System.out.println("________________________________________________________________________\n"+
 													   "| |------------------------------------------------------------------| |\n"+
 													   "| |                            Database:                             | |\n"+
@@ -177,6 +207,7 @@ public class mainapp {
 													   "|_|__________________________________________________________________|_|\n");
 												userBook.changeAvailability(false, vb.getInput());//close book's availablity
 												userBook.changeWL(userBook.getWL()+1, vb.getInput());//update waitlist
+												status = 3;//change the status to borrowed
 												
 												/*update book's list to inlcude user's name
 												//turn email to array in order to change array in database
@@ -184,7 +215,7 @@ public class mainapp {
 												userBook.changeNamelist(strArray, userBook.getWL(), vb.getInput());
 												System.out.println(userBook.getNamelist());*/
 
-												wait(1000);//wait 10 seconds to print database
+												wait(2000);//wait 2 seconds to print database
 
 												//reprint db and prompt book id again
 												System.out.println("________________________________________________________________________\n"+
@@ -202,8 +233,8 @@ public class mainapp {
 
 											}
 											//If book UNAVAILABLE OR AVAILABLE and they enter C, then cancel or go back to database
-											else if ((!userBook.getAvailability() || !userBook.getAvailability()) && action.getInput().equals(c)) {
-												wait(1000);//wait 10 seconds to print database
+											else if ((!userBook.getAvailability() || userBook.getAvailability()) && action.getInput().equals(c)) {
+												wait(2000);//wait 2 seconds to print database
 
 												//reprint db and prompt book id again
 												System.out.println("________________________________________________________________________\n"+
@@ -226,6 +257,7 @@ public class mainapp {
 												arun = false;//quit action loop
 												brun = false;//quit view book loop
 												dbrun = false;//quit db loop
+												mmrun=false;//quit main loop
 												run = false;//quit main loop
 											}
 										}
@@ -240,7 +272,8 @@ public class mainapp {
 					                   					"| |       ENTER 'B' to view the list of books from the database.     | |\n"+
 					                   					"| |         ENTER 'S' to search for a book from the database.        | |\n"+
 					                   					"| |                ENTER 'U' to view your account info.              | |\n"+
-														"| |                                                     'Q' to quit. | |\n"+
+														"| |                                                                  | |\n"+
+														"| | 'C' to log out and go back.                         'Q' to quit. | |\n"+
 														"|_|__________________________________________________________________|_|\n");
 										arun = false;
 										brun = false;//quit book veiw loop
@@ -253,7 +286,7 @@ public class mainapp {
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
 						                       	       "| |     Invalid input. Please re-enter a book's id from the list.    | |\n"+
 						                       	       "|_|__________________________________________________________________|_|\n");
-										wait(500);//wait 5 seconds to prompt
+										wait(5000);//wait 5 seconds to prompt
 							    	}
 								}
 							}
@@ -286,7 +319,8 @@ public class mainapp {
 					                   					"| |       ENTER 'B' to view the list of books from the database.     | |\n"+
 					                   					"| |         ENTER 'S' to search for a book from the database.        | |\n"+
 					                   					"| |                ENTER 'U' to view your account info.              | |\n"+
-														"| |                                                     'Q' to quit. | |\n"+
+														"| |                                                                  | |\n"+
+														"| | 'C' to log out and go back.                         'Q' to quit. | |\n"+
 														"|_|__________________________________________________________________|_|\n");
 									srun = false;//quit search input loop
 								}
@@ -307,6 +341,7 @@ public class mainapp {
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
 									sbrun = true;
+									searchwaitliststatus = 1;//reset search action status
 									while (sbrun) { //Search BOOK LOOP asks user for book id
 										ViewBook vb2 = new ViewBook();//ask user to select a book by id FROM SEARCH RESULTS
 										if (vb2.getInput().equals(q)) { //if they press Q to quit
@@ -339,25 +374,27 @@ public class mainapp {
 															 "| |------------------------------------------------------------------| |\n"+
 															 "| | "+userBook2.getBookSum()+"\n"+
 															 "| |                                                                  | |\n"+
-															 "| | "+userBook2.IsBookAvailable()+" | |\n"+
-															 "| | Current Waitlist: "+userBook2.getWL()+" user(s)                   | |\n"+
+															 "| | "+userBook2.IsBookAvailable()+"   | |\n"+
+															 "| | Current Waitlist: "+userBook2.getWL()+" user(s)                   \n"+
 															 "| |                                                                  | |\n"+
 															 "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 															 "|_|__________________________________________________________________|_|\n");
-											while (arun) {//ACTION LOOP asks user for W or B
+											arun2 = true;
+											while (arun2) {//ACTION LOOP asks user for W or B
 												Action action2 = new Action(userBook2.getAvailability());//start action prompt
 						
-												//IF book UNAVAILABLE AND they enter W
-												if (!userBook2.getAvailability() && action2.getInput().equals(wait)) {
-													int wtime2 = userBook2.getWL() *21;// wait time = 3 weeks times amount of people on list
+												//IF book UNAVAILABLE AND they HAVENT borrowed it ANYWHERE, and they enter W
+												if (!userBook2.getAvailability() && action2.getInput().equals(wait) && searchwaitliststatus == 1) {
+													wtime2 = userBook2.getWL() *21;// wait time = 3 weeks times amount of people on list
 													userBook2.changeWL(userBook2.getWL()+1, vb2.getInput());//update waitlist to include user BEFORE finding wtime
 													System.out.println("________________________________________________________________________\n"+
 																"| |------------------------------------------------------------------| |\n"+
-																"| |       Thank you for joining the waitlist. You are number "+userBook2.getWL()+".      | |\n"+
-																"| |               The estimated wait time is "+wtime2+" day(s).              | |\n"+
+																"| |       Thank you for joining the waitlist. You are number "+userBook2.getWL()+".      \n"+
+																"| |               The estimated wait time is "+wtime2+" day(s).              \n"+
 																"|_|__________________________________________________________________|_|\n");
+													searchwaitliststatus = 2;//can't join waitlist again
 						
-													wait(1000);//wait 10 seconds to print database
+													wait(2000);//wait 2 seconds to print database
 													//reprint results and prompt book id again
 													System.out.println("________________________________________________________________________\n"+
 										       			"| |------------------------------------------------------------------| |\n"+
@@ -369,11 +406,57 @@ public class mainapp {
 											   			"| |                                                                  | |\n"+
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
-													arun = false;//exit action loop
-													sbrun = false;//exit book view loop
+													arun2 = false;//exit action loop
+													//sbrun = false;//exit book view loop
 													//GO BACK TO SEARCH RESULTS
 												}
-												//IF book IS AVAILABLE AND they enter B for BORROW
+												//IF book UNAVAILABLE AND they are ALREADY ON waitlist from joining in search or database
+												else if (!userBook2.getAvailability() && action2.getInput().equals(wait) && (searchwaitliststatus == 2 || status == 2)) {
+													System.out.println("________________________________________________________________________\n"+
+						                       	   	   				"| |------------------------------------------------------------------| |\n"+
+						                       	       				"| |       You are already on the waitlist. You are number "+userBook2.getWL()+".      \n"+
+						                       	       				"| |              The estimated wait time is "+wtime2+" day(s).              \n"+
+													   				"|_|__________________________________________________________________|_|\n");
+													
+													wait(2000);//wait 2 seconds to print database
+													//reprint results and prompt book id again
+													System.out.println("________________________________________________________________________\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |                          Search Results:                         | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |Book Name, Author, ID:                                            | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"
+								                			+searchinfo+
+											   			"| |                                                                  | |\n"+
+											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+										       			"|_|__________________________________________________________________|_|\n");
+													arun2 = false;//exit action loop
+													//sbrun = false;//exit book view loop
+													//GO BACK TO SEARCH RESULTS
+												}//IF book UNAVAILABLE AND they are ALREADY BORROWED BOOK in search OR database
+												else if (!userBook2.getAvailability() && action2.getInput().equals(wait) && (searchwaitliststatus == 3)) {
+													System.out.println("________________________________________________________________________\n"+
+						                       	   	   				"| |------------------------------------------------------------------| |\n"+
+						                       	       				"| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
+						                       	       				"| |                    It is due back in 21 day(s).                  | |\n"+
+													   				"|_|__________________________________________________________________|_|\n");
+													
+													wait(2000);//wait 2 seconds to print database
+													//reprint results and prompt book id again
+													System.out.println("________________________________________________________________________\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |                          Search Results:                         | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |Book Name, Author, ID:                                            | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"
+								                			+searchinfo+
+											   			"| |                                                                  | |\n"+
+											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+										       			"|_|__________________________________________________________________|_|\n");
+													arun2 = false;//exit action loop
+													//sbrun = false;//exit book view loop
+													//GO BACK TO SEARCH RESULTS
+												}//IF book IS AVAILABLE AND they enter B for BORROW
 												else if (userBook2.getAvailability() && action2.getInput().equals(listbooks)) {
 													System.out.println("________________________________________________________________________\n"+
 																	   "| |------------------------------------------------------------------| |\n"+
@@ -382,8 +465,9 @@ public class mainapp {
 																	   "|_|__________________________________________________________________|_|\n");
 													userBook2.changeAvailability(false, vb2.getInput());//close book's availablity
 													userBook2.changeWL(userBook2.getWL()+1, vb2.getInput());//update waitlist
+													searchwaitliststatus = 3;//creates new waitlist output if you borrowed first and tried to join wl instead of join wl first and try again
 						
-													wait(1000);//wait 10 seconds to print database
+													wait(2000);//wait 2 seconds to print database
 						
 													//reprint search results and prompt book id again
 													System.out.println("________________________________________________________________________\n"+
@@ -396,14 +480,13 @@ public class mainapp {
 											   			"| |                                                                  | |\n"+
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
-													arun = false;//quit action
-													sbrun = false;//quit search veiw book 
+													arun2 = false;//quit action
 													//GO BACK TO SEARCH RESULTS
 						
 												}
 												//If book UNAVAILABLE OR AVAILABLE and they enter C, then cancel or go back to search results
-												else if ((!userBook2.getAvailability() || !userBook2.getAvailability()) && action2.getInput().equals(c)) {
-													wait(1000);//wait 10 seconds to print database
+												else if ((!userBook2.getAvailability() || userBook2.getAvailability()) && action2.getInput().equals(c)) {
+													wait(2000);//wait 2 seconds to print database
 						
 													//reprint search results and prompt book id again
 													System.out.println("________________________________________________________________________\n"+
@@ -416,22 +499,21 @@ public class mainapp {
 											   			"| |                                                                  | |\n"+
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
-													arun = false;//quit action
-													sbrun = false;//quit search veiw book 
+													arun2 = false;//quit action
 													//GO BACK TO SEARCH RESULTS
 						
 												}
 												else if (action2.getInput().equals(q)) {
 													//if they press Q to quit
 													System.out.println("Quitting...Goodbye!");
-													arun = false;//quit action loop
+													arun2 = false;//quit action loop
 													sbrun = false;//quit search view book loop
 													srun = false;//quit search results loop
 													mmrun = false;//quit main menu loop
 													run = false;//quit who;e program
 												}
 											
-											}//closes arun
+											}//closes arun2 loop
 										//IF viewing Search results (entering id) and press C, then go back to SEARCH
 										}else if (vb2.getInput().equals(c)) {
 											//run search
@@ -456,13 +538,13 @@ public class mainapp {
 								}
 								//If info DOESNT MATCH book titles OR authors in system
 								else if (!bs.IsValid()) {
-									System.out.println(bs.getSInput()+"________________________________________________________________________\n"+
+									System.out.println("\n________________________________________________________________________\n"+
 													"| |------------------------------------------------------------------| |\n"+
-													"| |        We do not have any books matching that information.       | |\n"+
+													"| |        We do not have any books matching "+bs.getSInput()+" \n"+
 													"| |                    Please retry in a moment.                     | |\n"+
 													"|_|__________________________________________________________________|_|\n");
-									wait(500);//wait 5 seconds to prompt search again
-								}//ifs to check search input
+									wait(5000);//wait 5 seconds to prompt search again
+								}//close ifs to check search input
 							}//close srun loop
 						//if user selects User from Main Menu
 						} else if(li.getChoice().equals(u)) { //if they entered the wrong password but right email, prompt them for password again.
@@ -470,8 +552,8 @@ public class mainapp {
 							uirun = true;
 							while (urun) {//USER INFO loop
 								String userinfo = "";
-								User user = new User();//run booklist to list database of books
-								userinfo = user.info(log0.getEmail());//get string form of user's info user
+								User user = new User();//run user to list database of users
+								userinfo = user.info(log0.getEmail());//get string form of user's info from the user table
 								System.out.println("________________________________________________________________________\n"+
 										       "| |------------------------------------------------------------------| |\n"+
 										       "| |                           Your Account:                          | |\n"+
@@ -483,7 +565,7 @@ public class mainapp {
 											   "| | 'C' to go back.                                     'Q' to quit. | |\n"+
 										       "|_|__________________________________________________________________|_|\n");
 								while(uirun) {
-									Welcome w1 = new Welcome(2);//run START welcome to get input
+									Welcome w1 = new Welcome(2);//run START welcome to get input again C OR Q
 									if (w1.getInput().equals(c)) {
 										//go back to MM
 										System.out.println("________________________________________________________________________\n"+
@@ -493,10 +575,19 @@ public class mainapp {
 					                   					   "| |       ENTER 'B' to view the list of books from the database.     | |\n"+
 					                   					   "| |         ENTER 'S' to search for a book from the database.        | |\n"+
 					                   					   "| |                ENTER 'U' to view your account info.              | |\n"+
-														   "| |                                                     'Q' to quit. | |\n"+
+														   "| |                                                                  | |\n"+
+														   "| | 'C' to log out and go back.                         'Q' to quit. | |\n"+
 														   "|_|__________________________________________________________________|_|\n");
 										uirun = false;//quit user input loop
 										urun = false;//quit account info display
+									}
+									else if (w1.getInput().equals(q)) {
+										//Quit program from user page
+										System.out.println("Quitting...Goodbye!");
+										uirun = false;//quit user input loop
+										urun = false;//quit account info display
+										mmrun = false;//exit main menu loop
+										run = false;//exit everything
 									}
 								}
 							}
@@ -505,6 +596,10 @@ public class mainapp {
 							System.out.println("Quitting...Goodbye!");
 							mmrun = false;//exit main menu loop
 							run = false;//exit everything
+
+						} else if (li.getChoice().equals(c)){ //if entering c at main menu GO TO START UP
+							//Back from main menu
+							mmrun = false;//exit main menu loop
 						}
 						else {
 							System.out.println("________________________________________________________________________\n"+
@@ -526,183 +621,202 @@ public class mainapp {
 								    "|_|__________________________________________________________________|_|\n");
 				run = false;//exit main run loop
 			}
-			}//if they press C from START WELCOME, then go to create account
-			else if (w.getInput().equals(c)){ 
-				//continue to create account
-				while (cwrun) {
-					System.out.println("________________________________________________________________________\n"+
-								   	   "| |------------------------------------------------------------------| |\n"+
-			                       	   "| |                     Welcome to Create Account.                   | |\n"+
-								  	   "| |          Follow the instructions below to make accounts.         | |\n"+
-								  	   "| |                ENTER 'L' key to go back and login.               | |\n"+
-								   	   "| |                    ENTER 'C' key to continue.                    | |\n"+
-								   	   "| |                                                     'Q' to quit. | |\n"+
-			                       	   "|_|__________________________________________________________________|_|\n");
-					Welcome createwelcome = new Welcome(1);//run CREATE WELCOME
+		}//if they press C from START WELCOME, then go to create account
+		else if (w.getInput().equals(c)){ 
+			//continue to create account
+			while (cwrun) {
+				System.out.println("________________________________________________________________________\n"+
+								   	"| |------------------------------------------------------------------| |\n"+
+			                       	"| |                     Welcome to Create Account.                   | |\n"+
+								  	"| |          Follow the instructions below to make accounts.         | |\n"+
+								  	"| |                ENTER 'L' key to go back and login.               | |\n"+
+								   	"| |                    ENTER 'C' key to continue.                    | |\n"+
+								   	"| |                                                     'Q' to quit. | |\n"+
+			                       	"|_|__________________________________________________________________|_|\n");
+				Welcome createwelcome = new Welcome(3);//run CREATE WELCOME
 				
-					//BACK to login
-					if (createwelcome.getInput().equals(l)) { 
-						//exit createwelcome and go to main loop.
-						cwrun = false;
+				//BACK to login
+				if (createwelcome.getInput().equals(l)) { 
+					//exit createwelcome and go to main loop.
+					cwrun = false;
 					
-					}//CONTINUE
-					else if (createwelcome.getInput().equals(c)){ 
-						//run create
-						while (crun) {
-							Create ca = new Create(createattempts);
-							if(ca.getAttempt() == 1) { //if everything is okay, make account
-								System.out.println("________________________________________________________________________\n"+
+				}//CONTINUE
+				else if (createwelcome.getInput().equals(c)){ 
+					//run create
+					while (crun) {
+						Create ca = new Create(createattempts);
+						if(ca.getAttempt() == 1) { //if everything is okay, make account
+							System.out.println("________________________________________________________________________\n"+
 											   "| |------------------------------------------------------------------| |\n"+
 											   "| |                         New Account made!                        | |\n"+
-											   "| | User Email: "+ca.getEmail()+"                                    | |\n"+
-											   "| | Password: "+ca.getPassword()+"                                   | |\n"+
+											   "| | User Email: "+ca.getEmail()+"                                    \n"+
+											   "| | Password: "+ca.getPassword()+"                                   \n"+
 											   "|_|__________________________________________________________________| |\n");
-								crun = false;//take user back to create welcome screen to login		   	
-							} else { //if email is already in use, prompt for new input
-								createattempts = 3; //prompt to enter different email.
-							}	
+							crun = false;//take user back to create welcome screen to login		   	
+						} else { //if email is already in use, prompt for new input
+							createattempts = 3; //prompt to enter different email.
+						}	
 						
-						}
-	
-					}//QUIT	
-					else if (createwelcome.getInput().equals(q)){ 
-						//quit from welcome screen
-						System.out.println("Quitting...Goodbye!");
-						run = false;//exit create welcome loop
 					}
-					else { //catches bad input
-						System.out.println("________________________________________________________________________\n"+
+	
+				}//QUIT	
+				else if (createwelcome.getInput().equals(q)){ 
+					//quit from welcome to CREAT ACCOUNT screen
+					System.out.println("Quitting...Goodbye!");
+					cwrun = false;//exit create loop
+					run = false;//exit program loop
+				}
+				else { //catches bad input
+					System.out.println("________________________________________________________________________\n"+
 									   	   "| |------------------------------------------------------------------| |\n"+
 									       "| |             Invalid input. Please enter 'L' or 'C'.              | |\n"+
 									       "| |                                                     'Q' to quit. | |\n"+
 									       "|_|__________________________________________________________________|_|\n");
-					}
-				}	
+				}
+			}//closes crun	
 
-			}
-			else if (w.getInput().equals(admin)){ 
-				//continue to create account
-				while (librun) {//librarian admin screen loop
-					larun = true;
-					System.out.println("________________________________________________________________________\n"+
-								   	   "| |------------------------------------------------------------------| |\n"+
-			                       	   "| |                   Welcome to the Admin Screen.                   | |\n"+
-								  	   "| |      Only registered Librarians may access these functions.      | |\n"+
-								  	   "| |                     ENTER 'L' key to go back.                    | |\n"+
-								   	   "| |            ENTER 'C' key to continue as a librarian.             | |\n"+
-								   	   "| |                                                     'Q' to quit. | |\n"+
-			                       	   "|_|__________________________________________________________________|_|\n");
-					Welcome libwelcome = new Welcome(1);//run CREATE WELCOME
+		}//closes createaccount if
+		else if (w.getInput().equals(admin)){  //A from start up welcome
+			//continue to admin page
+			while (librun) {//librarian admin screen loop
+				larun = true;
+				System.out.println("________________________________________________________________________\n"+
+								   	"| |------------------------------------------------------------------| |\n"+
+			                       	"| |                   Welcome to the Admin Screen.                   | |\n"+
+								  	"| |      Only registered Librarians may access these functions.      | |\n"+
+								  	"| |                     ENTER 'L' key to go back.                    | |\n"+
+								   	"| |            ENTER 'C' key to continue as a librarian.             | |\n"+
+								   	"| |                                                     'Q' to quit. | |\n"+
+			                       	"|_|__________________________________________________________________|_|\n");
+				Welcome libwelcome = new Welcome(3);//run Admin login WELCOME
 				
-					//BACK to login
-					if (libwelcome.getInput().equals(l)) { 
-						//exit libwelcome and go to main loop.
-						librun = false;
+				//BACK to login
+				if (libwelcome.getInput().equals(l)) { 
+					//exit libwelcome and go to main loop.
+					librun = false;
 					
-					}//CONTINUE
-					else if (libwelcome.getInput().equals(c)){ 
-						//run create
-						while (larun) {//librarian action loop
-							LibrarianAction la = new LibrarianAction(a, uname); //logins AND creates book in DB
-							if(la.HasRegistry() && la.in.equals(add)) { //if admin exists, login as librarian AND ADD then add book
-								Book adminBook = new Book();//start book display view of CREATED book
-								adminBook.binfo(la.getId());//get info for book matching the entered ID
-								//send newest id to iterate database. Should fill values accordingly with NEW BOOK
-								System.out.println("________________________________________________________________________\n"+
+				}//CONTINUE
+				else if (libwelcome.getInput().equals(c)){ 
+					//run add book
+					while (larun) {//librarian action loop
+						LibrarianAction la = new LibrarianAction(a, uname); //logins AND creates book in DB
+						if(la.HasRegistry() && la.in.equals(add)) { //if admin exists, login as librarian AND ADD then add book
+							Book adminBook = new Book();//start book display view of CREATED book
+							adminBook.binfo(la.getId());//get info for book matching the entered ID
+							//send newest id to iterate database. Should fill values accordingly with NEW BOOK
+							System.out.println("________________________________________________________________________\n"+
 													"| |                 You Book was Successfully Added!                 | |\n"+
 													"| |------------------------------------------------------------------| |\n"+
-													"| | "+adminBook.getBookTitle()+"                     \n"+
-													"| |------------------------------------------------------------------| |\n"+
-													"| | By: "+adminBook.getBookAuthor()+"                             \n"+
-													"| |------------------------------------------------------------------| |\n"+
-													"| | "+adminBook.getBookSum()+"\n"+
-													"| |                                                                  | |\n"+
-													"| | It is available now!                                             | |\n"+
-													"| | Current Waitlist: "+adminBook.getWL()+" user(s)                   \n"+
 													"| |                                                                  | |\n"+
 													"| | Returning to Admin screen...                                     | |\n"+
 													"|_|__________________________________________________________________|_|\n");
-								wait(1500);//wait before returning 
-								larun = false;//take user back to admin edit or add screen
+							//System.out.println("________________________________________________________________________\n"+
+								// 					"| |                 You Book was Successfully Added!                 | |\n"+
+								// 					"| |------------------------------------------------------------------| |\n"+
+								// 					"| | "+adminBook.getBookTitle()+"                     \n"+
+								// 					"| |------------------------------------------------------------------| |\n"+
+								// 					"| | By: "+adminBook.getBookAuthor()+"                             \n"+
+								// 					"| |------------------------------------------------------------------| |\n"+
+								// 					"| | "+adminBook.getBookSum()+"\n"+
+								// 					"| |                                                                  | |\n"+
+								// 					"| | It is available now!                                             | |\n"+
+								// 					"| | Current Waitlist: "+adminBook.getWL()+" user(s)                   \n"+
+								// 					"| |                                                                  | |\n"+
+								// 					"| | Returning to Admin screen...                                     | |\n"+
+								// 					"|_|__________________________________________________________________|_|\n");
+							wait(2000);//wait 2 before returning 
+							larun = false;//take user back to admin edit or add screen
 											   
 											   
-							} else if (la.HasRegistry() && la.in.equals(edit)) { //if admin exists, login as librarian AND DELETE then add book
-								Book adminBook = new Book();//start book display view of DELETED book
-								adminBook.binfo(la.getId());//get info for book matching the entered ID
-								//send newest id to iterate database. Should fill values accordingly with BOOK to delete
-								System.out.println("________________________________________________________________________\n"+
+						} else if (la.HasRegistry() && la.in.equals(edit) && la.in2.equals("Delete")) { //if admin exists, login as librarian AND DELETE then add book
+							Book adminBook = new Book();//start book display view of DELETED book
+							adminBook.binfo(la.getId());//get info for book matching the entered ID
+							//send newest id to iterate database. Should fill values accordingly with BOOK to delete
+							System.out.println("________________________________________________________________________\n"+
 													"| |                       You Book was Deleted!                      | |\n"+
 													"| |------------------------------------------------------------------| |\n"+
 													"| | Returning to Admin screen...                                     | |\n"+
 													"|_|__________________________________________________________________|_|\n");
-								wait(1500);//wait before returning 
-								larun = false;//take user back to admin edit or add screen
+							wait(2000);//wait 2 before returning 
+							larun = false;//take user back to admin edit or add screen
 											   
 											   
-							} else if(la.HasEmail()) { //if they entered the wrong password but right email, prompt them for password again.
-								a = 2; uname = la.getEmail(); //send correct email to next login
-							} else if(!la.HasEmail()) { //if they entered an invalid email, prompt them for input again
-								a = 3;
-								System.out.println("\nThat account does not exist. Please Retry.");
-							} else {
-								System.out.println("________________________________________________________________________\n"+
-													   "| |------------------------------------------------------------------| |\n"+
+						} else if (la.HasRegistry() && la.in.equals(edit) && !la.in2.equals("Delete")) { //if admin exists, login as librarian AND DELETE then add book
+							//need to enter Delete properly
+							System.out.println("________________________________________________________________________\n"+
+													"| | Command "+la.in2+" not recognized, please retry!\n"+
+													"| |------------------------------------------------------------------| |\n"+
+													"| | Returning to Admin screen...                                     | |\n"+
+													"|_|__________________________________________________________________|_|\n");
+							wait(2000);//wait 2 before returning 
+							larun = false;//take user back to admin edit or add screen
+											   
+											   
+						}else if(la.HasEmail()) { //if they entered the wrong password but right email, prompt them for password again.
+							a = 2; uname = la.getEmail(); //send correct email to next login
+						} else if(!la.HasEmail()) { //if they entered an invalid email, prompt them for input again
+							a = 3;
+							System.out.println("\nThat account does not exist. Please Retry.");
+						} else {
+							System.out.println("________________________________________________________________________\n"+
+													"| |------------------------------------------------------------------| |\n"+
 													"| |                    No account matched...Quiting                  | |\n"+
 													"|_|__________________________________________________________________|_|\n");
-								larun = false;//exit lib action run loop
-								librun = false;//exit librarian run loop
-								run = false;//exit main run loop
-							}	
+							larun = false;//exit lib action run loop
+							librun = false;//exit librarian run loop
+							run = false;//exit main run loop
+						}	
 						
-						}
+					}
 	
-					}//QUIT	
-					else if (libwelcome.getInput().equals(q)){ 
-						//quit from librarian welcome screen
-						System.out.println("Quitting...Goodbye!");
-						librun = false;//close lib loop
-						run = false;//exit create welcome loop
-					}
-					else { //catches bad input
-						System.out.println("________________________________________________________________________\n"+
-									   	   "| |------------------------------------------------------------------| |\n"+
-									       "| |             Invalid input. Please enter 'L' or 'C'.              | |\n"+
-									       "| |                                                     'Q' to quit. | |\n"+
-									       "|_|__________________________________________________________________|_|\n");
-					}
+				}//QUIT	from librarian loop
+				else if (libwelcome.getInput().equals(q)){ 
+					//quit from librarian welcome screen
+					System.out.println("Quitting...Goodbye!");
+					librun = false;//close lib loop
+					run = false;//exit create welcome loop
 				}
-			}	
-			else if (w.getInput().equals(q)){ 
-				//quit from welcome screen
-				System.out.println("Quitting...Goodbye!");
-				run = false;//exit main loop
-			}
-			else { //catches bad input
-				System.out.println("________________________________________________________________________\n"+
-				                   "| |------------------------------------------------------------------| |\n"+
-							       "| |             Invalid input. Please enter 'L' or 'C'.              | |\n"+
-								   "| |                                                     'Q' to quit. | |\n"+
-							       "|_|__________________________________________________________________|_|\n");
+				else { //catches bad input
+					System.out.println("________________________________________________________________________\n"+
+									   	"| |------------------------------------------------------------------| |\n"+
+									    "| |            Invalid input. Please enter 'L','C', or 'A'.          | |\n"+
+									    "| |                                                     'Q' to quit. | |\n"+
+									    "|_|__________________________________________________________________|_|\n");
+				}
 			}
 		}	
-	}
-	
-	public Connection dbc() throws SQLException, ClassNotFoundException{
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/db";
-		String username = "root";
-		String password ="cosc310_T11";
-		Connection con = DriverManager.getConnection(url,username,password);
-		return con;
-	}
-	public static void wait(int ms) {
-    	try
-    	{
-        	Thread.sleep(ms);
-    	}
-    	catch(InterruptedException ex)
-    	{
-        	Thread.currentThread().interrupt();
-    	}
-	}
+		else if (w.getInput().equals(q)){ 
+			//quit from welcome screen
+			System.out.println("Quitting...Goodbye!");
+			run = false;//exit main loop
+		}
+		else { //catches bad input
+			System.out.println("________________________________________________________________________\n"+
+				                "| |------------------------------------------------------------------| |\n"+
+							    "| |            Invalid input. Please enter 'L','C', or 'A'.          | |\n"+
+								"| |                                                     'Q' to quit. | |\n"+
+							    "|_|__________________________________________________________________|_|\n");
+		}
+	}	
 }
+	
+public Connection dbc() throws SQLException, ClassNotFoundException{
+	Class.forName("com.mysql.cj.jdbc.Driver");
+	String url = "jdbc:mysql://localhost:3306/db";
+	String username = "root";
+	String password ="cosc310_T11";
+	Connection con = DriverManager.getConnection(url,username,password);
+	return con;
+}
+public static void wait(int ms) {
+    try
+    {
+        Thread.sleep(ms);
+    }
+    catch(InterruptedException ex)
+    {
+        Thread.currentThread().interrupt();
+    }
+}
+
+}//close entire app

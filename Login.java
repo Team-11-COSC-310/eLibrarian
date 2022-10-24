@@ -1,7 +1,5 @@
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Scanner;
 
 //Login class will contain every data which needs for authentication of user.
