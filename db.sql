@@ -13,7 +13,6 @@ CREATE TABLE `users` (
 /*We need a table for the admin users --the librarians of the library. They inherit everything the users have*/
 CREATE TABLE `librarians` (
     `email` varchar(50) Not null,
-    `username` VARCHAR(50) NOT NULL,
     FOREIGN KEY (`email`) REFERENCES `users`(`email`)
 );
 
