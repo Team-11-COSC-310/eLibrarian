@@ -26,6 +26,10 @@ CREATE TABLE `books` (
     `wl` INT NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 ); 
+/*We need to hardcode a few users for testing purposes--they could be admins later as well*/
+INSERT INTO users (email, password, enable) VALUES ("johnbooks@book.com", "imthelibrarian", 1);
+INSERT INTO users (email, password, enable) VALUES ("iheartbooks@book.com", "ilovebooks14", 1);
+/*Add books*/
 INSERT INTO books (title, author, summary, availability, wl) VALUES ("Harry Potter and the Philosopher's Stone","J.K. Rowling", "This is the first of 7 in J.K. Rowling's epic wizard saga!", FALSE, 3);
 INSERT INTO books (title, author, summary) VALUES ("Harry Potter and the Chamber of Secrets","J.K. Rowling", "This is the second of 7 in J.K. Rowling's epic wizard saga!");
 INSERT INTO books (title, author, summary) VALUES ("Harry Potter and the Prisoner of Azkaban","J.K. Rowling", "This is the third of 7 in J.K. Rowling's epic wizard saga!");
