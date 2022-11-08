@@ -41,4 +41,5 @@ INSERT INTO books (title, author, summary) VALUES ("The Lord of the Rings: The T
 INSERT INTO books (title, author, summary) VALUES ("The Lord of the Rings: The Return of the King","J.R.R. Tolkien", "This is the finale of Tolkien's epic fanatasy trilogy!");
 
 /*Librarians -- Admin*/
-INSERT INTO librarians (email) VALUES ("johnbooks@book.com"); /*SHOULD make johnbooks into an admin
+INSERT INTO users (email, password) VALUES ("johnbooks@book.com", "john"); /*SHOULD make johnbooks into users*/
+INSERT INTO librarians (email, password) VALUES ("johnbooks@book.com", "john"); /*SHOULD upgrade johnbooks into an admin*/
