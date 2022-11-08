@@ -465,6 +465,8 @@ public class mainapp {
 																	   "|_|__________________________________________________________________|_|\n");
 													userBook2.changeAvailability(false, vb2.getInput());//close book's availablity
 													userBook2.changeWL(userBook2.getWL()+1, vb2.getInput());//update waitlist
+													Borrow borrow = new Borrow();//get waitlist
+													borrow.rbookORjwl(log0.getEmail(), String.valueOf(userBook2.getID()));//add user to waitlist so people can no longer rent the book
 													searchwaitliststatus = 3;//creates new waitlist output if you borrowed first and tried to join wl instead of join wl first and try again
 						
 													wait(2000);//wait 2 seconds to print database
