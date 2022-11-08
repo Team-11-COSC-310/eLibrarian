@@ -1,3 +1,10 @@
+/*We need a table for the admin users --the librarians of the library. They inherit everything the users have*/
+CREATE TABLE `librarians` (
+    `email` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(32) NOT NULL,
+     PRIMARY KEY (`email`)
+);
+
 /*We need a table for the Users. They login using an email (which will serve as a username) and a password, and need the reset tokens to help
 them reset their password incase they forget*/
 CREATE TABLE `users` (
@@ -7,14 +14,8 @@ CREATE TABLE `users` (
     `reset_token` VARCHAR(6),
     `reset_token_timestamp` DATETIME,
     `enable` BOOLEAN NOT NULL DEFAULT TRUE,
-    PRIMARY KEY (`email`)
-); 
-
-/*We need a table for the admin users --the librarians of the library. They inherit everything the users have*/
-CREATE TABLE `librarians` (
-    `email` varchar(50) Not null,
-    `username` VARCHAR(50) NOT NULL,
-    FOREIGN KEY (`email`) REFERENCES `users`(`email`)
+    PRIMARY KEY (`email`),
+    FOREIGN KEY (`email`) REFERENCES `librarians`(`email`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 /*We need to a table to hold the book's info like name, author, and a brief despcription.*/

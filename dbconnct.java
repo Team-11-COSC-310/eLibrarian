@@ -27,9 +27,9 @@ public class dbconnct {
 	}
 	
 	public Connection dbc() throws SQLException{
-		String url = "jdbc:mysql://127.0.0.1:3306/LibMan";
+		String url = "jdbc:mysql://127.0.0.1:3306/db.sql";
 		String username = "root";
-		String password ="kkato41496746";
+		String password ="Adrian0815";
 		Connection con = DriverManager.getConnection(url,username,password);
 		return con;
 	}
