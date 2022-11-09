@@ -175,28 +175,56 @@ public class mainapp {
 													   "|_|__________________________________________________________________|_|\n");
 												arun = false;//exit action loop
 												//GO BACK TO DATABASE
-											}//IF book UNAVAILABLE AND they are ALREADY BORROWED BOOK
+											}//IF book UNAVAILABLE AND they ALREADY BORROWED BOOK
 											else if (!userBook.getAvailability() && action.getInput().equals(wait) && status == 3) {
-												System.out.println("________________________________________________________________________\n"+
-																		 "| |------------------------------------------------------------------| |\n"+
-																	  "| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
-																	  "| |                    It is due back in 21 day(s).                  | |\n"+
-																   "|_|__________________________________________________________________|_|\n");
-												
-												wait(2000);//wait 2 seconds to print database
-												//reprint results and prompt book id again
-												System.out.println("________________________________________________________________________\n"+
-													   "| |------------------------------------------------------------------| |\n"+
-													   "| |                            Database:                             | |\n"+
-													   "| |------------------------------------------------------------------| |\n"+
-													   "| |Book Name, Author, ID:                                            | |\n"+
-													   "| |------------------------------------------------------------------| |\n"
-														+bookinfo+
-													   "| |                                                                  | |\n"+
-													   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
-													   "|_|__________________________________________________________________|_|\n");
-												arun = false;//exit action loop
-												//GO BACK TO DATABASE
+												Borrow borrow = new Borrow();//get waitlist
+													long remainder = borrow.checkTime(log0.getEmail(), String.valueOf(userBook.getID()));//check when they rented the book waitlist 
+													if (remainder < 21) {
+														System.out.println("________________________________________________________________________\n"+
+						                       	   	   				"| |------------------------------------------------------------------| |\n"+
+						                       	       				"| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
+						                       	       				"| |                    It is due back in "+remainder+" day(s).                  | |\n"+
+													   				"|_|__________________________________________________________________|_|\n");
+													
+													wait(2000);//wait 2 seconds to print database
+													//reprint results and prompt book id again
+													System.out.println("________________________________________________________________________\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |                          Search Results:                         | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |Book Name, Author, ID:                                            | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"
+								                			+bookinfo+
+											   			"| |                                                                  | |\n"+
+											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+										       			"|_|__________________________________________________________________|_|\n");
+													arun2 = false;//exit action loop
+													//sbrun = false;//exit book view loop
+													//GO BACK TO SEARCH RESULTS
+													}
+													else if (remainder > 21) {
+														System.out.println("________________________________________________________________________\n"+
+						                       	   	   				"| |------------------------------------------------------------------| |\n"+
+						                       	       				"| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
+						                       	       				"| |   The book is OVERDUE!! Please return it as soon as possible.    | |\n"+
+													   				"|_|__________________________________________________________________|_|\n");
+													
+													wait(2000);//wait 2 seconds to print database
+													//reprint results and prompt book id again
+													System.out.println("________________________________________________________________________\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |                          Search Results:                         | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |Book Name, Author, ID:                                            | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"
+								                			+bookinfo+
+											   			"| |                                                                  | |\n"+
+											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+										       			"|_|__________________________________________________________________|_|\n");
+													arun2 = false;//exit action loop
+													//sbrun = false;//exit book view loop
+													//GO BACK TO SEARCH RESULTS
+													}
 											}
 											//IF book IS AVAILABLE AND they enter B
 											else if (userBook.getAvailability() && action.getInput().equals(listbooks)) {
@@ -435,10 +463,13 @@ public class mainapp {
 													//GO BACK TO SEARCH RESULTS
 												}//IF book UNAVAILABLE AND they are ALREADY BORROWED BOOK in search OR database
 												else if (!userBook2.getAvailability() && action2.getInput().equals(wait) && (searchwaitliststatus == 3)) {
-													System.out.println("________________________________________________________________________\n"+
+													Borrow borrow = new Borrow();//get waitlist
+													long remainder2 = borrow.checkTime(log0.getEmail(), String.valueOf(userBook2.getID()));//check when they rented the book waitlist 
+													if (remainder2 < 21) {
+														System.out.println("________________________________________________________________________\n"+
 						                       	   	   				"| |------------------------------------------------------------------| |\n"+
 						                       	       				"| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
-						                       	       				"| |                    It is due back in 21 day(s).                  | |\n"+
+						                       	       				"| |                    It is due back in "+remainder2+" day(s).                  | |\n"+
 													   				"|_|__________________________________________________________________|_|\n");
 													
 													wait(2000);//wait 2 seconds to print database
@@ -456,6 +487,31 @@ public class mainapp {
 													arun2 = false;//exit action loop
 													//sbrun = false;//exit book view loop
 													//GO BACK TO SEARCH RESULTS
+													}
+													else if (remainder2 > 21) {
+														System.out.println("________________________________________________________________________\n"+
+						                       	   	   				"| |------------------------------------------------------------------| |\n"+
+						                       	       				"| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
+						                       	       				"| |   The book is OVERDUE!! Please return it as soon as possible.    | |\n"+
+													   				"|_|__________________________________________________________________|_|\n");
+													
+													wait(2000);//wait 2 seconds to print database
+													//reprint results and prompt book id again
+													System.out.println("________________________________________________________________________\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |                          Search Results:                         | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"+
+										       			"| |Book Name, Author, ID:                                            | |\n"+
+										       			"| |------------------------------------------------------------------| |\n"
+								                			+searchinfo+
+											   			"| |                                                                  | |\n"+
+											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+										       			"|_|__________________________________________________________________|_|\n");
+													arun2 = false;//exit action loop
+													//sbrun = false;//exit book view loop
+													//GO BACK TO SEARCH RESULTS
+													}
+													
 												}//IF book IS AVAILABLE AND they enter B for BORROW
 												else if (userBook2.getAvailability() && action2.getInput().equals(listbooks)) {
 													System.out.println("________________________________________________________________________\n"+
