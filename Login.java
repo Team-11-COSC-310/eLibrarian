@@ -1,3 +1,4 @@
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -22,7 +23,7 @@ public class Login extends connecttodb{
 	// This constructor suggests users enter their email and password. This also
 	// check if this user has already account or not.
 	// If they have, return T, if not, F.
-	public Login(int attempt, String uname) throws SQLException {
+	public Login(int attempt, String uname) throws SQLException, ClassNotFoundException {
 		// Ask input from user
 		if (attempt == 1) { //blank slate
 			System.out.println("Please enter your email: ");
@@ -36,9 +37,17 @@ public class Login extends connecttodb{
 	
 		} else if (attempt == 2) { //incorrect password but right username
 			setEmail(uname); //store correct username
-			System.out.println("Please re-enter your Password: ");
-			setPassword(reader.next());
+			System.out.println("Forgot password?: y or n");
+			if(reader.next().equals("y")) {
+				System.out.println("Would you like to reset your password?: yes or no");
+				PasswordReset(reader.next());
+				return;
+			}else {
+	            System.out.println("Please re-enter your Password: ");
+	            setPassword(reader.next());}
+			
 		} else if (attempt == 3) { //email is incorrect OR already in use
+			
 			System.out.println("Please enter a different Email: ");
 			setEmail(reader.next());
 			System.out.println("Please enter your Password: ");
@@ -174,6 +183,7 @@ public class Login extends connecttodb{
 	//password encription function. This returns encripted version of password.
 	public String PasswordEncryption(String pass) {
 		String password = pass;
+		System.out.println("new pass is "+password);
 		String encryptedPassword = null; 
 		
 		try {
@@ -195,6 +205,29 @@ public class Login extends connecttodb{
 		return encryptedPassword;
 	}
 	
-	//PasswordDecryption?
-
+	public void PasswordReset(String y) throws ClassNotFoundException, SQLException {
+		if(y.equals("yes")) {
+			String pd;
+			System.out.println("Enter new password: ");
+			pd = reader.next();
+			setPassword(pd);
+			pd = PasswordEncryption(pd);
+			
+			 String sql = "update users set password = ?"+" where email = ?";
+	        PreparedStatement stmt = getConnect().prepareStatement(sql);
+            stmt.setString(1, pd);
+            stmt.setString(2, getEmail());
+	        stmt.executeUpdate();
+	        
+	        System.out.println("Your password is updated!");
+		}else if(y.equals("no")) {
+			System.out.println("No reset. Ok, bye");
+			return; 
+		}else {
+			return;
+		}
+	}
+	
+	
+	
 }
