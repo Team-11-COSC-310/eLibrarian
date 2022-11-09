@@ -27,8 +27,10 @@ public class mainapp {
 		String ru = new String("RU");
 		String lu = new String("LU");
 		String admin = new String("A"); //<--/ Librarian login function (ADMINS)
-		String add = new String("Add"); //<--/ Librarian login function (ADMINS)
-		String edit = new String("Edit"); //<--/ Librarian login function (ADMINS)
+		String addBooks = new String("AddBooks"); //<--/ Librarian login function (ADMINS)
+		String editBooks = new String("EditBooks"); //<--/ Librarian login function (ADMINS)
+		String deleteUsers = new String("DeleteUsers");
+		String updateUsers = new String("UpdateUsers");
 		String q = new String("Q"); //<--/ QUIT program
 		String listbooks = new String("B"); //<--/ List library of books
 		String s = new String("S"); //<--/ Search for specific book
@@ -644,7 +646,7 @@ public class mainapp {
 							//run add book
 							while (larun) {//librarian action loop
 								LibrarianAction la = new LibrarianAction(a, uname); //logins AND creates book in DB
-								if(la.HasRegistry() && la.in.equals(add)) { //if admin exists, login as librarian AND ADD then add book
+								if(la.HasRegistry() && la.in.equals(addBooks)) { //if admin exists, login as librarian AND ADD then add book
 									Book adminBook = new Book();//start book display view of CREATED book
 									adminBook.binfo(la.getId());//get info for book matching the entered ID
 									//send newest id to iterate database. Should fill values accordingly with NEW BOOK
@@ -672,7 +674,7 @@ public class mainapp {
 									larun = false;//take user back to admin edit or add screen
 													   
 													   
-								} else if (la.HasRegistry() && la.in.equals(edit) && la.in2.equals("Delete")) { //if admin exists, login as librarian AND DELETE then add book
+								} else if (la.HasRegistry() && la.in.equals(editBooks) && la.in2.equals("Delete")) { //if admin exists, login as librarian AND DELETE then add book
 									Book adminBook = new Book();//start book display view of DELETED book
 									adminBook.binfo(la.getId());//get info for book matching the entered ID
 									//send newest id to iterate database. Should fill values accordingly with BOOK to delete
@@ -684,8 +686,32 @@ public class mainapp {
 									wait(2000);//wait 2 before returning 
 									larun = false;//take user back to admin edit or add screen
 													   
+
+								} else if (la.HasRegistry() && la.in.equals(updateUsers)) {
+									User adminUser = new User();
+									adminUser.info(la.getEmail());
+									System.out.println("________________________________________________________________________\n"+
+															"| |                       User has been Updated!                     | |\n"+
+															"| |------------------------------------------------------------------| |\n"+
+															"| | Returning to Admin screen...                                     | |\n"+
+															"|_|__________________________________________________________________|_|\n");
+									wait(2000);//wait 2 before returning 
+									larun = false;//take user back to admin edit or add screen
 													   
-								} else if (la.HasRegistry() && la.in.equals(edit) && !la.in2.equals("Delete")) { //if admin exists, login as librarian AND DELETE then add book
+													   					   
+								} else if (la.HasRegistry() && la.in.equals(deleteUsers)) {
+									User adminUser = new User();
+									adminUser.info(la.getEmail());
+									System.out.println("________________________________________________________________________\n"+
+															"| |                       User has been Deleted!                     | |\n"+
+															"| |------------------------------------------------------------------| |\n"+
+															"| | Returning to Admin screen...                                     | |\n"+
+															"|_|__________________________________________________________________|_|\n");
+									wait(2000);//wait 2 before returning 
+									larun = false;//take user back to admin edit or add screen
+
+
+								} else if (la.HasRegistry() && la.in.equals(editBooks) && !la.in2.equals("Delete")) { //if admin exists, login as librarian AND DELETE then add book
 									//need to enter Delete properly
 									System.out.println("________________________________________________________________________\n"+
 															"| | Command "+la.in2+" not recognized, please retry!\n"+
