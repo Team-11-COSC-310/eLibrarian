@@ -23,14 +23,14 @@ public class mainapp {
 		//need these to eval the user's input
 		String l = new String("L"); //<--/ Login
 		String c = new String("C"); //<--/ Create user
-		String r = new String("R");
-		String ru = new String("RU");
-		String lu = new String("LU");
+		String r = new String("R"); //<--/ Librarian login function as regular user (ADMINS)
+		String ru = new String("RU"); //<--/ Create regular user acccount
+		String lu = new String("LU"); //<--/ Create librarian account
 		String admin = new String("A"); //<--/ Librarian login function (ADMINS)
 		String addBooks = new String("AddBooks"); //<--/ Librarian login function (ADMINS)
 		String editBooks = new String("EditBooks"); //<--/ Librarian login function (ADMINS)
-		String deleteUsers = new String("DeleteUsers");
-		String updateUsers = new String("UpdateUsers");
+		String deleteUsers = new String("DeleteUsers"); //<--/ Librarian login function (ADMINS)
+		String updateUsers = new String("UpdateUsers"); //<--/ Librarian login function (ADMINS)
 		String q = new String("Q"); //<--/ QUIT program
 		String listbooks = new String("B"); //<--/ List library of books
 		String s = new String("S"); //<--/ Search for specific book
@@ -674,7 +674,7 @@ public class mainapp {
 									larun = false;//take user back to admin edit or add screen
 													   
 													   
-								} else if (la.HasRegistry() && la.in.equals(editBooks) && la.in2.equals("Delete")) { //if admin exists, login as librarian AND DELETE then add book
+								} else if (la.HasRegistry() && la.in.equals(editBooks) && la.in2.equals("Delete")) { //if admin exists, login as librarian AND DELETE BOOK then add book
 									Book adminBook = new Book();//start book display view of DELETED book
 									adminBook.binfo(la.getId());//get info for book matching the entered ID
 									//send newest id to iterate database. Should fill values accordingly with BOOK to delete
@@ -687,9 +687,9 @@ public class mainapp {
 									larun = false;//take user back to admin edit or add screen
 													   
 
-								} else if (la.HasRegistry() && la.in.equals(updateUsers)) {
-									User adminUser = new User();
-									adminUser.info(la.getEmail());
+								} else if (la.HasRegistry() && la.in.equals(updateUsers)) { //if admin exists, login as librarian AND UPDATE USER then add user
+									User adminUser = new User();//start user display view of UPDATE user
+									adminUser.info(la.getEmail());//get info for user matching the entered email
 									System.out.println("________________________________________________________________________\n"+
 															"| |                       User has been Updated!                     | |\n"+
 															"| |------------------------------------------------------------------| |\n"+
@@ -699,9 +699,9 @@ public class mainapp {
 									larun = false;//take user back to admin edit or add screen
 													   
 													   					   
-								} else if (la.HasRegistry() && la.in.equals(deleteUsers)) {
-									User adminUser = new User();
-									adminUser.info(la.getEmail());
+								} else if (la.HasRegistry() && la.in.equals(deleteUsers)) { //if admin exists, login as librarian AND DELETE USER then add user
+									User adminUser = new User();//start user display view of DELETE user
+									adminUser.info(la.getEmail());//get info for user matching the entered email
 									System.out.println("________________________________________________________________________\n"+
 															"| |                       User has been Deleted!                     | |\n"+
 															"| |------------------------------------------------------------------| |\n"+

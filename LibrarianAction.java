@@ -96,10 +96,10 @@ public class LibrarianAction extends Login{
 	}
 	public void UpdateUser() throws ClassNotFoundException, SQLException {
 		System.out.println("Enter the name of the user account you want to update: ");
-		setUserEmail(input.nextLine());
+		setUserEmail(input.nextLine());//Get input
 		if(HasEmail(getUserEmail())) { //if that name exists then delete it from the db.
 			System.out.println("Enter the password to update " + getUserEmail() +": ");
-			setUserPassword(input.nextLine());
+			setUserPassword(input.nextLine());//Get input
             String sql = "Update users set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
 			PreparedStatement stmt = getConnect().prepareStatement(sql);
 				
@@ -110,7 +110,7 @@ public class LibrarianAction extends Login{
 	}
 	public void DeleteUser() throws ClassNotFoundException, SQLException {
 		System.out.println("Enter the name of the user account you want to delete: ");
-		setUserEmail(input.nextLine());
+		setUserEmail(input.nextLine());//Get input
 		while (HasEmail(getUserEmail())) { //if that name exists then delete it from the db.
             String sql = "Delete from users where email = '"+getUserEmail()+"'";
 			PreparedStatement stmt = getConnect().prepareStatement(sql);
