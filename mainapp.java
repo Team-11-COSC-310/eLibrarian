@@ -75,8 +75,8 @@ public class mainapp {
 											   "| |                   Welcome to the Admin Screen.                   | |\n"+
 											  "| |      Only registered Librarians may access these functions.      | |\n"+
 											  "| |                     ENTER 'L' key to go back.                    | |\n"+
-											  "| |            ENTER 'R' key to continue as a regular user.           | |\n"+
-											   "| |            ENTER 'C' key to continue as a librarian.             | |\n"+
+											  "| |            ENTER 'R' key to continue as a regular user.          | |\n"+
+											   "| |            	ENTER 'C' key to continue as a librarian.            | |\n"+
 											   "| |                                                     'Q' to quit. | |\n"+
 											   "|_|__________________________________________________________________|_|\n");
 						Welcome libwelcome = new Welcome(3);//run Admin login WELCOME
@@ -687,7 +687,19 @@ public class mainapp {
 									larun = false;//take user back to admin edit or add screen
 													   
 
-								} else if (la.HasRegistry() && la.in.equals(updateUsers)) { //if admin exists, login as librarian AND UPDATE USER then add user
+								} else if (la.HasRegistry() && la.in.equals(updateUsers) && la.in2.equals("Librarian")) { //if admin exists, login as librarian AND UPDATE USER then add user
+									User adminUser = new User();//start user display view of UPDATE user
+									adminUser.info(la.getEmail());//get info for user matching the entered email
+									System.out.println("________________________________________________________________________\n"+
+															"| |                     Librarian has been Updated!                  | |\n"+
+															"| |------------------------------------------------------------------| |\n"+
+															"| | Returning to Admin screen...                                     | |\n"+
+															"|_|__________________________________________________________________|_|\n");
+									wait(2000);//wait 2 before returning 
+									larun = false;//take user back to admin edit or add screen
+
+
+								} else if (la.HasRegistry() && la.in.equals(updateUsers) && la.in2.equals("User")) { //if admin exists, login as librarian AND UPDATE USER then add user
 									User adminUser = new User();//start user display view of UPDATE user
 									adminUser.info(la.getEmail());//get info for user matching the entered email
 									System.out.println("________________________________________________________________________\n"+
@@ -699,7 +711,19 @@ public class mainapp {
 									larun = false;//take user back to admin edit or add screen
 													   
 													   					   
-								} else if (la.HasRegistry() && la.in.equals(deleteUsers)) { //if admin exists, login as librarian AND DELETE USER then add user
+								} else if (la.HasRegistry() && la.in.equals(deleteUsers) && la.in2.equals("Librarian")) { //if admin exists, login as librarian AND DELETE USER then add user
+									User adminUser = new User();//start user display view of DELETE user
+									adminUser.info(la.getEmail());//get info for user matching the entered email
+									System.out.println("________________________________________________________________________\n"+
+															"| |                     Librarian has been Deleted!                  | |\n"+
+															"| |------------------------------------------------------------------| |\n"+
+															"| | Returning to Admin screen...                                     | |\n"+
+															"|_|__________________________________________________________________|_|\n");
+									wait(2000);//wait 2 before returning 
+									larun = false;//take user back to admin edit or add screen
+
+
+								} else if (la.HasRegistry() && la.in.equals(deleteUsers) && la.in2.equals("User")) { //if admin exists, login as librarian AND DELETE USER then add user
 									User adminUser = new User();//start user display view of DELETE user
 									adminUser.info(la.getEmail());//get info for user matching the entered email
 									System.out.println("________________________________________________________________________\n"+
@@ -722,7 +746,26 @@ public class mainapp {
 									larun = false;//take user back to admin edit or add screen
 													   
 													   
-								}else if(la.HasEmail()) { //if they entered the wrong password but right email, prompt them for password again.
+								} else if(la.HasRegistry() && la.in.equals(updateUsers) && !la.in2.equals("User") && !la.in2.equals("Librarian")) { //if admin exists, but update email name does not exsits
+									System.out.println("________________________________________________________________________\n"+
+															"| | User/Librarian email does not exist in the database, please retry!\n"+
+															"| |------------------------------------------------------------------| |\n"+
+															"| | Returning to Admin screen...                                     | |\n"+
+															"|_|__________________________________________________________________|_|\n");
+									wait(2000);//wait 2 before returning 
+									larun = false;//take user back to admin edit or add screen
+									
+								
+								} else if(la.HasRegistry() && la.in.equals(deleteUsers) && !la.in2.equals("User") && !la.in2.equals("Librarian")) { //if admin exists, but delete email name does not exsits
+									System.out.println("________________________________________________________________________\n"+
+															"| | User/Librarian email does not exist in the database, please retry!\n"+
+															"| |------------------------------------------------------------------| |\n"+
+															"| | Returning to Admin screen...                                     | |\n"+
+															"|_|__________________________________________________________________|_|\n");
+									wait(2000);//wait 2 before returning 
+									larun = false;//take user back to admin edit or add screen
+									
+								} else if(la.HasEmail()) { //if they entered the wrong password but right email, prompt them for password again.
 									a = 2; uname = la.getEmail(); //send correct email to next login
 								} else if(!la.HasEmail()) { //if they entered an invalid email, prompt them for input again
 									a = 3;
@@ -749,7 +792,7 @@ public class mainapp {
 						else { //catches bad input
 							System.out.println("________________________________________________________________________\n"+
 												   "| |------------------------------------------------------------------| |\n"+
-												"| |            Invalid input. Please enter 'L','C', or 'A'.          | |\n"+
+												"| |            Invalid input. Please enter 'L','R', or 'C'.          | |\n"+
 												"| |                                                     'Q' to quit. | |\n"+
 												"|_|__________________________________________________________________|_|\n");
 						}
@@ -1316,6 +1359,7 @@ public class mainapp {
 			}
 		}//if they press C from START WELCOME, then go to create account
 		else if (w.getInput().equals(c)){ 
+			cwrun = true;
 			//continue to create account
 			while (cwrun) {
 				System.out.println("________________________________________________________________________\n"+
@@ -1336,6 +1380,7 @@ public class mainapp {
 					
 				}//CONTINUE
 				else if (createwelcome.getInput().equals(ru)){ 
+					crun = true;
 					//run create
 					while (crun) {
 						Create ca = new Create(createattempts, 0);
@@ -1355,18 +1400,22 @@ public class mainapp {
 	
 				}
 				else if (createwelcome.getInput().equals(lu)){
-					Create ca = new Create(createattempts, 1);
+					crun = true;
+					//run create
+					while (crun) {
+						Create ca = new Create(createattempts, 1);
 						if(ca.getAttempt() == 2) { //if everything is okay, make account
 							System.out.println("________________________________________________________________________\n"+
-											   "| |------------------------------------------------------------------| |\n"+
-											   "| |                   New Librarian Account made!                    | |\n"+
-											   "| | User Email: "+ca.getEmail()+"                                    \n"+
-											   "| | Password: "+ca.getPassword()+"                                   \n"+
-											   "|_|__________________________________________________________________| |\n");
+												"| |------------------------------------------------------------------| |\n"+
+												"| |                   New Librarian Account made!                    | |\n"+
+												"| | User Email: "+ca.getEmail()+"                                    \n"+
+												"| | Password: "+ca.getPassword()+"                                   \n"+
+												"|_|__________________________________________________________________| |\n");
 							crun = false;//take user back to create welcome screen to login		   	
 						} else { //if email is already in use, prompt for new input
 							createattempts = 3; //prompt to enter different email.
 						}	
+					}
 				}//QUIT	
 				else if (createwelcome.getInput().equals(q)){ 
 					//quit from welcome to CREAT ACCOUNT screen
@@ -1392,7 +1441,7 @@ public class mainapp {
 		else { //catches bad input
 			System.out.println("________________________________________________________________________\n"+
 				                "| |------------------------------------------------------------------| |\n"+
-							    "| |            Invalid input. Please enter 'L','C', or 'A'.          | |\n"+
+							    "| |            Invalid input. Please enter 'L' or 'C'.          	  | |\n"+
 								"| |                                                     'Q' to quit. | |\n"+
 							    "|_|__________________________________________________________________|_|\n");
 		}
