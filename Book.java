@@ -77,12 +77,15 @@ public class Book extends connecttodb{
         String [] strNamelist = (String[])this.Namelist.getArray();
         return strNamelist; //get database array, and make it a string
     }
-    public void changeWL(int wl, String bid) throws SQLException, ClassNotFoundException {
-        String sql = "UPDATE books SET wl = ? WHERE id ='"+bid+"'";
+    public void countwl(String bid) throws SQLException, ClassNotFoundException{//make list of users on waitlist
+        int result = 0;
+        String sql = "SELECT COUNT(email) FROM waitlists where id ='"+bid+"'";//check using the book selected's id
         PreparedStatement stmt = getConnect().prepareStatement(sql);
-        stmt.setInt(1, wl); //old number plus 1 done in the main loop
-        stmt.executeUpdate();//UPDATE DATABASE after joining a waitlist
-        setWL(wl);
+        ResultSet list = stmt.executeQuery();  
+		while (list.next()) { //get a book's waitlist info and count the members. return count.
+            result += list.getInt(1);//# of user's emails on list
+        } 
+        setWL(result);//set WL to be the amount of users from the actual database   
     }
     public void changeAvailability(Boolean Availability, String bid) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE books SET availability = ? WHERE id ='"+bid+"'";
@@ -112,4 +115,5 @@ public class Book extends connecttodb{
             //setNamelist(list.getArray(7));//get array of people on the waitlist
         }        
     }
+
 }

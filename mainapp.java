@@ -37,9 +37,9 @@ public class mainapp {
 		int a2 = 1; //need to keep track of attempts from main menu.
 		String uname = "";//keep track of username
 		int status = 1;//trackss if user already on waitlist
-		int wtime = 0;//waitime for book in days = wlist users * 21 days
+		long wtime = 21;//waitime for book in days = wlist users * 21 days
 		int searchwaitliststatus = 1;//need status to check waitlist status in the search for book loop
-		int wtime2 = 0;//waitime for book in days = wlist users * 21 days in SEARCH LOOP
+		long wtime2 = 0;//waitime for book in days = wlist users * 21 days in SEARCH LOOP
 
 		while (run) { //Start up loop
 			//run welcome display
@@ -129,11 +129,17 @@ public class mainapp {
 
 											//IF book UNAVAILABLE AND they enter W and FIRST TRY
 											if (!userBook.getAvailability() && action.getInput().equals(wait) && status == 1) {
-												wtime = userBook.getWL() *21;// wait time = 3 weeks times amount of people on list
-												userBook.changeWL(userBook.getWL()+1, vb.getInput());//update waitlist to include user BEFORE finding wtime
+												Borrow borrowJ = new Borrow();//join waitlist and send info
+												String topUser = borrowJ.wlTop(vb.getInput());//read waitlist and grab first username
+												// wait time = time left of first person + 3 weeks * amount of people on list, and not including this user
+												wtime = borrowJ.checkTime(topUser,vb.getInput()) + (21*(borrowJ.countwl(vb.getInput())-1));
+
+												//add user to list
+												borrowJ.rbookORjwl(userBook.getAvailability(), userBook.getWL(), log0.getEmail(), vb.getInput());
+												//need to count users again now that the user has been added to display their number
 												System.out.println("________________________________________________________________________\n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
-						                       	       "| |       Thank you for joining the waitlist. You are number "+userBook.getWL()+".      | |\n"+
+						                       	       "| |       Thank you for joining the waitlist. You are number "+borrowJ.countwl(vb.getInput())+".      | |\n"+
 						                       	       "| |               The estimated wait time is "+wtime+" day(s).              | |\n"+
 													   "|_|__________________________________________________________________|_|\n");
 												status = 2;//can't join waitlist again
@@ -228,13 +234,16 @@ public class mainapp {
 											}
 											//IF book IS AVAILABLE AND they enter B
 											else if (userBook.getAvailability() && action.getInput().equals(listbooks)) {
+												Borrow borrowB = new Borrow();//get waitlist
+												borrowB.rbookORjwl(userBook.getAvailability(), userBook.getWL(), log0.getEmail(), vb.getInput());
+												//create waitlist by renting this book
 												System.out.println("________________________________________________________________________\n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
 						                       	       "| |                         Enjoy the book!                          | |\n"+
 						                       	       "| |                  It is due back in: 21 day(s).                   | |\n"+
 													   "|_|__________________________________________________________________|_|\n");
 												userBook.changeAvailability(false, vb.getInput());//close book's availablity
-												userBook.changeWL(userBook.getWL()+1, vb.getInput());//update waitlist
+
 												status = 3;//change the status to borrowed
 												
 												/*update book's list to inlcude user's name
@@ -413,13 +422,20 @@ public class mainapp {
 						
 												//IF book UNAVAILABLE AND they HAVENT borrowed it ANYWHERE, and they enter W
 												if (!userBook2.getAvailability() && action2.getInput().equals(wait) && searchwaitliststatus == 1) {
-													wtime2 = userBook2.getWL() *21;// wait time = 3 weeks times amount of people on list
-													userBook2.changeWL(userBook2.getWL()+1, vb2.getInput());//update waitlist to include user BEFORE finding wtime
+													Borrow borrowS = new Borrow();//get waitlist
+													String topUser = borrowS.wlTop(vb2.getInput());//read waitlist and grab first username
+													// wait time = time left of first person + 3 weeks * amount of people on list, and not including this user
+													wtime2 = borrowS.checkTime(topUser,vb2.getInput()) + (21*(borrowS.countwl(vb2.getInput())-1));
+
+													//add user to list
+													borrowS.rbookORjwl(userBook2.getAvailability(), userBook2.getWL(), log0.getEmail(), vb2.getInput());
+													//need to count users again now that the user has been added to display their number
 													System.out.println("________________________________________________________________________\n"+
-																"| |------------------------------------------------------------------| |\n"+
-																"| |       Thank you for joining the waitlist. You are number "+userBook2.getWL()+".      \n"+
-																"| |               The estimated wait time is "+wtime2+" day(s).              \n"+
-																"|_|__________________________________________________________________|_|\n");
+						                       	   	   "| |------------------------------------------------------------------| |\n"+
+						                       	       "| |       Thank you for joining the waitlist. You are number "+borrowS.countwl(vb2.getInput())+".      | |\n"+
+						                       	       "| |               The estimated wait time is "+wtime2+" day(s).              | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+												status = 2;//can't join waitlist again
 													searchwaitliststatus = 2;//can't join waitlist again
 						
 													wait(2000);//wait 2 seconds to print database
@@ -520,9 +536,8 @@ public class mainapp {
 																	   "| |                  It is due back in: 21 day(s).                   | |\n"+
 																	   "|_|__________________________________________________________________|_|\n");
 													userBook2.changeAvailability(false, vb2.getInput());//close book's availablity
-													userBook2.changeWL(userBook2.getWL()+1, vb2.getInput());//update waitlist
 													Borrow borrow = new Borrow();//get waitlist
-													borrow.rbookORjwl(log0.getEmail(), String.valueOf(userBook2.getID()));//add user to waitlist so people can no longer rent the book
+													borrow.rbookORjwl(userBook2.getAvailability(), userBook2.getWL(),log0.getEmail(), String.valueOf(userBook2.getID()));//add user to waitlist so people can no longer rent the book
 													searchwaitliststatus = 3;//creates new waitlist output if you borrowed first and tried to join wl instead of join wl first and try again
 						
 													wait(2000);//wait 2 seconds to print database

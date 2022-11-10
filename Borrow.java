@@ -1,8 +1,6 @@
-import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -10,19 +8,14 @@ import java.time.temporal.ChronoUnit;
 public class Borrow extends connecttodb{
     private int id;
     private String BookTitle;
-    private String Tstamp;
-    private static final SimpleDateFormat curTime = new SimpleDateFormat("yyyyMMdd");//get current time in the system
-    //needs to be yyyymmdd in order to compare its numbers later
 
-    public Borrow(int id, String BookTitle, String Tstamp) {
+    public Borrow(int id, String BookTitle) {
         this.id = id;
         this.BookTitle = BookTitle;
-        this.Tstamp = Tstamp;
     }
     public Borrow() {
         id = 0;
         BookTitle = "";
-        Tstamp = "";
     }
     public int getid() {
         return id;
@@ -30,20 +23,14 @@ public class Borrow extends connecttodb{
     public String gettitle() {
         return BookTitle;
     }
-    public String getTstamp() {
-        return Tstamp;
-    }
     public void setID(int id) {
         this.id = id;
     }
     public void setbtitle(String BookTitle) {
         this.BookTitle = BookTitle;
     }
-    public void setTstamp(String Tstamp) {
-        this.Tstamp = Tstamp;
-    }
 
-    public String readwl(String bid) throws SQLException, ClassNotFoundException{
+    public String readwl(String bid) throws SQLException, ClassNotFoundException{//make list of users on waitlist
         String wlinfo = "";
         String sql = "SELECT * FROM waitlists where id ='"+bid+"' ORDER BY created_at ASC";//check using the book selected's id
         PreparedStatement stmt = getConnect().prepareStatement(sql);
@@ -53,6 +40,24 @@ public class Borrow extends connecttodb{
 			wlinfo += list.getString(1);//user's emails 
             wlinfo += "\n";//new line
         }    return wlinfo;
+    }
+    public int countwl(String bid) throws SQLException, ClassNotFoundException{//make list of users on waitlist
+        int result = 0;
+        String sql = "SELECT COUNT(email) FROM waitlists where id ='"+bid+"' ORDER BY created_at ASC";//check using the book selected's id
+        PreparedStatement stmt = getConnect().prepareStatement(sql);
+        ResultSet list = stmt.executeQuery();  
+		while (list.next()) { //get a book's waitlist info and count the members. return count.
+            result += list.getInt(1);//# of user's emails on list
+        }    return result;
+    }
+    public String wlTop(String bid) throws SQLException, ClassNotFoundException{//get first user on the waitlist
+        String topinfo = "";
+        String sql = "SELECT email FROM waitlists where id ='"+bid+"' ORDER BY created_at ASC LIMIT 1";//check using the book selected's id
+        PreparedStatement stmt = getConnect().prepareStatement(sql);
+        ResultSet list = stmt.executeQuery();    
+		while (list.next()) { //get a book's waitlist info and print it to a string             
+			topinfo += list.getString(1);//user's email
+        }    return topinfo;
     }
     public long checkTime(String uemail, String bid) throws SQLException, ClassNotFoundException{
         Instant instant = Instant.now();//get current time
@@ -68,10 +73,15 @@ public class Borrow extends connecttodb{
         long returnDate = 21-result;//get 21 days minus the difference to find the date its due back.
         return returnDate;//
     }
-    public void rbookORjwl(String uemail, String bid) throws SQLException, ClassNotFoundException{
+    public void rbookORjwl(Boolean Availability, int wl, String uemail, String bid) throws SQLException, ClassNotFoundException{
         String sql = "INSERT INTO waitlists (email,id) VALUES ('"+uemail+"','"+bid+"')";//join/create waitlist using current user's id & the book selected
         PreparedStatement stmt = getConnect().prepareStatement(sql);
-        stmt.executeUpdate();//UPDATE DATABASE after joining a waitlist    
+        stmt.executeUpdate();//UPDATE DATABASE after joining a waitlist
+        String sql2 = "UPDATE books SET availability = ?, wl ? WHERE id ='"+bid+"'";
+        PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
+        stmt2.setInt(2, wl+1);//update waitlist to add 1
+        stmt2.executeUpdate();//UPDATE DATABASE after joining a waitlist       
+        //if () stmt2.setBoolean(1, !Availability);//change availility to opposite
     }
     public void editwl(String uemail, String bid) throws SQLException, ClassNotFoundException{
         String sql = "DELETE FROM waitlists WHERE email = '"+uemail+"' and id = '"+bid+"'";//deletes current user's id & the book selected from waitlist
