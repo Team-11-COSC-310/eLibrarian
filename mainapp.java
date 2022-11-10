@@ -1371,7 +1371,7 @@ public class mainapp {
 									"| |             ENTER 'LU' key to create librarian account.          | |\n"+
 								   	"| |                                                     'Q' to quit. | |\n"+
 			                       	"|_|__________________________________________________________________|_|\n");
-				Welcome createwelcome = new Welcome(3);//run CREATE WELCOME
+				Welcome createwelcome = new Welcome(4);//run CREATE WELCOME
 				
 				//BACK to login
 				if (createwelcome.getInput().equals(l)) { 

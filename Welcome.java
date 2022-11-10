@@ -8,15 +8,19 @@ public class Welcome {
 	public Welcome(int purpose) {
 		// Ask input from user
 		if (purpose == 1) {//Reg
-            System.out.println("What would you like to do? (enter 'L','C' or 'A'): ");
+            System.out.println("What would you like to do? (enter 'L' or 'C'): ");
 		    setInput(reader.next());
         } else if (purpose == 2) {//User Info
             System.out.println("What would you like to do? (enter 'C' or 'Q'): ");
 		    setInput(reader.next());
         } else if (purpose == 3) {//Admin
-            System.out.println("What would you like to do? (enter 'L' or 'C'): ");
+            System.out.println("What would you like to do? (enter 'L', 'R' or 'C'): ");
 		    setInput(reader.next());
         } 
+		else if (purpose == 4) {
+			System.out.println("What would you like to do? (enter 'L', 'RU' or 'LU'): ");
+		    setInput(reader.next());
+		}
 	}
 
     // set the input
