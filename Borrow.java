@@ -59,7 +59,7 @@ public class Borrow extends connecttodb{
 			topinfo += list.getString(1);//user's email
         }    return topinfo;
     }
-    public long checkTime(String uemail, String bid) throws SQLException, ClassNotFoundException{
+    public int checkTime(String uemail, String bid) throws SQLException, ClassNotFoundException{
         Instant instant = Instant.now();//get current time
         OffsetDateTime atime = OffsetDateTime.parse( "2012-01-01T12:30:30+01:00" );//random date just to set up variable for rent time
         String sql = "SELECT created_at FROM waitlists where email ='"+uemail+"' and id ='"+bid+"'";//check using the book 
@@ -70,18 +70,27 @@ public class Borrow extends connecttodb{
 			atime = list.getObject("created_at", OffsetDateTime.class);//get object of the timestamp when they rented the book OR joined the wl
         }
         long result = ChronoUnit.DAYS.between(instant, atime.toInstant());//return number of days between the rent day and now
-        long returnDate = 21-result;//get 21 days minus the difference to find the date its due back.
+        int returnDate = 21-(int)result;//get 21 days minus the difference to find the date its due back.
         return returnDate;//
     }
-    public void rbookORjwl(Boolean Availability, int wl, String uemail, String bid) throws SQLException, ClassNotFoundException{
+    public void rbook(Boolean Availability, int wl, String uemail, String bid) throws SQLException, ClassNotFoundException{
+        String sql = "INSERT INTO waitlists (email,id) VALUES ('"+uemail+"','"+bid+"')";//create waitlist using current user's id & the book selected
+        PreparedStatement stmt = getConnect().prepareStatement(sql);
+        stmt.executeUpdate();//UPDATE DATABASE after joining a waitlist
+        String sql2 = "UPDATE books SET availability = ?, wl = ? WHERE id ='"+bid+"'";//need to update availability AND wl
+        PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
+        stmt2.setBoolean(1, !Availability);//change availility to opposite
+        stmt2.setInt(2, wl+1);//update waitlist to add 1
+        stmt2.executeUpdate();//UPDATE DATABASE after renting a book (CREATING a waitlist)  
+    }
+    public void jWl(int wl, String uemail, String bid) throws SQLException, ClassNotFoundException{
         String sql = "INSERT INTO waitlists (email,id) VALUES ('"+uemail+"','"+bid+"')";//join/create waitlist using current user's id & the book selected
         PreparedStatement stmt = getConnect().prepareStatement(sql);
         stmt.executeUpdate();//UPDATE DATABASE after joining a waitlist
-        String sql2 = "UPDATE books SET availability = ?, wl ? WHERE id ='"+bid+"'";
+        String sql2 = "UPDATE books SET wl = ? WHERE id ='"+bid+"'";//only need to update wl since book is staying unavailable
         PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
-        stmt2.setInt(2, wl+1);//update waitlist to add 1
-        stmt2.executeUpdate();//UPDATE DATABASE after joining a waitlist       
-        //if () stmt2.setBoolean(1, !Availability);//change availility to opposite
+        stmt2.setInt(1, wl+1);//update waitlist to add 1
+        stmt2.executeUpdate();//UPDATE DATABASE after joining an EXISTING waitlist       
     }
     public void editwl(String uemail, String bid) throws SQLException, ClassNotFoundException{
         String sql = "DELETE FROM waitlists WHERE email = '"+uemail+"' and id = '"+bid+"'";//deletes current user's id & the book selected from waitlist
