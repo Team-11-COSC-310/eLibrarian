@@ -7,15 +7,23 @@ public class Action extends connecttodb{
     Scanner reader = new Scanner(System.in);
     private String answer;
 
-	//need to get book's id from user
-	public Action(boolean available) {
+	//need to get book's availability and if they have borrowed it or not from user
+	public Action(boolean available, boolean borrowed, boolean onWaitlist) {
 		// Ask input from user
-        if (available) {
-		    System.out.println("Would you like to Borrow this book? (ENTER 'B')");
+        if (available && !borrowed) {
+		    System.out.println("Would you like to Borrow this book? (ENTER 'B')");//if FULLY AVAILABLE
 		    setInput(reader.next());
         }
-        else {
-            System.out.println("Would you like to join this book's waitlist? (ENTER 'W')");
+        else if (!available && !onWaitlist && !borrowed){
+            System.out.println("Would you like to join this book's waitlist? (ENTER 'W')");//if UNAVAILABLE and not borrowed OR on waitlist
+		    setInput(reader.next());
+        }
+		else if (borrowed){
+            System.out.println("Would you like to return this book? (ENTER 'R')");//if they HAVE BORROWED
+		    setInput(reader.next());
+        }
+		else if (onWaitlist && !borrowed){
+            System.out.println("Would you like to take your name off the waitlist? (ENTER 'D')");//if they are ON WAITLIST
 		    setInput(reader.next());
         }
 	}

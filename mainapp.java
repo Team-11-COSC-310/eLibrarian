@@ -31,14 +31,14 @@ public class mainapp {
 		String s = new String("S"); //<--/ Search for specific book
 		String u = new String("U"); //<--/ View User Account's info
 		String wait = new String("W"); //<--/ Join waitlist for book
+		String r = new String("R"); //<--/ RETURN book
+		String d = new String("D"); //<--/ DELETE user's name from waitlist
 
 		int a = 1; //need to keep track of attempts to login
 		int createattempts = 1; //need to keep track of attempts to create a profile
 		int a2 = 1; //need to keep track of attempts from main menu.
 		String uname = "";//keep track of username
-		int status = 1;//trackss if user already on waitlist
 		long wtime = 21;//waitime for book in days = wlist users * 21 days
-		int searchwaitliststatus = 1;//need status to check waitlist status in the search for book loop
 		long wtime2 = 0;//waitime for book in days = wlist users * 21 days in SEARCH LOOP
 
 		while (run) { //Start up loop
@@ -96,7 +96,6 @@ public class mainapp {
 											   "| |                                                                  | |\n"+
 											   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       "|_|__________________________________________________________________|_|\n");
-								status = 1;//resets the user's status on if they've rented a book or joined its waitlist
 								while (brun) { //BOOK LOOP asks user for book id
 									ViewBook vb = new ViewBook();//ask user to select a book by id
 									if (vb.getInput().equals(q)) { //if they press Q to quit
@@ -110,7 +109,22 @@ public class mainapp {
 										Book userBook = new Book();//start book display view
 										userBook.binfo(vb.getInput());
 										//send view input id to iterate database. Should fill values accordingly
-										System.out.println("________________________________________________________________________\n"+
+										if (userBook.getWL() <= 0){
+											System.out.println("________________________________________________________________________\n"+
+									                   "| |                                                                  | |\n"+
+									                   "| | "+userBook.getBookTitle()+"                     \n"+
+						                       	   	   "| |------------------------------------------------------------------| |\n"+
+						                       	       "| | By: "+userBook.getBookAuthor()+"                             \n"+
+													   "| |------------------------------------------------------------------| |\n"+
+						                       	       "| | "+userBook.getBookSum()+"\n"+
+													   "| |                                                                  | |\n"+
+													   "| | "+userBook.IsBookAvailable()+"   | |\n"+
+													   "| | Current Waitlist: 0 user(s)                                      | |\n"+
+													   "| |                                                                  | |\n"+
+													   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+						                       	       "|_|__________________________________________________________________|_|\n");
+										} else if (userBook.getWL() > 0){
+											System.out.println("________________________________________________________________________\n"+
 									                   "| |                                                                  | |\n"+
 									                   "| | "+userBook.getBookTitle()+"                     \n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
@@ -123,26 +137,26 @@ public class mainapp {
 													   "| |                                                                  | |\n"+
 													   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 						                       	       "|_|__________________________________________________________________|_|\n");
+										}
 										arun = true;//
-										while (arun) {//ACTION LOOP asks user for W or B
-											Action action = new Action(userBook.getAvailability());//start action prompt
+										while (arun) {//ACTION LOOP asks user for W, B, R, or D
+											Action action = new Action(userBook.getAvailability(), userBook.borrowedBook(log0.getEmail(),vb.getInput()), userBook.inWaitlist(log0.getEmail(),vb.getInput()));//start action prompt
 
-											//IF book UNAVAILABLE AND they enter W and FIRST TRY
-											if (!userBook.getAvailability() && action.getInput().equals(wait) && status == 1) {
+											//IF book UNAVAILABLE AND they enter W and FIRST TRY (they aren't in the waitllist for this book or borrowed it)
+											if (!userBook.getAvailability() && action.getInput().equals(wait) && !userBook.inWaitlist(log0.getEmail(),vb.getInput()) && !userBook.borrowedBook(log0.getEmail(),vb.getInput())) {
 												Borrow borrowJ = new Borrow();//join waitlist and send info
 												String topUser = borrowJ.wlTop(vb.getInput());//read waitlist and grab first username
 												// wait time = time left of first person + 3 weeks * amount of people on list, and not including this user
 												wtime = borrowJ.checkTime(topUser,vb.getInput()) + (21*(borrowJ.countwl(vb.getInput())-1));
 
-												//add user to list
-												borrowJ.rbookORjwl(userBook.getAvailability(), userBook.getWL(), log0.getEmail(), vb.getInput());
+												//add user to list (IN THE DB)
+												borrowJ.jWl(userBook.getWL(), log0.getEmail(), vb.getInput());
 												//need to count users again now that the user has been added to display their number
 												System.out.println("________________________________________________________________________\n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
-						                       	       "| |       Thank you for joining the waitlist. You are number "+borrowJ.countwl(vb.getInput())+".      | |\n"+
+						                       	       "| |       Thank you for joining the waitlist. You are number "+(userBook.getWL()+1)+".      | |\n"+
 						                       	       "| |               The estimated wait time is "+wtime+" day(s).              | |\n"+
 													   "|_|__________________________________________________________________|_|\n");
-												status = 2;//can't join waitlist again
 
 												wait(2000);//wait 2 seconds to print database
 												//reprint db and prompt book id again
@@ -159,8 +173,8 @@ public class mainapp {
 												arun = false;//exit action loop
 												//GO BACK TO DATABASE
 											}
-											//IF book UNAVAILABLE AND they are ALREADY ON waitlist
-											else if (!userBook.getAvailability() && action.getInput().equals(wait) && status == 2) {
+											//IF book UNAVAILABLE AND they are ALREADY ON waitlist NOT BORROWED
+											else if (!userBook.getAvailability() && action.getInput().equals(wait) && userBook.inWaitlist(log0.getEmail(),vb.getInput()) && !userBook.borrowedBook(log0.getEmail(),vb.getInput())) {
 												System.out.println("________________________________________________________________________\n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
 						                       	       "| |       You are already on the waitlist. You are number "+userBook.getWL()+".      \n"+
@@ -182,11 +196,11 @@ public class mainapp {
 												arun = false;//exit action loop
 												//GO BACK TO DATABASE
 											}//IF book UNAVAILABLE AND they ALREADY BORROWED BOOK
-											else if (!userBook.getAvailability() && action.getInput().equals(wait) && status == 3) {
+											else if (!userBook.getAvailability() && action.getInput().equals(wait) && userBook.borrowedBook(log0.getEmail(),vb.getInput())) {
 												Borrow borrow = new Borrow();//get waitlist
-													long remainder = borrow.checkTime(log0.getEmail(), String.valueOf(userBook.getID()));//check when they rented the book waitlist 
-													if (remainder < 21) {
-														System.out.println("________________________________________________________________________\n"+
+												int remainder = borrow.checkTime(log0.getEmail(), String.valueOf(userBook.getID()));//check when they rented the book 
+												if (remainder <= 21) {//if its not overdue, display this
+													System.out.println("________________________________________________________________________\n"+
 						                       	   	   				"| |------------------------------------------------------------------| |\n"+
 						                       	       				"| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
 						                       	       				"| |                    It is due back in "+remainder+" day(s).                  | |\n"+
@@ -205,11 +219,10 @@ public class mainapp {
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
 													arun2 = false;//exit action loop
-													//sbrun = false;//exit book view loop
-													//GO BACK TO SEARCH RESULTS
-													}
-													else if (remainder > 21) {
-														System.out.println("________________________________________________________________________\n"+
+												//GO BACK TO SEARCH RESULTS
+												}
+												else if (remainder > 21) {//if it IS overdue, display this
+													System.out.println("________________________________________________________________________\n"+
 						                       	   	   				"| |------------------------------------------------------------------| |\n"+
 						                       	       				"| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
 						                       	       				"| |   The book is OVERDUE!! Please return it as soon as possible.    | |\n"+
@@ -228,29 +241,73 @@ public class mainapp {
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
 													arun2 = false;//exit action loop
-													//sbrun = false;//exit book view loop
-													//GO BACK TO SEARCH RESULTS
-													}
+												//GO BACK TO SEARCH RESULTS
+												}
 											}
 											//IF book IS AVAILABLE AND they enter B
 											else if (userBook.getAvailability() && action.getInput().equals(listbooks)) {
 												Borrow borrowB = new Borrow();//get waitlist
-												borrowB.rbookORjwl(userBook.getAvailability(), userBook.getWL(), log0.getEmail(), vb.getInput());
+												borrowB.rbook(userBook.getAvailability(), userBook.getWL(), log0.getEmail(), vb.getInput());
 												//create waitlist by renting this book
 												System.out.println("________________________________________________________________________\n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
 						                       	       "| |                         Enjoy the book!                          | |\n"+
 						                       	       "| |                  It is due back in: 21 day(s).                   | |\n"+
 													   "|_|__________________________________________________________________|_|\n");
-												userBook.changeAvailability(false, vb.getInput());//close book's availablity
 
-												status = 3;//change the status to borrowed
-												
-												/*update book's list to inlcude user's name
-												//turn email to array in order to change array in database
-												String[] strArray = new String[] {log0.getEmail()};
-												userBook.changeNamelist(strArray, userBook.getWL(), vb.getInput());
-												System.out.println(userBook.getNamelist());*/
+												wait(2000);//wait 2 seconds to print database
+
+												//reprint db and prompt book id again
+												System.out.println("________________________________________________________________________\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |                            Database:                             | |\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |Book Name, Author, ID:                                            | |\n"+
+													   "| |------------------------------------------------------------------| |\n"
+														+bookinfo+
+													   "| |                                                                  | |\n"+
+													   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+												arun = false;//quit action
+												//GO BACK TO DATABASE
+
+											}
+											//IF book IS UNAVAILABLE AND they BORROWED IT, AND they enter R
+											else if (!userBook.getAvailability() && action.getInput().equals(r) && userBook.borrowedBook(log0.getEmail(),vb.getInput())) {
+												Borrow borrowR = new Borrow();//get waitlist
+												borrowR.editwl(log0.getEmail(), vb.getInput()); //delete entry from waitlist table
+												//take user's name off the waitlist database
+												System.out.println("________________________________________________________________________\n"+
+						                       	   	   "| |------------------------------------------------------------------| |\n"+
+						                       	       "| |                 Thank you for returning the book!                | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+
+												wait(2000);//wait 2 seconds to print database
+
+												//reprint db and prompt book id again
+												System.out.println("________________________________________________________________________\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |                            Database:                             | |\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |Book Name, Author, ID:                                            | |\n"+
+													   "| |------------------------------------------------------------------| |\n"
+														+bookinfo+
+													   "| |                                                                  | |\n"+
+													   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+												arun = false;//quit action
+												//GO BACK TO DATABASE
+
+											}
+											//IF book IS UNAVAILABLE AND they are ON WAITLIST, AND they enter D
+											else if (!userBook.getAvailability() && action.getInput().equals(d) && !userBook.borrowedBook(log0.getEmail(),vb.getInput()) && userBook.inWaitlist(log0.getEmail(),vb.getInput())) {
+												Borrow borrowD = new Borrow();//get waitlist
+												borrowD.editwl(log0.getEmail(), vb.getInput()); //delete entry from waitlist table
+												//take user's name off the waitlist database
+												System.out.println("________________________________________________________________________\n"+
+						                       	   	   "| |------------------------------------------------------------------| |\n"+
+						                       	       "| |          Your name has been removed from the waitlist!           | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
 
 												wait(2000);//wait 2 seconds to print database
 
@@ -378,7 +435,6 @@ public class mainapp {
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
 									sbrun = true;
-									searchwaitliststatus = 1;//reset search action status
 									while (sbrun) { //Search BOOK LOOP asks user for book id
 										ViewBook vb2 = new ViewBook();//ask user to select a book by id FROM SEARCH RESULTS
 										if (vb2.getInput().equals(q)) { //if they press Q to quit
@@ -403,40 +459,54 @@ public class mainapp {
 											Book userBook2 = new Book();//start book display view
 											userBook2.binfo(vb2.getInput());//get info for book matching the entered ID
 											//send view input id to iterate database. Should fill values accordingly
-											System.out.println("________________________________________________________________________\n"+
-															 "| |                                                                  | |\n"+
-															 "| | "+userBook2.getBookTitle()+"                     \n"+
-															 "| |------------------------------------------------------------------| |\n"+
-														     "| | By: "+userBook2.getBookAuthor()+"                             \n"+
-															 "| |------------------------------------------------------------------| |\n"+
-															 "| | "+userBook2.getBookSum()+"\n"+
-															 "| |                                                                  | |\n"+
-															 "| | "+userBook2.IsBookAvailable()+"   | |\n"+
-															 "| | Current Waitlist: "+userBook2.getWL()+" user(s)                   \n"+
-															 "| |                                                                  | |\n"+
-															 "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
-															 "|_|__________________________________________________________________|_|\n");
+											if (userBook2.getWL() <= 0){
+												System.out.println("________________________________________________________________________\n"+
+														   "| |                                                                  | |\n"+
+														   "| | "+userBook2.getBookTitle()+"                     \n"+
+																 "| |------------------------------------------------------------------| |\n"+
+															  "| | By: "+userBook2.getBookAuthor()+"                             \n"+
+														   "| |------------------------------------------------------------------| |\n"+
+															  "| | "+userBook2.getBookSum()+"\n"+
+														   "| |                                                                  | |\n"+
+														   "| | "+userBook2.IsBookAvailable()+"   | |\n"+
+														   "| | Current Waitlist: 0 user(s)                                      | |\n"+
+														   "| |                                                                  | |\n"+
+														   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+															  "|_|__________________________________________________________________|_|\n");
+											} else if (userBook2.getWL() > 0){
+												System.out.println("________________________________________________________________________\n"+
+														   "| |                                                                  | |\n"+
+														   "| | "+userBook2.getBookTitle()+"                     \n"+
+																 "| |------------------------------------------------------------------| |\n"+
+															  "| | By: "+userBook2.getBookAuthor()+"                             \n"+
+														   "| |------------------------------------------------------------------| |\n"+
+															  "| | "+userBook2.getBookSum()+"\n"+
+														   "| |                                                                  | |\n"+
+														   "| | "+userBook2.IsBookAvailable()+"   | |\n"+
+														   "| | Current Waitlist: "+userBook2.getWL()+" user(s)                   \n"+
+														   "| |                                                                  | |\n"+
+														   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+															  "|_|__________________________________________________________________|_|\n");
+											}
 											arun2 = true;
-											while (arun2) {//ACTION LOOP asks user for W or B
-												Action action2 = new Action(userBook2.getAvailability());//start action prompt
+											while (arun2) {//ACTION LOOP asks user for W,B,R or D
+												Action action2 = new Action(userBook2.getAvailability(), userBook2.borrowedBook(log0.getEmail(),vb2.getInput()), userBook2.inWaitlist(log0.getEmail(),vb2.getInput()));//start action prompt
 						
 												//IF book UNAVAILABLE AND they HAVENT borrowed it ANYWHERE, and they enter W
-												if (!userBook2.getAvailability() && action2.getInput().equals(wait) && searchwaitliststatus == 1) {
+												if (!userBook2.getAvailability() && action2.getInput().equals(wait) && !userBook2.borrowedBook(log0.getEmail(),vb2.getInput()) && !userBook2.inWaitlist(log0.getEmail(),vb2.getInput())) {
 													Borrow borrowS = new Borrow();//get waitlist
 													String topUser = borrowS.wlTop(vb2.getInput());//read waitlist and grab first username
 													// wait time = time left of first person + 3 weeks * amount of people on list, and not including this user
 													wtime2 = borrowS.checkTime(topUser,vb2.getInput()) + (21*(borrowS.countwl(vb2.getInput())-1));
 
 													//add user to list
-													borrowS.rbookORjwl(userBook2.getAvailability(), userBook2.getWL(), log0.getEmail(), vb2.getInput());
+													borrowS.jWl(userBook2.getWL(), log0.getEmail(), vb2.getInput());
 													//need to count users again now that the user has been added to display their number
 													System.out.println("________________________________________________________________________\n"+
 						                       	   	   "| |------------------------------------------------------------------| |\n"+
-						                       	       "| |       Thank you for joining the waitlist. You are number "+borrowS.countwl(vb2.getInput())+".      | |\n"+
+						                       	       "| |       Thank you for joining the waitlist. You are number "+(userBook2.getWL()+1)+".      | |\n"+
 						                       	       "| |               The estimated wait time is "+wtime2+" day(s).              | |\n"+
 													   "|_|__________________________________________________________________|_|\n");
-												status = 2;//can't join waitlist again
-													searchwaitliststatus = 2;//can't join waitlist again
 						
 													wait(2000);//wait 2 seconds to print database
 													//reprint results and prompt book id again
@@ -451,11 +521,10 @@ public class mainapp {
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
 													arun2 = false;//exit action loop
-													//sbrun = false;//exit book view loop
 													//GO BACK TO SEARCH RESULTS
 												}
 												//IF book UNAVAILABLE AND they are ALREADY ON waitlist from joining in search or database
-												else if (!userBook2.getAvailability() && action2.getInput().equals(wait) && (searchwaitliststatus == 2 || status == 2)) {
+												else if (!userBook2.getAvailability() && action2.getInput().equals(wait) && userBook2.inWaitlist(log0.getEmail(),vb2.getInput()) && !userBook2.borrowedBook(log0.getEmail(),vb2.getInput())) {
 													System.out.println("________________________________________________________________________\n"+
 						                       	   	   				"| |------------------------------------------------------------------| |\n"+
 						                       	       				"| |       You are already on the waitlist. You are number "+userBook2.getWL()+".      \n"+
@@ -478,10 +547,10 @@ public class mainapp {
 													//sbrun = false;//exit book view loop
 													//GO BACK TO SEARCH RESULTS
 												}//IF book UNAVAILABLE AND they are ALREADY BORROWED BOOK in search OR database
-												else if (!userBook2.getAvailability() && action2.getInput().equals(wait) && (searchwaitliststatus == 3)) {
-													Borrow borrow = new Borrow();//get waitlist
-													long remainder2 = borrow.checkTime(log0.getEmail(), String.valueOf(userBook2.getID()));//check when they rented the book waitlist 
-													if (remainder2 < 21) {
+												else if (!userBook2.getAvailability() && action2.getInput().equals(wait) && userBook2.borrowedBook(log0.getEmail(),vb2.getInput())) {
+													Borrow borrow2 = new Borrow();//get waitlist
+													long remainder2 = borrow2.checkTime(log0.getEmail(), String.valueOf(userBook2.getID()));//check when they rented the book waitlist 
+													if (remainder2 <= 21) {
 														System.out.println("________________________________________________________________________\n"+
 						                       	   	   				"| |------------------------------------------------------------------| |\n"+
 						                       	       				"| |     You have Rented this book! You cannot join its waitlist.     | |\n"+
@@ -501,7 +570,6 @@ public class mainapp {
 											   			"| | 'C' to cancel.                                      'Q' to quit. | |\n"+
 										       			"|_|__________________________________________________________________|_|\n");
 													arun2 = false;//exit action loop
-													//sbrun = false;//exit book view loop
 													//GO BACK TO SEARCH RESULTS
 													}
 													else if (remainder2 > 21) {
@@ -535,10 +603,8 @@ public class mainapp {
 																	   "| |                         Enjoy the book!                          | |\n"+
 																	   "| |                  It is due back in: 21 day(s).                   | |\n"+
 																	   "|_|__________________________________________________________________|_|\n");
-													userBook2.changeAvailability(false, vb2.getInput());//close book's availablity
-													Borrow borrow = new Borrow();//get waitlist
-													borrow.rbookORjwl(userBook2.getAvailability(), userBook2.getWL(),log0.getEmail(), String.valueOf(userBook2.getID()));//add user to waitlist so people can no longer rent the book
-													searchwaitliststatus = 3;//creates new waitlist output if you borrowed first and tried to join wl instead of join wl first and try again
+													Borrow borrowB2 = new Borrow();//get waitlist
+													borrowB2.rbook(userBook2.getAvailability(), userBook2.getWL(),log0.getEmail(), String.valueOf(userBook2.getID()));//add user to waitlist so people can no longer rent the book
 						
 													wait(2000);//wait 2 seconds to print database
 						
@@ -557,6 +623,60 @@ public class mainapp {
 													//GO BACK TO SEARCH RESULTS
 						
 												}
+												//IF book IS UNAVAILABLE AND they BORROWED IT, AND they enter R
+											else if (!userBook2.getAvailability() && action2.getInput().equals(r) && userBook2.borrowedBook(log0.getEmail(),vb2.getInput())) {
+												Borrow borrowR2 = new Borrow();//get waitlist
+												borrowR2.editwl(log0.getEmail(), vb2.getInput()); //delete entry from waitlist table
+												//take user's name off the waitlist database
+												System.out.println("________________________________________________________________________\n"+
+						                       	   	   "| |------------------------------------------------------------------| |\n"+
+						                       	       "| |                 Thank you for returning the book!                | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+
+												wait(2000);//wait 2 seconds to print database
+
+												//reprint db and prompt book id again
+												System.out.println("________________________________________________________________________\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |                            Database:                             | |\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |Book Name, Author, ID:                                            | |\n"+
+													   "| |------------------------------------------------------------------| |\n"
+														+searchinfo+
+													   "| |                                                                  | |\n"+
+													   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+												arun2 = false;//quit action
+												//GO BACK TO DATABASE
+
+											}
+											//IF book IS UNAVAILABLE AND they are ON WAITLIST, AND they enter D
+											else if (!userBook2.getAvailability() && action2.getInput().equals(d) && !userBook2.borrowedBook(log0.getEmail(),vb2.getInput()) && userBook2.inWaitlist(log0.getEmail(),vb2.getInput())) {
+												Borrow borrowD2 = new Borrow();//get waitlist
+												borrowD2.editwl(log0.getEmail(), vb2.getInput()); //delete entry from waitlist table
+												//take user's name off the waitlist database
+												System.out.println("________________________________________________________________________\n"+
+						                       	   	   "| |------------------------------------------------------------------| |\n"+
+						                       	       "| |          Your name has been removed from the waitlist!           | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+
+												wait(2000);//wait 2 seconds to print database
+
+												//reprint db and prompt book id again
+												System.out.println("________________________________________________________________________\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |                            Database:                             | |\n"+
+													   "| |------------------------------------------------------------------| |\n"+
+													   "| |Book Name, Author, ID:                                            | |\n"+
+													   "| |------------------------------------------------------------------| |\n"
+														+searchinfo+
+													   "| |                                                                  | |\n"+
+													   "| | 'C' to cancel.                                      'Q' to quit. | |\n"+
+													   "|_|__________________________________________________________________|_|\n");
+												arun2 = false;//quit action
+												//GO BACK TO DATABASE
+
+											}
 												//If book UNAVAILABLE OR AVAILABLE and they enter C, then cancel or go back to search results
 												else if ((!userBook2.getAvailability() || userBook2.getAvailability()) && action2.getInput().equals(c)) {
 													wait(2000);//wait 2 seconds to print database
