@@ -134,6 +134,23 @@ public class Login extends connecttodb{
 		System.out.println("The password you have entered is incorrect.");
 		return false;
 	}
+	
+        public boolean HasAdminPassword( ) throws SQLException, ClassNotFoundException{
+            int j =1;
+		// get password from input by getPassword function and get resultSet.
+		String uPassword = PasswordEncryption(getPassword());
+		ResultSet r = getResultSet("select * from librarians");
+		// Use while loop to check existence until the end of the password column
+		while (r.next()) {
+			if (r.getString(2).equals(uPassword)) {
+				PassindSet(r.getRow());
+				return true;
+			}
+			
+		}
+		System.out.println("The password you have entered is incorrect.");
+		return false;
+        }
 	//check the index of table from database for checking password and email matching
 	public int EmailindSet(int ind) {
 		return this.Emailind = ind;
