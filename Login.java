@@ -134,7 +134,6 @@ public class Login extends connecttodb{
 		System.out.println("The password you have entered is incorrect.");
 		return false;
 	}
-	
         public boolean HasAdminPassword( ) throws SQLException, ClassNotFoundException{
             int j =1;
 		// get password from input by getPassword function and get resultSet.
@@ -172,14 +171,14 @@ public class Login extends connecttodb{
 			return false;
 		}
 	}
-
+        
 	// check if this login info match with the database info
 	public boolean HasRegistry() throws SQLException, ClassNotFoundException {
-	if (HasAdminEmail() && HasPassword()&&indCheck()) {
-		System.out.println("e ind and p ind" + EmailindGet()+PassindGet());
+		if (HasAdminEmail() && HasAdminPassword()&&indCheck()) {
+			System.out.println("e ind and p ind" + EmailindGet()+PassindGet());
 
-		return this.authentication = true; //authenticates if admin logs in ONLY USED BY ADMIN SCREEN
-	}else if (HasEmail() && HasPassword()&&indCheck()) { //authenticates if anyone logs in
+			return this.adminAuthentication = true; //authenticates if admin logs in ONLY USED BY ADMIN SCREEN
+		}else if (HasEmail() && HasPassword()&&indCheck()) { //authenticates if anyone logs in
 						
 			return this.authentication = true;
 		} else {
@@ -249,6 +248,13 @@ public class Login extends connecttodb{
 		}
 	}
 	
+        public boolean getAdminAuthentification(){
+            return this.adminAuthentication;
+        }
+        
+        public boolean getAuthentification(){
+            return this.authentication;
+        }
 	
 	
 }

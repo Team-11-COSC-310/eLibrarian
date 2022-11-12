@@ -110,7 +110,8 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_CreateAccount
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       login=true;
+      new Gui_Login().setVisible(true);
+      dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
