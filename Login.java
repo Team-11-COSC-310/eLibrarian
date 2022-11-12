@@ -1,3 +1,5 @@
+
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,11 +21,14 @@ public class Login extends connecttodb{
 	public int Emailind;
 	public int Passind;
 	Scanner reader = new Scanner(System.in);
-
+        public Login(){
+            
+        }
 	// This constructor suggests users enter their email and password. This also
 	// check if this user has already account or not.
 	// If they have, return T, if not, F.
 	public Login(int attempt, String uname) throws SQLException, ClassNotFoundException {
+                 
 		// Ask input from user
 		if (attempt == 1) { //blank slate
 			System.out.println("Please enter your email: ");
@@ -153,12 +158,11 @@ public class Login extends connecttodb{
 
 	// check if this login info match with the database info
 	public boolean HasRegistry() throws SQLException, ClassNotFoundException {
-//		if (HasAdminEmail() && HasPassword()&&indCheck()) {
-//			System.out.println("e ind and p ind" + EmailindGet()+PassindGet());
-//
-//			return this.authentication = true; //authenticates if admin logs in ONLY USED BY ADMIN SCREEN
-//		}
-		 if (HasEmail() && HasPassword()&&indCheck()) { //authenticates if anyone logs in
+	if (HasAdminEmail() && HasPassword()&&indCheck()) {
+		System.out.println("e ind and p ind" + EmailindGet()+PassindGet());
+
+		return this.authentication = true; //authenticates if admin logs in ONLY USED BY ADMIN SCREEN
+	}else if (HasEmail() && HasPassword()&&indCheck()) { //authenticates if anyone logs in
 						
 			return this.authentication = true;
 		} else {
