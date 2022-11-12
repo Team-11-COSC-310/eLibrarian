@@ -1,0 +1,8 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/Users/boluyomi-adeyemi/year3/cosc_304/cosc304_lab6/mysql-connector-java-8.0.27.jar",
+        "/Users/boluyomi-adeyemi/Downloads/javax.mail.jar",
+        "/Users/boluyomi-adeyemi/Downloads/activation-1.1.1.jar"
+    ]
+}

@@ -8,26 +8,25 @@ public class notify extends User {
     String send_email = "library@books.com";
     String host = "localhost";
 
-    Properties properties = new Properties();p
-    roperties.setProperty("mail.smtp.host",host);
-    Session session = Session.getDefaultInstance(properties);
-
-    try
+    Properties properties = new Properties();
     {
-        MimeMessage message = new MimeMessage(session);
+        properties.setProperty("mail.smtp.host", host);
+        Session session = Session.getDefaultInstance(properties);
 
-        message.setFrom(new InternetAddress(send_email));
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(receive_email));
-        message.setSubject("Due Date is Close");
-        message.setText("Hi, your due date is close");
+        try {
+            MimeMessage message = new MimeMessage(session);
 
-        Transport.send(message);
-        System.out.println("It has Sent");
+            message.setFrom(new InternetAddress(send_email));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(receive_email));
+            message.setSubject("Due Date is Close");
+            message.setText("Hi, your due date is close");
 
-    }catch(
-    MessagingException ex)
-    {
-        ex.printStackTrace();
+            Transport.send(message);
+            System.out.println("It has Sent");
+
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+
     }
-
-}}
+}
