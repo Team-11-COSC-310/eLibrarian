@@ -180,7 +180,7 @@ public class Gui_AddBooks extends javax.swing.JFrame {
     }
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
-        new Gui_UserMenu().setVisible(true);
+        new Gui_AdminMenu().setVisible(true);
         dispose();
     }
 
@@ -241,7 +241,6 @@ public class Gui_AddBooks extends javax.swing.JFrame {
     private javax.swing.JTextField bookSummary_textbox;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
