@@ -20,25 +20,12 @@ public class LibrarianAction extends Login{
 	 
      public LibrarianAction(int att, String uname) throws SQLException, ClassNotFoundException {
 		super(att, uname);
-		System.out.println("Hello, How can I help you?: 'AddBooks', 'EditBooks', 'UpdateUsers' 'DeleteUsers' ");
-		in = input.nextLine();
-		if(in.equals("AddBooks")) {
-			AddBook();
-		}else if(in.equals("EditBooks")) {
-			EditBook();
-		} else if (in.equals("UpdateUsers")) {
-			UpdateUser();
-		} else if(in.equals("DeleteUsers")){
-			System.out.println("Enter the name of the librarian/user account you want to delete: ");
-			DeleteUser(input.nextLine());
-		}else {
-			return;
-		}
 	}
      
 	//it is called when the user turned out a librarian
 	//This class allows the user to add book and edit book from database
-	public boolean AddBook() throws ClassNotFoundException, SQLException {
+	public boolean AddBook(String title,String author,String summary, Boolean availability, int wl) throws ClassNotFoundException, SQLException {
+		if(!title.isEmpty()&&!author.isEmpty()&&!summary.isEmpty()&&availability !=null&&wl>=0) {
 		try {
 			String idsql = "Select count(id) as ids from books";
         	ResultSet r = getResultSet(idsql);//count how many ids there are, so that adding a new book just increments them by one
@@ -53,59 +40,31 @@ public class LibrarianAction extends Login{
 			PreparedStatement stmt = getConnect().prepareStatement(sql); //dont need id beacue it should auto increment
 
         	setId(String.valueOf(info));//set Id to count of ids plus 1
-        	System.out.println("Tell me the book's details to add:");
-        	System.out.println("Enter the title:");
-        	setBookname(input.nextLine());//set title to the inputted string
+          	setBookname(title);//set title to the inputted string
         	stmt.setString(1, getBookname());//set DATABASE title to the inputted string
 
-        	System.out.println("Enter the author:");
+        	
         	setAuthor(author);//set author to the inputted string
         	stmt.setString(2, getAuthor());//set DATABASE author to the inputted string
 
-        	System.out.println("Enter the summary (in one line):");
-        	setContent(input.nextLine());//set description to the inputted string
+        	
+        	setContent(summary);//set description to the inputted string
         	stmt.setString(3, getContent());//set DATABASE content to the inputted string
 
-        	stmt.setBoolean(4, true); //availability DEFAULT to available
-        	stmt.setInt(5,0); //DEFAULT waitlist to 0 people
+        	stmt.setBoolean(4, availability); //availability DEFAULT to available
+        	
+        	stmt.setInt(5,wl); //DEFAULT waitlist to 0 people
         	stmt.executeUpdate();
         	return true;
 		}catch(ClassNotFoundException SQLException) {
 			return false;
-		}
-	}
-
-	public void AddBookGUI(String title, String author, String summary) throws ClassNotFoundException, SQLException {
-        String idsql = "Select count(id) as ids from books";
-        ResultSet r = getResultSet(idsql);//count how many ids there are, so that adding a new book just increments them by one
-        int info = 0;
-		// Use while loop to store the count of ids in a string
-		while (r.next()) { 
-            info = r.getInt("ids");// add count of ids
-        } 
-        info += 4;//add 4 in order to increment the value each time a book is added outside of while loop
-			
-		String sql = "insert books(title,author,summary,availability,wl)"+"values(?,?,?,?,?)";
-        PreparedStatement stmt = getConnect().prepareStatement(sql); //dont need id beacue it should auto increment
-
-        setId(String.valueOf(info));//set Id to count of ids plus 1
-        stmt.setString(1, title);//set DATABASE title to the inputted string
-
-        stmt.setString(2, author);//set DATABASE author to the inputted string
-
-        stmt.setString(3, summary);//set DATABASE content to the inputted string
-
-        stmt.setBoolean(4, true); //availability DEFAULT to available
-        stmt.setInt(5,0); //DEFAULT waitlist to 0 people
-        stmt.executeUpdate();
+		}}else {return false;}
 	}
 	
-	public void EditBook() throws ClassNotFoundException, SQLException {
-		System.out.println("Select your editing action: Enter 'Delete' to delete a book.");
-        in2 = input.nextLine();//Get input
-		if(in2.equals("Delete")) {//if input equals delete
-		    System.out.println("Enter the name of the book you want to delete: ");
-		    setBookname(input.nextLine());
+	public boolean EditBook(String title) throws ClassNotFoundException, SQLException {
+		
+		try {
+		    setBookname(title);
 			while (HasBook(getBookname())) { //if that name exists then delete it from the db.
                 String sql = "Delete from books where title = '"+getBookname()+"'";
 			    PreparedStatement stmt = getConnect().prepareStatement(sql);
@@ -113,24 +72,17 @@ public class LibrarianAction extends Login{
 			    stmt.executeUpdate();
 			    System.out.println(getBookname()+" was deleted from database.");
             }
-		}
-		return;
-	}
-	public void EditBookGUI(String title) throws SQLException, ClassNotFoundException {
-		setBookname(title);
-		while(HasBook(getBookname())) {
-			String sql = "Delete from books where title = '"+getBookname()+"'";
-			    PreparedStatement stmt = getConnect().prepareStatement(sql);
-				
-			    stmt.executeUpdate();
-			    System.out.println(getBookname()+" was deleted from database.");
+		//}
+		   return true;
+		}catch(Exception e) {
+			return false;
 		}
 	}
-
     // check if this book is in the database
 	public boolean HasBook(String input) throws SQLException, ClassNotFoundException {
 		// get title from input by getBookname function and get resultSet.
 		String uinput = input;
+		if(!input.isBlank()) {
 		ResultSet r = getResultSet("select * from books");//get all books
 		// Use while loop to check existence until the end of the title column
 		while (r.next()) { 
@@ -139,11 +91,12 @@ public class LibrarianAction extends Login{
 			}
 		}
 		return false;
+		}else {return false;}
 	}
 	public void UpdateUser() throws ClassNotFoundException, SQLException {
 		System.out.println("Enter the name of the librarian/user account you want to update: ");
 		setUserEmail(input.nextLine());//Get input
-		if(HasLibrarianEmail(getUserEmail())) { //if that name exists then update it from the db.
+		if(HasAdminEmail()) { //if that name exists then update it from the db.
 			System.out.println("Enter the password to update " + getUserEmail() +": ");
 			setUserPassword(input.nextLine());//Get input
 			String sql = "Update librarians set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
@@ -157,7 +110,7 @@ public class LibrarianAction extends Login{
 			stmt2.executeUpdate();
 			System.out.println(getUserEmail()+" was updated from database.");
 			in2 = "Librarian";
-		} else if(HasEmail(getUserEmail())) { //if that name exists then update it from the db.
+		} else if(HasEmail()) { //if that name exists then update it from the db.
 			System.out.println("Enter the password to update " + getUserEmail() +": ");
 			setUserPassword(input.nextLine());//Get input
 			String sql = "Update users set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
@@ -169,45 +122,22 @@ public class LibrarianAction extends Login{
 		} else {}
 		return;
 	}
-
-	public void UpdateUserGUI(String email, String newPassword, boolean librarian) throws ClassNotFoundException, SQLException {
-		setUserEmail(email);
-		if(librarian) {
-			setUserPassword(newPassword);
-			String sql = "Update librarians set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
-			PreparedStatement stmt = getConnect().prepareStatement(sql);
-
-			stmt.executeUpdate();
-
-			String sql2 = "Update users set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
-			PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
-
-			stmt2.executeUpdate();
-		} else {
-			setUserPassword(newPassword);
-			String sql = "Update users set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
-			PreparedStatement stmt = getConnect().prepareStatement(sql);
-					
-			stmt.executeUpdate();
-			System.out.println(getUserEmail()+" was updated from database.");
-		}
-	}
 	public boolean DeleteUser(String email) throws ClassNotFoundException, SQLException{
 		
 		
 		setUserEmail(email);//Get input
-		if(HasLibrarianEmail(getUserEmail())) { //if that name exists then delete it from the db.
-			String sql = "Delete from users where email = '"+getUserEmail()+"'";
+		if(HasLibrarianEmail()) { //if that name exists then delete it from the db.
+			String sql = "Delete from users where email = ?";
 			PreparedStatement stmt = getConnect().prepareStatement(sql);
-					
+		    stmt.setString(1, getUserEmail());
 			stmt.executeUpdate();
 			System.out.println(getUserEmail()+" was deleted from database.");
 			in2 = "Librarian";
 			return true;
-		} else if((HasEmail(getUserEmail()))) {//if that name exists then delete it from the db.
-			String sql = "Delete from users where email = '"+getUserEmail()+"'";
+		} else if(HasEmail()) {//if that name exists then delete it from the db.
+			String sql = "Delete from users where email = ?";
 			PreparedStatement stmt = getConnect().prepareStatement(sql);
-					
+			stmt.setString(1, getUserEmail());
 			stmt.executeUpdate();
 			System.out.println(getUserEmail()+" was deleted from database.");
 			in2 = "User";
@@ -215,43 +145,28 @@ public class LibrarianAction extends Login{
 		} else {
 			return false;
 		}
+		
+		
 	}
-	public void DeleteUserGUI(String email, boolean librarian) throws ClassNotFoundException, SQLException {
-		setUserEmail(email);
-		if(librarian) {
-			String sql = "Delete from users where email = '"+getUserEmail()+"'";
-			PreparedStatement stmt = getConnect().prepareStatement(sql);
-					
-			stmt.executeUpdate();
-			System.out.println(getUserEmail()+" was deleted from database.");
-		} else {
-			String sql = "Delete from users where email = '"+getUserEmail()+"'";
-			PreparedStatement stmt = getConnect().prepareStatement(sql);
-					
-			stmt.executeUpdate();
-			System.out.println(getUserEmail()+" was deleted from database.");
-		}
-	}
-
-	public boolean HasEmail(String input) throws SQLException, ClassNotFoundException {
+	public boolean HasEmail() throws SQLException, ClassNotFoundException {
 		// get title from input by getUsername function and get resultSet.
-		String uinput = input;
+		
 		ResultSet r = getResultSet("select * from users");//get all users
 		// Use while loop to check existence until the end of the title column
 		while (r.next()) { 
-			if (r.getString("email").equals(uinput)) {//check all emails
+			if (r.getString("email").equals(getUserEmail())) {//check all emails
 				return true; //if input MATCHES EMAILS in database
 			}
 		}
 		return false;
 	}
-	public boolean HasLibrarianEmail(String input) throws SQLException, ClassNotFoundException {
+	public boolean HasLibrarianEmail() throws SQLException, ClassNotFoundException {
 		// get title from input by getUsername function and get resultSet.
-		String uinput = input;
+		
 		ResultSet r = getResultSet("select * from librarians");//get all librarians
 		// Use while loop to check existence until the end of the title column
 		while (r.next()) { 
-			if (r.getString("email").equals(uinput)) {//check all emails
+			if (r.getString("email").equals(getUserEmail())) {//check all emails
 				return true; //if input MATCHES EMAILS in database
 			}
 		}
