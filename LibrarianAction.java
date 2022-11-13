@@ -163,6 +163,30 @@ public class LibrarianAction extends Login{
 		} else {}
 		return;
 	}
+
+	public void UpdateUserGUI(String email, String newPassword, boolean librarian) throws ClassNotFoundException, SQLException {
+		setUserEmail(email);
+		if(librarian) {
+			setUserPassword(newPassword);
+			String sql = "Update librarians set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
+			PreparedStatement stmt = getConnect().prepareStatement(sql);
+
+			stmt.executeUpdate();
+
+			String sql2 = "Update users set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
+			PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
+
+			stmt2.executeUpdate();
+		} else {
+			setUserPassword(newPassword);
+			String sql = "Update users set password = '" + getUserPassword() + "' where email = '"+ getUserEmail()+"'";
+			PreparedStatement stmt = getConnect().prepareStatement(sql);
+					
+			stmt.executeUpdate();
+			System.out.println(getUserEmail()+" was updated from database.");
+		}
+	}
+
 	public void DeleteUser() throws ClassNotFoundException, SQLException {
 		System.out.println("Enter the name of the librarian/user account you want to delete: ");
 		setUserEmail(input.nextLine());//Get input
