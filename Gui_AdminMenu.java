@@ -72,10 +72,25 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         });
 
         jButton5.setText("Edit Book");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("Update User");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jButton7.setText("Delete User");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -124,12 +139,6 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
-    protected void jButton4ActionPerformed(ActionEvent evt) {
-        new Gui_AddBooks().setVisible(true);
-        dispose();
-    }
-
     protected void jButton2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         new Gui_FirstMenu().setVisible(true);
@@ -141,6 +150,26 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         new Gui_UserMenu().setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    protected void jButton4ActionPerformed(ActionEvent evt) {
+        new Gui_AddBooks().setVisible(true);
+        dispose();
+    }
+
+    protected void jButton5ActionPerformed(ActionEvent evt) {
+        new Gui_DeleteBooks().setVisible(true);
+        dispose();
+    }
+
+    protected void jButton6ActionPerformed(ActionEvent evt) {
+        new Gui_EditUsers().setVisible(true);
+        dispose();
+    }
+
+    protected void jButton7ActionPerformed(ActionEvent evt) {
+        new Gui_DeleteUsers().setVisible(true);
+        dispose();
+    }
 
     /**
      * @param args the command line arguments
