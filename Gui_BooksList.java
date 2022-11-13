@@ -98,7 +98,7 @@ public class Gui_BooksList extends javax.swing.JFrame {
             }
         });
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
