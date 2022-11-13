@@ -1,10 +1,9 @@
 
 
-
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
+import javax.swing.plaf.DimensionUIResource;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -34,6 +33,11 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setTitle("eLibrarian");
+        setSize(500,400);
+        setLocationRelativeTo(null);
+        setResizable(false);
+
         jLabel2 = new javax.swing.JLabel();
         jMenu1 = new javax.swing.JMenu();
         jLabel1 = new javax.swing.JLabel();
@@ -42,11 +46,13 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
 
         jMenu1.setText("jMenu1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
 
         jLabel1.setBackground(new java.awt.Color(102, 255, 102));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setText("Welcome To eLibrarian");
+        
 
         jButton1.setText("Registration");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -59,6 +65,7 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
                 CreateAccount(evt);
             }
         });
+        
 
         jButton2.setText("Login");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -74,12 +81,12 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(123, 123, 123)
+                        .addGap(150, 150, 150)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(94, 94, 94)
+                        .addGap(125, 125, 125)
                         .addComponent(jLabel1)))
                 .addContainerGap(122, Short.MAX_VALUE))
         );
@@ -95,6 +102,7 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
                 .addContainerGap(119, Short.MAX_VALUE))
         );
 
+        
         pack();
     }// </editor-fold>//GEN-END:initComponents
 

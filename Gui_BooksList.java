@@ -25,6 +25,11 @@ public class Gui_BooksList extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setTitle("eLibrarian");
+        setSize(500,400);
+        setLocationRelativeTo(null);
+        setResizable(false);
+
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
