@@ -27,6 +27,11 @@ public class Create extends Login{
             setAttempt(cattempt);//store construct attempt # in variable to be seen by main app
         }
 	}
+
+    public Create(){
+        
+    }
+
     // get the attempt number from the super
 	public int getAttempt() {
 		return cAttempt;

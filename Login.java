@@ -8,6 +8,7 @@ public class Login extends connecttodb{
 	private String UserEmail;
 	private String UserPassword;
 	private boolean authentication;
+	private boolean adminAuthentication = false; 
 	Scanner reader = new Scanner(System.in);
 
 	// This constructor suggests users enter their email and password. This also
@@ -30,6 +31,10 @@ public class Login extends connecttodb{
 			System.out.println("Please enter your Password: ");
 			setPassword(reader.next());
 		}
+	}
+
+	public Login(){
+            
 	}
 
 	// get this login session's email
@@ -63,6 +68,7 @@ public class Login extends connecttodb{
 		// Use while loop to check existence until the end of the email column
 		while (r.next()) {
 			if (r.getString("email").equals(uEmail)) {
+				adminAuthentication = true; 
 				return true;
 			}
 		}
@@ -104,6 +110,13 @@ public class Login extends connecttodb{
 		} else {
 			return this.authentication = false;
 		}
+	}
+	public boolean getAdminAuthentification(){
+		return this.adminAuthentication;
+	}
+	
+	public boolean getAuthentification(){
+		return this.authentication;
 	}
 
 }
