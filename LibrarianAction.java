@@ -209,6 +209,24 @@ public class LibrarianAction extends Login{
 		}
 		return;
 	}
+
+	public void DeleteUserGUI(String email, boolean librarian) throws ClassNotFoundException, SQLException {
+		setUserEmail(email);
+		if(librarian) {
+			String sql = "Delete from users where email = '"+getUserEmail()+"'";
+			PreparedStatement stmt = getConnect().prepareStatement(sql);
+					
+			stmt.executeUpdate();
+			System.out.println(getUserEmail()+" was deleted from database.");
+		} else {
+			String sql = "Delete from users where email = '"+getUserEmail()+"'";
+			PreparedStatement stmt = getConnect().prepareStatement(sql);
+					
+			stmt.executeUpdate();
+			System.out.println(getUserEmail()+" was deleted from database.");
+		}
+	}
+
 	public boolean HasEmail(String input) throws SQLException, ClassNotFoundException {
 		// get title from input by getUsername function and get resultSet.
 		String uinput = input;
