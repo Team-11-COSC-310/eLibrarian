@@ -71,7 +71,7 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(100,100,100)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(100,100,100))
+                                .addGap(60,60,60))
                             // .addGroup(layout.createSequentialGroup()
                             //     .addGap(45, 45, 45)
                             //     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,7 +92,7 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
                             
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(34, 34, 34))
+                            .addGap(38,38,38))
                             
             // .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             //     .addGap(0, 0, Short.MAX_VALUE)
