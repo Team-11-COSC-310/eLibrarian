@@ -3,7 +3,6 @@ import java.awt.event.InputMethodEvent;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
 public class Gui_AddBooks extends javax.swing.JFrame {
