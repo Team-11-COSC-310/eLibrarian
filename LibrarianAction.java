@@ -31,6 +31,9 @@ public class LibrarianAction extends Login{
 			return;
 		}
 	}
+	public LibrarianAction() {
+
+	}
 	//it is called when the user turned out a librarian
 	//This class allows the user to add book and edit book from database
 	public void AddBook() throws ClassNotFoundException, SQLException {
@@ -59,6 +62,31 @@ public class LibrarianAction extends Login{
         System.out.println("Enter the summary (in one line):");
         setContent(input.nextLine());//set description to the inputted string
         stmt.setString(3, getContent());//set DATABASE content to the inputted string
+
+        stmt.setBoolean(4, true); //availability DEFAULT to available
+        stmt.setInt(5,0); //DEFAULT waitlist to 0 people
+        stmt.executeUpdate();
+	}
+
+	public void AddBookGUI(String title, String author, String summary) throws ClassNotFoundException, SQLException {
+        String idsql = "Select count(id) as ids from books";
+        ResultSet r = getResultSet(idsql);//count how many ids there are, so that adding a new book just increments them by one
+        int info = 0;
+		// Use while loop to store the count of ids in a string
+		while (r.next()) { 
+            info = r.getInt("ids");// add count of ids
+        } 
+        info += 4;//add 4 in order to increment the value each time a book is added outside of while loop
+			
+		String sql = "insert books(title,author,summary,availability,wl)"+"values(?,?,?,?,?)";
+        PreparedStatement stmt = getConnect().prepareStatement(sql); //dont need id beacue it should auto increment
+
+        setId(String.valueOf(info));//set Id to count of ids plus 1
+        stmt.setString(1, title);//set DATABASE title to the inputted string
+
+        stmt.setString(2, author);//set DATABASE author to the inputted string
+
+        stmt.setString(3, summary);//set DATABASE content to the inputted string
 
         stmt.setBoolean(4, true); //availability DEFAULT to available
         stmt.setInt(5,0); //DEFAULT waitlist to 0 people

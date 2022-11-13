@@ -1,3 +1,4 @@
+import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +51,11 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         jLabel1.setText("Welcome to the Administration Menu");
 
         jButton2.setText("Log out");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Switch to User Menu");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -59,6 +65,11 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         });
 
         jButton4.setText("Add Book");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Edit Book");
 
@@ -113,10 +124,22 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+    protected void jButton4ActionPerformed(ActionEvent evt) {
+        new Gui_AddBooks().setVisible(true);
+        dispose();
+    }
+
+    protected void jButton2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        new Gui_FirstMenu().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-         new Gui_UserMenu().setVisible(true);
-         dispose();
+        new Gui_UserMenu().setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**

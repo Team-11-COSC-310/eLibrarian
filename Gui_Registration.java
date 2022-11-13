@@ -180,7 +180,7 @@ public class Gui_Registration extends javax.swing.JFrame {
             try {
                 c.RegisterUser(c.getEmail(), c.getPassword());
                 c.RegisterLibrarian(c.getEmail(), c.getPassword());
-                JOptionPane.showMessageDialog(this,"Registration Sucess!");
+                JOptionPane.showMessageDialog(this,"Registration Success!");
             } catch (SQLException ex) {
                 Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -189,7 +189,7 @@ public class Gui_Registration extends javax.swing.JFrame {
         }else{
             try {
                 c.RegisterUser(c.getEmail(), c.getPassword());
-                JOptionPane.showMessageDialog(this,"Registration Sucess!");
+                JOptionPane.showMessageDialog(this,"Registration Success!");
             } catch (SQLException ex) {
                 Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
