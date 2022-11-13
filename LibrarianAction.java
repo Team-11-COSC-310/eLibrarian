@@ -109,6 +109,18 @@ public class LibrarianAction extends Login{
 		}
 		return;
 	}
+
+	public void EditBookGUI(String title) throws SQLException, ClassNotFoundException {
+		setBookname(title);
+		while(HasBook(getBookname())) {
+			String sql = "Delete from books where title = '"+getBookname()+"'";
+			    PreparedStatement stmt = getConnect().prepareStatement(sql);
+				
+			    stmt.executeUpdate();
+			    System.out.println(getBookname()+" was deleted from database.");
+		}
+	}
+
     // check if this book is in the database
 	public boolean HasBook(String input) throws SQLException, ClassNotFoundException {
 		// get title from input by getBookname function and get resultSet.
