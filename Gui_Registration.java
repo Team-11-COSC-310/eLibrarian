@@ -178,7 +178,7 @@ public class Gui_Registration extends javax.swing.JFrame {
         c.setPassword(password);
         if(librarian){
             try {
-                c.RegisterLibrarian(c.getEmail(), c.getPassword());
+                c.RegisterUser(c.getEmail(), c.getPassword());
                 c.RegisterLibrarian(c.getEmail(), c.getPassword());
                 JOptionPane.showMessageDialog(this,"Registration Sucess!");
             } catch (SQLException ex) {
