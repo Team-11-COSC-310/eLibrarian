@@ -1,3 +1,5 @@
+import java.awt.event.ActionEvent;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -8,12 +10,19 @@
  * @author iek42
  */
 public class Gui_UserMenu extends javax.swing.JFrame {
-
+    private String email;
+    private String password;
     /**
      * Creates new form Gui_UserMenu
      */
     public Gui_UserMenu() {
         initComponents();
+    }
+
+    public Gui_UserMenu(String email, String password) {
+        initComponents();
+        this.email = email;
+        this.password = password;
     }
 
     /**
@@ -47,6 +56,11 @@ public class Gui_UserMenu extends javax.swing.JFrame {
         jButton2.setText("Book Search");
 
         jButton3.setText("Account");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Log out");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -94,6 +108,18 @@ public class Gui_UserMenu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    protected void jButton3ActionPerformed(ActionEvent evt) {
+        Gui_AccountInfo ai = new Gui_AccountInfo(getEmail(), getPassword());
+        ai.setVisible(true);
+        dispose();
+    }
+    private String getEmail() {
+        return email;
+    }
+    private String getPassword() {
+        return password;
+    }
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:

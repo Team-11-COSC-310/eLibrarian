@@ -170,12 +170,14 @@ public class Gui_Login extends javax.swing.JFrame {
          }
          
              if(librarian&&log.getAdminAuthentification()){
-                                new Gui_AdminMenu().setVisible(true);
-                                dispose();
+                Gui_AdminMenu am = new Gui_AdminMenu(email_textbox.getText(), password_textbox.getText());
+                am.setVisible(true);
+                dispose();
 
              }else if(!librarian&&log.getAuthentification()){
-                                new Gui_UserMenu().setVisible(true);
-                                dispose();
+                Gui_UserMenu um = new Gui_UserMenu(email_textbox.getText(), password_textbox.getText());
+                um.setVisible(true);
+                dispose();
 
              }else if(librarian&&!log.getAdminAuthentification()&&log.getAuthentification()){
                  JOptionPane.showMessageDialog(this,"You're not our librarian!!");

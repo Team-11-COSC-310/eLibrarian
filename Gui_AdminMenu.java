@@ -8,12 +8,18 @@
  * @author iek42
  */
 public class Gui_AdminMenu extends javax.swing.JFrame {
-
+    private String email;
+    private String password;
     /**
      * Creates new form Gui_AdminMenu
      */
     public Gui_AdminMenu() {
         initComponents();
+    }
+    public Gui_AdminMenu(String email, String password) {
+        initComponents();
+        this.email = email;
+        this.password = password;
     }
 
     /**
@@ -127,7 +133,7 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    protected void jButton2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    protected void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         new Gui_FirstMenu().setVisible(true);
         dispose();
@@ -135,26 +141,33 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        new Gui_UserMenu().setVisible(true);
+        Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword());
+        um.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+    private String getEmail() {
+        return email;
+    }
+    private String getPassword() {
+        return password;
+    }
 
-    protected void jButton4ActionPerformed(ActionEvent evt) {
+    protected void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {
         new Gui_AddBooks().setVisible(true);
         dispose();
     }
 
-    protected void jButton5ActionPerformed(ActionEvent evt) {
+    protected void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {
         new Gui_DeleteBooks().setVisible(true);
         dispose();
     }
 
-    protected void jButton6ActionPerformed(ActionEvent evt) {
+    protected void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {
         new Gui_EditUsers().setVisible(true);
         dispose();
     }
 
-    protected void jButton7ActionPerformed(ActionEvent evt) {
+    protected void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {
         new Gui_DeleteUsers().setVisible(true);
         dispose();
     }
