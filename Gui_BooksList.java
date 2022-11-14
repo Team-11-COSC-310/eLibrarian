@@ -8,7 +8,7 @@
  * @author iek42
  */
 public class Gui_BooksList extends javax.swing.JFrame {
-
+    private BookList b = new BookList();
     /**
      * Creates new form Gui_BooksList
      */
@@ -102,15 +102,25 @@ public class Gui_BooksList extends javax.swing.JFrame {
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
+                {"Adrian", null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "null", "Title 3", "Title 4"
+                "Book Title", "Author", "", "ID"
             }
         ));
+        
+        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                b.inventoryGUI();
+            },
+            new String [] {
+                "Book Title", "Author", "", "ID"
+            }
+        ));
+
         jScrollPane4.setViewportView(jTable3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -186,6 +196,7 @@ public class Gui_BooksList extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTable4;
     private java.awt.List list1;
     // End of variables declaration//GEN-END:variables
 }

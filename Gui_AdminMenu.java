@@ -166,22 +166,26 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
     }
 
     protected void jButton4ActionPerformed(ActionEvent evt) {
-        new Gui_AddBooks().setVisible(true);
+        Gui_AddBooks ab = new Gui_AddBooks(getEmail(), getPassword());
+        ab.setVisible(true);
         dispose();
     }
 
     protected void jButton5ActionPerformed(ActionEvent evt) {
-        new Gui_DeleteBooks().setVisible(true);
+        Gui_DeleteBooks db = new Gui_DeleteBooks(getEmail(), getPassword());
+        db.setVisible(true);
         dispose();
     }
 
     protected void jButton6ActionPerformed(ActionEvent evt) {
-        new Gui_EditUsers().setVisible(true);
+        Gui_EditUsers eu = new Gui_EditUsers(getEmail(), getPassword());
+        eu.setVisible(true);
         dispose();
     }
 
     protected void jButton7ActionPerformed(ActionEvent evt) {
-        new Gui_DeleteUsers().setVisible(true);
+        Gui_DeleteUsers du = new Gui_DeleteUsers(getEmail(), getPassword());
+        du.setVisible(true);
         dispose();
     }
 

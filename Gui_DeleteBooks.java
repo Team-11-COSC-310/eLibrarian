@@ -7,11 +7,18 @@ import javax.swing.JOptionPane;
 
 public class Gui_DeleteBooks extends javax.swing.JFrame {
     private LibrarianAction la = new LibrarianAction();
+    private String email;
+    private String password;
     /**
      * Creates new form Gui_DeleteBooks
      */
     public Gui_DeleteBooks() {
         initComponents();
+    }
+    public Gui_DeleteBooks(String email, String password) {
+        initComponents();
+        this.email = email;
+        this.password = password;
     }
 
     private void initComponents() {
@@ -135,8 +142,15 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
     }
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
-        new Gui_AdminMenu().setVisible(true);
+        Gui_AdminMenu am = new Gui_AdminMenu(getEmail(), getPassword());
+        am.setVisible(true);
         dispose();
+    }
+    private String getEmail() {
+        return email;
+    }
+    private String getPassword() {
+        return password;
     }
 
     protected void bookTitle_textboxActionPerformed(ActionEvent evt) {

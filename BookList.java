@@ -109,6 +109,16 @@ public class BookList extends connecttodb {
 		}
         return invent;
     }
+    public ArrayList inventoryGUI() throws SQLException, ClassNotFoundException{
+        ArrayList arrayList = new ArrayList<>();
+        ResultSet list = getResultSet("select * from books");//should be every title and author
+		// Use while loop to add every book's title and its author to a big string
+        while(list.next()) {
+            String [] array = {list.getString(2), list.getString(3), list.getString(1)};
+            arrayList.addAll(Arrays.asList(array));
+        }
+        return arrayList;
+    }
     public String searchInventory(String sInput) throws SQLException, ClassNotFoundException{
         String invent="";
         //should be all books matching these titles or authors

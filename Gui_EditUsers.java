@@ -9,11 +9,18 @@ import javax.swing.JOptionPane;
 public class Gui_EditUsers extends javax.swing.JFrame {
     private LibrarianAction la = new LibrarianAction();
     private boolean librarian=false;
+    private String email;
+    private String password;
     /**
      * Creates new form Gui_EditUsers
      */
     public Gui_EditUsers() {
         initComponents();
+    }
+    public Gui_EditUsers(String email, String password) {
+        initComponents();
+        this.email = email;
+        this.password = password;
     }
 
     private void initComponents() {
@@ -164,6 +171,9 @@ protected void jButton1ActionPerformed(ActionEvent evt) {
     try {
         la.UpdateUserGUI(la.getEmail(), la.getPassword(), librarian);
         JOptionPane.showMessageDialog(this,"Account successfully edit!");
+        if(la.getEmail().equals(getEmail())) {
+            setPassword(la.getPassword());
+        }
     } catch (SQLException ex) {
         Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
     } catch (ClassNotFoundException ex) {
@@ -172,8 +182,18 @@ protected void jButton1ActionPerformed(ActionEvent evt) {
 }
 
 protected void jButton2ActionPerformed(ActionEvent evt) {
-    new Gui_AdminMenu().setVisible(true);
+    Gui_AdminMenu am = new Gui_AdminMenu(getEmail(), getPassword());
+    am.setVisible(true);
     dispose();
+}
+private String getEmail() {
+    return email;
+}
+private String getPassword() {
+    return password;
+}
+private void setPassword(String password) {
+    this.password = password;
 }
 
 public static void main(String args[]) {

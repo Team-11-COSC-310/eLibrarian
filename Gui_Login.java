@@ -169,7 +169,7 @@ public class Gui_Login extends javax.swing.JFrame {
              Logger.getLogger(Gui_Login.class.getName()).log(Level.SEVERE, null, ex);
          }
          
-             if(librarian&&log.getAdminAuthentification()){
+             if(librarian&&log.getAdminAuthentification()&&log.getAuthentification()){
                 Gui_AdminMenu am = new Gui_AdminMenu(email_textbox.getText(), password_textbox.getText());
                 am.setVisible(true);
                 dispose();

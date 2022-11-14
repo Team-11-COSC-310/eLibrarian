@@ -7,11 +7,18 @@ import javax.swing.JOptionPane;
 
 public class Gui_AddBooks extends javax.swing.JFrame {
     private LibrarianAction la = new LibrarianAction();
+    private String email;
+    private String password;
     /**
      * Creates new form Gui_AddBooks
      */
     public Gui_AddBooks() {
         initComponents();
+    }
+    public Gui_AddBooks(String email, String password) {
+        initComponents();
+        this.email = email;
+        this.password = password;
     }
 
     private void initComponents() {
@@ -190,8 +197,15 @@ public class Gui_AddBooks extends javax.swing.JFrame {
     }
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
-        new Gui_AdminMenu().setVisible(true);
+        Gui_AdminMenu am = new Gui_AdminMenu(getEmail(), getPassword());
+        am.setVisible(true);
         dispose();
+    }
+    private String getEmail() {
+        return email;
+    }
+    private String getPassword() {
+        return password;
     }
 
     protected void bookSummary_textboxActionPerformed(ActionEvent evt) {

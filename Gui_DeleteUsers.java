@@ -9,11 +9,18 @@ import javax.swing.JOptionPane;
 public class Gui_DeleteUsers extends javax.swing.JFrame {
     private LibrarianAction la = new LibrarianAction();
     private boolean librarian=false;
+    private String email;
+    private String password;
     /**
      * Creates new form Gui_EditUsers
      */
     public Gui_DeleteUsers() {
         initComponents();
+    }
+    public Gui_DeleteUsers(String email, String password) {
+        initComponents();
+        this.email = email;
+        this.password = password;
     }
 
     private void initComponents() {
@@ -142,8 +149,12 @@ protected void jButton1ActionPerformed(ActionEvent evt) {
     String email = email_textbox.getText();
     la.setEmail(email);
     try {
-        la.DeleteUserGUI(la.getEmail(), librarian);
-        JOptionPane.showMessageDialog(this,"Account successfully deleted!");
+        if(la.getEmail().equals(getEmail())) {
+            JOptionPane.showMessageDialog(this,"Cannot delete account that in use right now!");
+        } else {
+            la.DeleteUserGUI(la.getEmail(), librarian);
+            JOptionPane.showMessageDialog(this,"Account successfully deleted!");
+        }
     } catch (SQLException ex) {
         Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
     } catch (ClassNotFoundException ex) {
@@ -152,8 +163,15 @@ protected void jButton1ActionPerformed(ActionEvent evt) {
 }
 
 protected void jButton2ActionPerformed(ActionEvent evt) {
-    new Gui_AdminMenu().setVisible(true);
+    Gui_AdminMenu am = new Gui_AdminMenu(getEmail(), getPassword());
+    am.setVisible(true);
     dispose();
+}
+private String getEmail() {
+    return email;
+}
+private String getPassword() {
+    return password;
 }
 
 public static void main(String args[]) {
