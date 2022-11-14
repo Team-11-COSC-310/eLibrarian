@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 public class Borrow extends connecttodb{
     private int id;
     private String BookTitle;
-
+    private static Book b = new Book();
     public Borrow(int id, String BookTitle) {
         this.id = id;
         this.BookTitle = BookTitle;
@@ -73,28 +73,60 @@ public class Borrow extends connecttodb{
         int returnDate = 21-(int)result;//get 21 days minus the difference to find the date its due back.
         return returnDate;//
     }
-    public void rbook(Boolean Availability, int wl, String uemail, String bid) throws SQLException, ClassNotFoundException{
+    public boolean rbook(String uemail, String bid) throws SQLException, ClassNotFoundException{
+    	Boolean available = b.checkAvailability(bid);
+    	if(available==true&&checkDoubleBooking(uemail,bid)==false&&countwl(bid)==0) {
         String sql = "INSERT INTO waitlists (email,id) VALUES ('"+uemail+"','"+bid+"')";//create waitlist using current user's id & the book selected
         PreparedStatement stmt = getConnect().prepareStatement(sql);
         stmt.executeUpdate();//UPDATE DATABASE after joining a waitlist
         String sql2 = "UPDATE books SET availability = ?, wl = ? WHERE id ='"+bid+"'";//need to update availability AND wl
         PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
-        stmt2.setBoolean(1, !Availability);//change availility to opposite
-        stmt2.setInt(2, wl+1);//update waitlist to add 1
-        stmt2.executeUpdate();//UPDATE DATABASE after renting a book (CREATING a waitlist)  
+        stmt2.setBoolean(1, b.changeAvailability(false, bid));//change availility to opposite
+        stmt2.setInt(2, countwl(bid)+1);//update waitlist to add 1
+        stmt2.executeUpdate();//UPDATE DATABASE after renting a book (CREATING a waitlist)
+        return true;
+    	}else {
+    		return false;
+    	}
     }
-    public void jWl(int wl, String uemail, String bid) throws SQLException, ClassNotFoundException{
+    //check if the same person try to borrow the same id (bid) book 
+    public boolean checkDoubleBooking(String uemail,String bid) throws ClassNotFoundException, SQLException {
+        String sql = "SELECT * FROM waitlists where id ='"+bid+"' ORDER BY created_at ASC";//check using the book selected's id
+        PreparedStatement stmt = getConnect().prepareStatement(sql);
+        ResultSet list = stmt.executeQuery();   
+        while(list.next()) {
+        	if(list.getString(1).equals(uemail)) {
+        		return true;
+        	}
+        }
+        return false;
+    }
+    
+    public boolean jWl(String uemail, String bid) throws SQLException, ClassNotFoundException{
+    	if(!checkDoubleBooking(uemail,bid)&&!b.checkAvailability(bid)) {
         String sql = "INSERT INTO waitlists (email,id) VALUES ('"+uemail+"','"+bid+"')";//join/create waitlist using current user's id & the book selected
         PreparedStatement stmt = getConnect().prepareStatement(sql);
         stmt.executeUpdate();//UPDATE DATABASE after joining a waitlist
         String sql2 = "UPDATE books SET wl = ? WHERE id ='"+bid+"'";//only need to update wl since book is staying unavailable
         PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
-        stmt2.setInt(1, wl+1);//update waitlist to add 1
-        stmt2.executeUpdate();//UPDATE DATABASE after joining an EXISTING waitlist       
+        stmt2.setInt(1, countwl(bid)+1);//update waitlist to add 1
+        stmt2.executeUpdate();//UPDATE DATABASE after joining an EXISTING waitlist 
+        return true; 
+    	}else {
+    		return false;
+    	}
     }
     public void editwl(String uemail, String bid) throws SQLException, ClassNotFoundException{
         String sql = "DELETE FROM waitlists WHERE email = '"+uemail+"' and id = '"+bid+"'";//deletes current user's id & the book selected from waitlist
         PreparedStatement stmt = getConnect().prepareStatement(sql);
         stmt.executeUpdate();//UPDATE DATABASE after wait ends  
+    } 
+    public void resetwl(String bid) throws ClassNotFoundException, SQLException {
+    	String sql = "DELETE FROM waitlists where id = '"+bid+"'";
+    	PreparedStatement stmt = getConnect().prepareStatement(sql);
+    	stmt.executeUpdate();
+    	String sql2 = "Update books set availability = true, wl = 0 where id = '"+bid+"'";
+    	PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
+    	stmt2.executeUpdate();
     }
-}
+} 

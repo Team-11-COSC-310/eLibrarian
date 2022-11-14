@@ -45,6 +45,11 @@ public class Create extends Login{
 	}
 
     public boolean Register(String email, String password) throws SQLException, ClassNotFoundException{
+    	
+    	System.out.println("Try registering now...");
+    	super.setEmail(email);
+    	super.setPassword(password);
+    	if(!HasRegistry()&&EmailVerification())
         try{
         String sql = "insert into users(email, password)" + "values (?, ?)";
         PreparedStatement stmt = getConnect().prepareStatement(sql);
@@ -55,20 +60,23 @@ public class Create extends Login{
         return true;
         }catch(Exception e){
             return false;
-        }
-        }
+        }else{return false;}}
      public boolean RegisterLibrarian(String email, String password) throws SQLException, ClassNotFoundException{
+    	 System.out.println("Try registering now...");
+    	 super.setEmail(email);
+    	 super.setPassword(password);
+    	 if(!HasRegistry()&&EmailVerification()) {
          try{
+        	Register(email,password);
             String sql = "insert into librarians(email,password)" + "values (?,?)";
             PreparedStatement stmt = getConnect().prepareStatement(sql);
             stmt.setString(1, email);
             stmt.setString(2, super.PasswordEncryption(password));
-            //stmt.setString(2, super.PasswordEncryption(password));
             stmt.executeUpdate();
             System.out.println("Librarian registry success");
             return true;
          }catch(Exception e){
              return false;
          }
-            }
+    	 }else {return false;}}
   }

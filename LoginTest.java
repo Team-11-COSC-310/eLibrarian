@@ -1,10 +1,6 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.junit.After;
@@ -13,53 +9,104 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
-
-class LoginTest {
-    private static Login a;
-    private static Login b;
-    private static Create c;
-    private static Create lc;
+public class LoginTest {
+     
+    private static Login l= new Login();
+    private static Create c = new Create();
+  
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		System.out.println("Using @BeforeClass, executed before all test cases ");
+		 
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		System.out.println("Using @AfterClass, executed after all test cases ");
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		a = new Login();
-		b = new Login();
-	    c = new Create();
-	    c.Register("try1@icloud.com", "try1");
-	    lc = new Create();
-	    lc.RegisterLibrarian("try2@icloud.com", "try2");
+	  
+	  l.setPassword("apple");
+	  l.setEmail("apple@apple.com");
+	  c.Register("apple@apple.com","apple");
+//	  String sql = "Delete from users where email = '"+l.getEmail()+"'";
+//		PreparedStatement stmt = l.getConnect().prepareStatement(sql);
+//				
+//		stmt.executeUpdate();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-	}
-
-
-	@Test
-	public void testHasRegistry() throws ClassNotFoundException, SQLException {
-		assertFalse(a.HasRegistry());
-		assertTrue(c.HasRegistry());
-		assertTrue(lc.HasRegistry());
+		
 	}
 
 	@Test
-	public void testPasswordEncryption() {
-		assertEquals("9711c44bc923072c69621cd5362de3e2",c.PasswordEncryption("try1"));
+	public void testHasRegistery() throws ClassNotFoundException, SQLException {
+		l.setEmail("apple@apple.com");
+		l.setPassword("apple");
+		assertTrue(l.HasRegistry());
 	}
 
 	@Test
-	public void testEmailVerification() {
-		assertTrue(a.EmailVerification());
+	public void testHasRegistryWrongPassword() throws ClassNotFoundException, SQLException {
+		l.setEmail("apple@apple.com");
+		l.setPassword("green");
+		assertFalse(l.HasRegistry());
 	}
+	
+	@Test
+	public void testHasRegistryWrongEmail() throws ClassNotFoundException, SQLException {
+		l.setEmail("green@apple.com");
+		l.setPassword("apple");
+		assertFalse(l.HasRegistry());
+	}
+	
+
+	@Test
+	public void testEmailVerification() throws ClassNotFoundException, SQLException {
+		l.setEmail("apple@apple.com");
+		assertTrue(l.EmailVerification());
+	}
+	
+	@Test
+	public void testEmailVerificationFail() throws ClassNotFoundException, SQLException {
+		l.setEmail("appleapple.com");
+		assertFalse(l.EmailVerification());
+	}
+	
+	@Test
+	public void testEmailVerificationFail2() throws ClassNotFoundException, SQLException {
+		l.setEmail("@");
+		assertFalse(l.EmailVerification());
+	}
+	
+	@Test
+	public void testPasswordEncryption() throws ClassNotFoundException, SQLException {
+		assertEquals("1f3870be274f6c49b3e31a0c6728957f",l.PasswordEncryption("apple"));
+	}
+	
+
+	@Test
+	public void testPasswordEncryptionFail() throws ClassNotFoundException, SQLException {
+		assertNotEquals("1f3870be274f6c49b3e31a0c6728957f",l.PasswordEncryption("Apple"));
+	}
+	
+	@Test
+	public void testPasswordEncryptionFail2() throws ClassNotFoundException, SQLException {
+		assertNotEquals("1f3870be274f6c49b3e31a0c6728957f",l.PasswordEncryption("green"));
+	}
+    
+	@Test
+	public void testPasswordReset() throws ClassNotFoundException, SQLException {
+		assertEquals("green",l.PasswordReset("green"));
+		//after checking the reset function, use it again for the sake of other testing compatibility
+		l.PasswordReset("apple");
+	}
+	@Test
+	public void testPasswordResetNonExisitingEmailFail() throws ClassNotFoundException, SQLException {
+		l.setEmail("green@apple.com");
+		assertEquals("apple",l.PasswordReset("apple"));
+	}
+
 
 }

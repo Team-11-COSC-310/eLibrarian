@@ -203,7 +203,6 @@ public class Login extends connecttodb{
 	//password encription function. This returns encripted version of password.
 	public String PasswordEncryption(String pass) {
 		String password = pass;
-		System.out.println("new pass is "+password);
 		String encryptedPassword = null; 
 		
 		try {
@@ -224,13 +223,12 @@ public class Login extends connecttodb{
 			
 		return encryptedPassword;
 	}
-	
-	public void PasswordReset(String y) throws ClassNotFoundException, SQLException {
-		if(y.equals("yes")) {
-			String pd;
-			System.out.println("Enter new password: ");
-			pd = reader.next();
-			setPassword(pd);
+	//password should be different from the previous one, also the user should have useremail in database
+	public String PasswordReset(String pass) throws ClassNotFoundException, SQLException {
+		if(HasEmail()&&pass!=getPassword()) {
+			String pd =pass;
+			
+			
 			pd = PasswordEncryption(pd);
 			
 			 String sql = "update users set password = ?"+" where email = ?";
@@ -238,15 +236,14 @@ public class Login extends connecttodb{
             stmt.setString(1, pd);
             stmt.setString(2, getEmail());
 	        stmt.executeUpdate();
-	        
+	        setPassword(pass);
 	        System.out.println("Your password is updated!");
-		}else if(y.equals("no")) {
-			System.out.println("No reset. Ok, bye");
-			return; 
+	        return pass;
 		}else {
-			return;
+			return getPassword();
 		}
-	}
+		
+			}
 	
         public boolean getAdminAuthentification(){
             return this.adminAuthentication;
