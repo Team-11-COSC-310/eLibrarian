@@ -41,5 +41,19 @@ public class User extends connecttodb {
         } 
         return info;
     }
+
+    public String infoGUI(String uemail) throws SQLException, ClassNotFoundException {
+        String sql = "select * from users where email ='"+uemail+"'";
+        String info="";
+        ResultSet list = getResultSet(sql);//should be every title and author  
+		while (list.next()) {
+            info += "| | ";//new line
+            info += list.getString(1);//email
+            info += " ---- ";//space
+            info += list.getString(2);//pass
+            info += "\n";//new line
+        } 
+        return info;
+    }
 }
 
