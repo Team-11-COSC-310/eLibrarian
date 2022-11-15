@@ -70,6 +70,7 @@ public class Gui_BooksList extends javax.swing.JFrame {
         list1 = new java.awt.List();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
 
         jList1.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -114,6 +115,9 @@ public class Gui_BooksList extends javax.swing.JFrame {
         ));
         jTable2.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(jTable2);
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel1.setText("Welcome to Book List Page");
 
         jButton1.setText("Next");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -167,11 +171,7 @@ public class Gui_BooksList extends javax.swing.JFrame {
 
         jTable3.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
-                // do some actions here, for example
-                // print first column value from selected row
-                System.out.println(jTable3.getValueAt(jTable3.getSelectedRow(), 2).toString());
                 id = jTable3.getValueAt(jTable3.getSelectedRow(), 2).toString();
-                System.out.println(id);
             }
         });
 
@@ -191,6 +191,10 @@ public class Gui_BooksList extends javax.swing.JFrame {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jButton1,javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGap(50,50,50))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(215,215,215)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+            )
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -198,7 +202,12 @@ public class Gui_BooksList extends javax.swing.JFrame {
                 .addContainerGap(100, Short.MAX_VALUE)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(139, 139, 139))
-                // .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createSequentialGroup()
+                .addGap(25,25,25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15,15,15)
+                ))
                 .addGroup(layout.createSequentialGroup()
                 .addGap(580,580,580)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -283,5 +292,6 @@ public class Gui_BooksList extends javax.swing.JFrame {
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private java.awt.List list1;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

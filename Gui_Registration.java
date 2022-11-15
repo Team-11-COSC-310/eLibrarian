@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 public class Gui_Registration extends javax.swing.JFrame {
    private Create c = new Create();
    private boolean librarian=false;
+   private Login l = new Login();
   
     /**
      * Creates new form Gui_Registration
@@ -176,26 +177,41 @@ public class Gui_Registration extends javax.swing.JFrame {
         c.setEmail(email);
         String password = password_textbox.getText();
         c.setPassword(password);
-        if(librarian){
-            try {
-                c.RegisterUser(c.getEmail(), c.getPassword());
-                c.RegisterLibrarian(c.getEmail(), c.getPassword());
-                JOptionPane.showMessageDialog(this,"Registration Success!");
-            } catch (SQLException ex) {
-                Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
+        l.setEmail(email);
+        boolean userCheck;
+        boolean adminCheck;
+        try {
+            userCheck = l.HasEmail();
+            adminCheck = l.HasAdminEmail();
+            if(librarian && !adminCheck){
+                try {
+                    c.RegisterUser(c.getEmail(), c.getPassword());
+                    c.RegisterLibrarian(c.getEmail(), c.getPassword());
+                    JOptionPane.showMessageDialog(this,"Registration Success!");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else if(!librarian && !userCheck){
+                try {
+                    c.RegisterUser(c.getEmail(), c.getPassword());
+                    JOptionPane.showMessageDialog(this,"Registration Success!");
+    
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,"Email is already registered.\nPlease enter another email.");
             }
-        }else{
-            try {
-                c.RegisterUser(c.getEmail(), c.getPassword());
-                JOptionPane.showMessageDialog(this,"Registration Success!");
-            } catch (SQLException ex) {
-                Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (ClassNotFoundException | SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+        
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void email_textboxInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_email_textboxInputMethodTextChanged

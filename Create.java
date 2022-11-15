@@ -54,5 +54,5 @@ public class Create extends Login{
             stmt.setString(1, email);
             stmt.setString(2, password);
             stmt.executeUpdate();
-            }
+        }
   }
