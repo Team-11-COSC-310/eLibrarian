@@ -150,6 +150,18 @@ public class BookList extends connecttodb {
 		}
         return invent;
     }
+
+    public String searchInventoryGUI(String sInput) throws SQLException, ClassNotFoundException{
+        String invent="";
+        //should be all books matching these titles or authors
+        ResultSet list = getResultSet("select * from books where title = \""+sInput+"\" or author = \""+sInput+"\"");
+		// Use while loop to add every book's info to a big string
+		while (list.next()) { 
+            invent += list.getString(1);//id 
+		}
+        return invent;
+    }
+
     // public void BookEdit(int ID, String name, String Author) {
     //     book.setBookTitle(ID, name);
     //     book.setBookAuthor(ID, Author);

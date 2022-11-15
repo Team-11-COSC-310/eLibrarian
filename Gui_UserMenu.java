@@ -61,6 +61,11 @@ public class Gui_UserMenu extends javax.swing.JFrame {
         });
 
         jButton2.setText("Book Search");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Account");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -116,9 +121,16 @@ public class Gui_UserMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
     protected void jButton1ActionPerformed(ActionEvent evt) {
         Gui_BooksList bl = new Gui_BooksList(getEmail(), getPassword());
         bl.setVisible(true);
+        dispose();
+    }
+
+    protected void jButton2ActionPerformed(ActionEvent evt) {
+        Gui_BookSearch bs = new Gui_BookSearch(getEmail(), getPassword());
+        bs.setVisible(true);
         dispose();
     }
 

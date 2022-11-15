@@ -57,6 +57,8 @@ public class Gui_BooksList extends javax.swing.JFrame {
         setLocation(x, y);
         setResizable(false);
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -133,7 +135,6 @@ public class Gui_BooksList extends javax.swing.JFrame {
             }
         });
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -173,15 +174,6 @@ public class Gui_BooksList extends javax.swing.JFrame {
                 System.out.println(id);
             }
         });
-
-        // jTable4.setModel(new javax.swing.table.DefaultTableModel(
-        //     new Object [][] {
-        //         {null, null, null, null},
-        //     },
-        //     new String [] {
-        //         "Book Title", "Author", "", "ID"
-        //     }
-        // ));
 
         jScrollPane4.setViewportView(jTable3);
 

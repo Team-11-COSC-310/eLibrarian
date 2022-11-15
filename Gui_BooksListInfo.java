@@ -207,7 +207,7 @@ public class Gui_BooksListInfo extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Gui_AdminMenu().setVisible(true);
+                new Gui_BooksListInfo().setVisible(true);
             }
         });
     }
