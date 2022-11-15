@@ -9,6 +9,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class Gui_BooksListInfo extends javax.swing.JFrame {
+    private String email;
+    private String password;
     private BookList b = new BookList();
     private ArrayList<String> booklistinfo =new ArrayList<String>();
     private String id = "";
@@ -21,8 +23,10 @@ public class Gui_BooksListInfo extends javax.swing.JFrame {
 
     }
 
-    public Gui_BooksListInfo(String id) {
+    public Gui_BooksListInfo(String id, String email, String password) {
         initComponents(id);
+        this.email = email;
+        this.password = password;
     }
 
     private void initComponents(String id) {
@@ -68,7 +72,7 @@ public class Gui_BooksListInfo extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Join Waitlist");
+        jButton2.setText("Borrow / Join Waitlist");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -90,12 +94,8 @@ public class Gui_BooksListInfo extends javax.swing.JFrame {
                 .addGroup(layout.createSequentialGroup()
                     .addGap(29, 29, 29)
                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        // .addGap(29, 29, 29)
                         ))
-            // .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,false)
-                    // .addGroup(layout.createSequentialGroup()
-                        // .addGap(20,20,20)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         )
@@ -110,7 +110,6 @@ public class Gui_BooksListInfo extends javax.swing.JFrame {
                         .addGap(458,458,458)
                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     )
-                // .addContainerGap(88, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,9 +137,15 @@ public class Gui_BooksListInfo extends javax.swing.JFrame {
     }
 
     protected void jButton1ActionPerformed(ActionEvent evt) {
-        Gui_BooksList bl = new Gui_BooksList();
+        Gui_BooksList bl = new Gui_BooksList(getEmail(), getPassword());
         bl.setVisible(true);
         dispose();
+    }
+    private String getEmail() {
+        return email;
+    }
+    private String getPassword() {
+        return password;
     }
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
@@ -149,7 +154,7 @@ public class Gui_BooksListInfo extends javax.swing.JFrame {
             // JOptionPane.showMessageDialog(this,book.getID());
             if(book.getAvailability()){
                 book.changeAvailability(false, getID());
-                JOptionPane.showMessageDialog(this," Enjoy the book!\nIt is due back in 21 day(s).");
+                JOptionPane.showMessageDialog(this,"Enjoy the book!\nIt is due back in 21 day(s).");
             } else {
                 try {
                     int wtime = book.getWL()*21;
