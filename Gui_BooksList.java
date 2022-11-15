@@ -1,3 +1,16 @@
+import java.awt.HeadlessException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -9,6 +22,8 @@
  */
 public class Gui_BooksList extends javax.swing.JFrame {
     private BookList b = new BookList();
+    private ArrayList<ArrayList<String>> booklist =new ArrayList<ArrayList<String>>();
+    private String id = "";
     /**
      * Creates new form Gui_BooksList
      */
@@ -25,9 +40,14 @@ public class Gui_BooksList extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (screenSize.width - getWidth() -700) / 2;
+        int y = (screenSize.height - getHeight() -700) / 2;
+
         setTitle("eLibrarian");
         setSize(500,400);
-        setLocationRelativeTo(null);
+        // setLocationRelativeTo(null);
+        setLocation(x, y);
         setResizable(false);
 
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -102,24 +122,51 @@ public class Gui_BooksList extends javax.swing.JFrame {
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Adrian", null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                // {"Adrian", null, null, null},
+                // {null, null, null, null},
+                // {null, null, null, null},
+                // {null, null, null, null}
             },
             new String [] {
-                "Book Title", "Author", "", "ID"
+                "Book Title", "Author", "ID"
             }
         ));
-        
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                b.inventoryGUI();
-            },
-            new String [] {
-                "Book Title", "Author", "", "ID"
+        try {
+            booklist = b.inventoryGUI();
+        } catch (ClassNotFoundException | SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+        for(int i = 0; i < booklist.size(); i++) {
+            String title = booklist.get(i).get(0);
+            String author = booklist.get(i).get(1);
+            String id = booklist.get(i).get(2);
+
+            Object [] newRow = {title, author, id};
+            model.addRow(newRow);
+        }
+        jTable3.getColumnModel().getColumn(0).setPreferredWidth(255);
+        jTable3.getColumnModel().getColumn(2).setPreferredWidth(2);
+
+        jTable3.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                // do some actions here, for example
+                // print first column value from selected row
+                System.out.println(jTable3.getValueAt(jTable3.getSelectedRow(), 2).toString());
+                id = jTable3.getValueAt(jTable3.getSelectedRow(), 2).toString();
+                System.out.println(id);
             }
-        ));
+        });
+
+        // jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        //     new Object [][] {
+        //         {null, null, null, null},
+        //     },
+        //     new String [] {
+        //         "Book Title", "Author", "", "ID"
+        //     }
+        // ));
 
         jScrollPane4.setViewportView(jTable3);
 
@@ -131,20 +178,28 @@ public class Gui_BooksList extends javax.swing.JFrame {
                 .addGap(111, 111, 111)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(116, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(jButton1,javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(34, 34, 34))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(226, Short.MAX_VALUE)
+                .addContainerGap(100, Short.MAX_VALUE)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(139, 139, 139))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(jButton1,javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(34, 34, 34))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        Gui_BooksListInfo bli = new Gui_BooksListInfo(id);
+        bli.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void list1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_list1ActionPerformed
@@ -196,7 +251,6 @@ public class Gui_BooksList extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
-    private javax.swing.JTable jTable4;
     private java.awt.List list1;
     // End of variables declaration//GEN-END:variables
 }

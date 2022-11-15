@@ -2,7 +2,6 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.Scanner;
 
 public class BookList extends connecttodb {
     private ArrayList<Book> Books = new ArrayList<Book>();
@@ -109,15 +108,31 @@ public class BookList extends connecttodb {
 		}
         return invent;
     }
-    public ArrayList inventoryGUI() throws SQLException, ClassNotFoundException{
-        ArrayList arrayList = new ArrayList<>();
+    public ArrayList<ArrayList<String>> inventoryGUI() throws SQLException, ClassNotFoundException{
         ResultSet list = getResultSet("select * from books");//should be every title and author
 		// Use while loop to add every book's title and its author to a big string
-        while(list.next()) {
-            String [] array = {list.getString(2), list.getString(3), list.getString(1)};
-            arrayList.addAll(Arrays.asList(array));
-        }
-        return arrayList;
+        ArrayList<ArrayList<String>> booklist = new ArrayList<ArrayList<String>>();
+		while (list.next()) {  
+            ArrayList<String> array = new ArrayList<String>();
+            array.add(list.getString(2));//title 
+            array.add(list.getString(3));;//author
+            array.add(list.getString(1));//id 
+            booklist.add(array);
+		}
+        return booklist;
+    }
+    public ArrayList<String> inventoryInfoGUI(String id) throws SQLException, ClassNotFoundException{
+        ResultSet list = getResultSet("select * from books where id = \""+id+"\"");//should be every title and author
+		// Use while loop to add every book's title and its author to a big string
+        ArrayList<String> booklistinfo = new ArrayList<String>();
+		while (list.next()) {  
+            booklistinfo.add(list.getString(2));//title 
+            booklistinfo.add(list.getString(3));;//author
+            booklistinfo.add(list.getString(4));//summary
+            booklistinfo.add(list.getString(5));//availability
+            booklistinfo.add(list.getString(6));//waitlist
+		}
+        return booklistinfo;
     }
     public String searchInventory(String sInput) throws SQLException, ClassNotFoundException{
         String invent="";
