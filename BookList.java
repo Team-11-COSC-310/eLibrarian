@@ -162,6 +162,20 @@ public class BookList extends connecttodb {
         return invent;
     }
 
+    public boolean BookSearchGUI(String sInput) throws ClassNotFoundException, SQLException {
+        String invent="";
+        //should be all books matching these titles or authors
+        ResultSet list = getResultSet("select * from books where title = \""+sInput+"\" or author = \""+sInput+"\"");
+		// Use while loop to add every book's info to a big string
+		while (list.next()) { 
+            invent += list.getString(1);//id 
+		}
+        if(invent.isEmpty()){
+            return false;
+        }
+        return true;
+    }
+
     // public void BookEdit(int ID, String name, String Author) {
     //     book.setBookTitle(ID, name);
     //     book.setBookAuthor(ID, Author);

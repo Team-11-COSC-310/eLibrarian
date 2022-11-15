@@ -131,16 +131,24 @@ public class Gui_BookSearch extends javax.swing.JFrame {
 
     protected void jButton1ActionPerformed(ActionEvent evt) {
         String titleorauthor = titleorauthor_textbox.getText();
-        try {
-            id = b.searchInventoryGUI(titleorauthor);
-            Gui_BookSearchInfo bsi = new Gui_BookSearchInfo(id, getEmail(), getPassword());
-            bsi.setVisible(true);
-            dispose();
-        } catch (ClassNotFoundException | SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if(!titleorauthor.isEmpty()){
+            try {
+                if(b.BookSearchGUI(titleorauthor)){
+                    id = b.searchInventoryGUI(titleorauthor);
+                    Gui_BookSearchInfo bsi = new Gui_BookSearchInfo(id, getEmail(), getPassword());
+                    bsi.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this,"We do not have any books matching "+titleorauthor+".\nPlease renter Title or Author.");
+                }  
+            } catch (Exception e){
+               
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,"Please enter Title or Author.");
         }
     }
+
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
         Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword());
