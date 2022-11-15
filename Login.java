@@ -1,3 +1,4 @@
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,10 +21,15 @@ public class Login extends connecttodb {
 	public int Passind;
 	Scanner reader = new Scanner(System.in);
 
+	public Login() {
+
+	}
+
 	// This constructor suggests users enter their email and password. This also
 	// check if this user has already account or not.
 	// If they have, return T, if not, F.
 	public Login(int attempt, String uname) throws SQLException, ClassNotFoundException {
+
 		// Ask input from user
 		if (attempt == 1) { // blank slate
 			System.out.println("Please enter your email: ");
@@ -133,6 +139,23 @@ public class Login extends connecttodb {
 		return false;
 	}
 
+	public boolean HasAdminPassword() throws SQLException, ClassNotFoundException {
+		int j = 1;
+		// get password from input by getPassword function and get resultSet.
+		String uPassword = PasswordEncryption(getPassword());
+		ResultSet r = getResultSet("select * from librarians");
+		// Use while loop to check existence until the end of the password column
+		while (r.next()) {
+			if (r.getString(2).equals(uPassword)) {
+				PassindSet(r.getRow());
+				return true;
+			}
+
+		}
+		System.out.println("The password you have entered is incorrect.");
+		return false;
+	}
+
 	// check the index of table from database for checking password and email
 	// matching
 	public int EmailindSet(int ind) {
@@ -162,13 +185,11 @@ public class Login extends connecttodb {
 
 	// check if this login info match with the database info
 	public boolean HasRegistry() throws SQLException, ClassNotFoundException {
-		// if (HasAdminEmail() && HasPassword()&&indCheck()) {
-		// System.out.println("e ind and p ind" + EmailindGet()+PassindGet());
-		//
-		// return this.authentication = true; //authenticates if admin logs in ONLY USED
-		// BY ADMIN SCREEN
-		// }
-		if (HasEmail() && HasPassword() && indCheck()) { // authenticates if anyone logs in
+		if (HasAdminEmail() && HasAdminPassword() && indCheck()) {
+			System.out.println("e ind and p ind" + EmailindGet() + PassindGet());
+
+			return this.adminAuthentication = true; // authenticates if admin logs in ONLY USED BY ADMIN SCREEN
+		} else if (HasEmail() && HasPassword() && indCheck()) { // authenticates if anyone logs in
 
 			return this.authentication = true;
 		} else {
@@ -241,6 +262,14 @@ public class Login extends connecttodb {
 		} else {
 			return;
 		}
+	}
+
+	public boolean getAdminAuthentification() {
+		return this.adminAuthentication;
+	}
+
+	public boolean getAuthentification() {
+		return this.authentication;
 	}
 
 }

@@ -1,3 +1,4 @@
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -29,6 +30,9 @@ public class Create extends Login {
         }
     }
 
+    Create() {
+    }
+
     // get the attempt number from the super
     public int getAttempt() {
         return cAttempt;
@@ -39,20 +43,32 @@ public class Create extends Login {
         return this.cAttempt = Eml;
     }
 
-    public void Register(String email, String password) throws SQLException, ClassNotFoundException {
-        String sql = "insert into users(email, password)" + "values (?, ?)";
-        PreparedStatement stmt = getConnect().prepareStatement(sql);
-        stmt.setString(1, email);
-        stmt.setString(2, super.PasswordEncryption(password));
-        stmt.executeUpdate();
-
+    public boolean Register(String email, String password) throws SQLException, ClassNotFoundException {
+        try {
+            String sql = "insert into users(email, password)" + "values (?, ?)";
+            PreparedStatement stmt = getConnect().prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setString(2, super.PasswordEncryption(password));
+            stmt.executeUpdate();
+            System.out.println("Registry success");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    public void RegisterLibrarian(String email, String password) throws SQLException, ClassNotFoundException {
-        String sql = "insert into librarians(email, password)" + "values (?, ?)";
-        PreparedStatement stmt = getConnect().prepareStatement(sql);
-        stmt.setString(1, email);
-        stmt.setString(2, super.PasswordEncryption(password));
-        stmt.executeUpdate();
+    public boolean RegisterLibrarian(String email, String password) throws SQLException, ClassNotFoundException {
+        try {
+            String sql = "insert into librarians(email,password)" + "values (?,?)";
+            PreparedStatement stmt = getConnect().prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setString(2, super.PasswordEncryption(password));
+            // stmt.setString(2, super.PasswordEncryption(password));
+            stmt.executeUpdate();
+            System.out.println("Librarian registry success");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
