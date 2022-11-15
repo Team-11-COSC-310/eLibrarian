@@ -183,7 +183,9 @@ public class Gui_Registration extends javax.swing.JFrame {
         try {
             userCheck = l.HasEmail();
             adminCheck = l.HasAdminEmail();
-            if(librarian && !adminCheck){
+            if(password.isEmpty()) {
+                JOptionPane.showMessageDialog(this,"Please enter a password.");
+            } else if(librarian && !adminCheck){
                 try {
                     c.RegisterUser(c.getEmail(), c.getPassword());
                     c.RegisterLibrarian(c.getEmail(), c.getPassword());
@@ -203,8 +205,6 @@ public class Gui_Registration extends javax.swing.JFrame {
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else if(password.isEmpty()) {
-                JOptionPane.showMessageDialog(this,"Please enter a password.");
             } else {
                 JOptionPane.showMessageDialog(this,"Email is already registered.\nPlease enter another email.");
             }
