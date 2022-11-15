@@ -13,7 +13,7 @@ The 'Login' Class prompts the user to login with an email and password, and chec
 
 The 'Create' Class prompts the user to create an account with an email and password, and checks to make sure the account doesn't already exist.
 
-The 'LibrarianAction' Class extends the Login class to check if the user is an admin, and then prompts the user for a choice to Add or Edit a book or Edit or Delete user's account to/in the database (ADMIN functions).
+The 'LibrarianAction' Class extends the Login class to check if the user is an admin, and then prompts the user for a choice to Add or Delete a book or Edit or Delete user's account to/in the database (ADMIN functions).
 
 The 'LoggedIn' Class prompts the user for a choice from the main menu once they are logged in (B,S, or U).
 
