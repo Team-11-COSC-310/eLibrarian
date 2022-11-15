@@ -184,7 +184,8 @@ public class Gui_AccountInfo extends javax.swing.JFrame {
     }
 
 protected void jButton1ActionPerformed(ActionEvent evt) {
-    new Gui_UserMenu().setVisible(true);
+    Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword());
+    um.setVisible(true);
     dispose();
 }
 
