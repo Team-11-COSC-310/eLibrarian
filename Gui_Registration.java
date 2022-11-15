@@ -203,6 +203,8 @@ public class Gui_Registration extends javax.swing.JFrame {
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            } else if(password.isEmpty()) {
+                JOptionPane.showMessageDialog(this,"Please enter a password.");
             } else {
                 JOptionPane.showMessageDialog(this,"Email is already registered.\nPlease enter another email.");
             }
