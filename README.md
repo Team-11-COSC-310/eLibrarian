@@ -35,7 +35,7 @@ Brenner updated the functionality of borrowing a book, or joining its waitlist. 
 
 Adrian flushed out the Admin/Librarian page which means updating the menus to display all of the regular options for users at the same time as the admin functions. Before the admin screen had to be separately logged in to which was a pain. Admins can now change user’s passwords, and delete users all together in addition to adding books and deleting books. (1)
 
-Bolu built the Notify user feature. This uses an open-source library to send an unreplyable email to the user’s email that states when a book is due back, or when the book they are waiting for is available to borrow. This is great for making sure users return books on time, and to keep the wait time for the books short. (2)
+Bolu built the Notify user feature. This uses an open-source library to send an unreplyable email to the user’s email that states when a book is rented. In the future it will check the database constantly, and send an email whe a book is due back, or when the book they are waiting for is available to borrow. This will be great for making sure users return books on time, and to keep the wait time for the books short. (2)
 
 Keizo and Adrian started writing the GUI that allows the program to run in a window and take alot nicer input then the console did previously.
 
