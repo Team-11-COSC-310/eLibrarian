@@ -22,11 +22,12 @@ public class BookTest {
 	@Before
 	public void setUp() throws Exception {
 		String sql = "UPDATE books SET wl = ?,availability = ? WHERE id = ?";
-        PreparedStatement stmt = b.getConnect().prepareStatement(sql);
-        stmt.setInt(1, 3);
+        PreparedStatement stmt = b.getConnect().prepareStatement(sql); 
+        stmt.setInt(1, 1);
         stmt.setBoolean(2, false);
         stmt.setInt(3,3);
         stmt.executeUpdate();
+        stmt.close();
 	}
 
 	@After

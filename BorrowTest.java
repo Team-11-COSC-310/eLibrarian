@@ -33,6 +33,9 @@ public class BorrowTest {
 	@Before
 	public void setUp() throws Exception {
 		email = "johnbooks@book.com";
+		b.resetwl("1");
+		b.resetwl("2");
+		
 		
 //		String sql = "select * from books where id = ?";
 //		PreparedStatement stmt = b.getConnect().prepareStatement(sql);
@@ -44,7 +47,7 @@ public class BorrowTest {
 
 	@After
 	public void tearDown() throws Exception {
-		b.resetwl("1");
+		//b.resetwl("1");
 		b.resetwl("2");
 	}
 	
@@ -59,6 +62,7 @@ public class BorrowTest {
 		//the same person try to borrow the same book
 		b.rbook(email, "1");
 		assertFalse(b.rbook(email, "1"));
+		
 	}
 	
  
@@ -72,8 +76,8 @@ public class BorrowTest {
 	
 	@Test
 	public void testJwl() throws ClassNotFoundException, SQLException {
-		book.changeAvailability(false, "2");
-		assertTrue(b.jWl("johnbooks@book.com", "2"));
+	    b.rbook("green@green.com", "1");
+		assertTrue(b.jWl("johnbooks@book.com", "1"));
 	}
 	
     

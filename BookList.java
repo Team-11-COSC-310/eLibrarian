@@ -1,13 +1,11 @@
-import java.sql.Connection;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 import java.util.Scanner;
 
 public class BookList extends connecttodb {
     private ArrayList<Book> Books = new ArrayList<Book>();
-    private int count;
     Scanner reader = new Scanner(System.in);
 
     public BookList(ArrayList<Book> Books) {
@@ -64,7 +62,7 @@ public class BookList extends connecttodb {
         this.Books.remove(book);
         return true;
     }
-    public boolean EditBook(int index, Book book) {
+    /*public boolean EditBook(int index, Book book) {
         if(book != null && !book.equals("")) {
             System.out.println("Can't be empty");
             return false;
@@ -77,7 +75,7 @@ public class BookList extends connecttodb {
         }
         this.Books.set(index, book);
         return true;
-    }
+    }*/
     public boolean BookSearch(Book book) {
         for(int i = 0; i < Books.size(); i++) {
             if(Books.contains(book)) {
@@ -100,6 +98,22 @@ public class BookList extends connecttodb {
         String invent="";
         ResultSet list = getResultSet("select * from books");//should be every title and author
 		// Use while loop to add every book's title and its author to a big string
+		while (list.next()) { 
+            invent += "| | ";//new line               
+			invent += list.getString(2);//title 
+            invent += " ---- ";//space
+            invent += list.getString(3);//author
+            invent += " ---- ";//space
+            invent += list.getString(1);//id 
+            invent += "\n";//new line
+		}
+        return invent;
+    }
+    public String searchInventory(String sInput) throws SQLException, ClassNotFoundException{
+        String invent="";
+        //should be all books matching these titles or authors
+        ResultSet list = getResultSet("select * from books where title = \""+sInput+"\" or author = \""+sInput+"\"");
+		// Use while loop to add every book's info to a big string
 		while (list.next()) { 
             invent += "| | ";//new line               
 			invent += list.getString(2);//title 

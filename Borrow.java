@@ -75,14 +75,14 @@ public class Borrow extends connecttodb{
     }
     public boolean rbook(String uemail, String bid) throws SQLException, ClassNotFoundException{
     	Boolean available = b.checkAvailability(bid);
-    	if(available==true&&checkDoubleBooking(uemail,bid)==false&&countwl(bid)==0) {
+    	if(available==true&&!checkDoubleBooking(uemail,bid)&&countwl(bid)==0) {
         String sql = "INSERT INTO waitlists (email,id) VALUES ('"+uemail+"','"+bid+"')";//create waitlist using current user's id & the book selected
         PreparedStatement stmt = getConnect().prepareStatement(sql);
         stmt.executeUpdate();//UPDATE DATABASE after joining a waitlist
         String sql2 = "UPDATE books SET availability = ?, wl = ? WHERE id ='"+bid+"'";//need to update availability AND wl
         PreparedStatement stmt2 = getConnect().prepareStatement(sql2);
-        stmt2.setBoolean(1, b.changeAvailability(false, bid));//change availility to opposite
-        stmt2.setInt(2, countwl(bid)+1);//update waitlist to add 1
+        stmt2.setBoolean(1, false);//change availility to opposite
+        stmt2.setInt(2, 0);//update waitlist to add 1
         stmt2.executeUpdate();//UPDATE DATABASE after renting a book (CREATING a waitlist)
         return true;
     	}else {

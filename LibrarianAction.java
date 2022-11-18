@@ -19,7 +19,39 @@ public class LibrarianAction extends Login{
 	 }
 	 
      public LibrarianAction(int att, String uname) throws SQLException, ClassNotFoundException {
-		super(att, uname);
+		super(att, uname); 
+		System.out.println("Hello, How can I help you?: 'AddBooks', 'EditBooks', 'UpdateUsers' 'DeleteUsers' ");
+		in = input.nextLine();
+		if(in.equals("AddBooks")) {
+			System.out.println("Tell me the book's details to add:");
+	        System.out.println("Enter the title:");
+	        setBookname(input.nextLine());//set title to the inputted string
+
+	        System.out.println("Enter the author:");
+	        setAuthor(input.nextLine());//set author to the inputted string
+
+	        System.out.println("Enter the summary (in one line):");
+	        setContent(input.nextLine());//set description to the inputted 
+			AddBook(getBookname(),getAuthor(),getContent(),true,0);
+			System.out.println("A new Book is added successfully");
+		}else if(in.equals("EditBooks")) {
+			
+			System.out.println("Select your editing action: Enter 'Delete' to delete a book.");
+	        in2 = input.nextLine();//Get input
+	        if(in2.equals("Delete")) 
+	        	System.out.println("Enter the name of the book you want to delete: ");
+		    	setBookname(input.nextLine());
+		    	EditBook(getBookname());
+		} else if (in.equals("UpdateUsers")) {
+			UpdateUser();
+			
+		} else if(in.equals("DeleteUsers")){
+			System.out.println("Enter the name of the librarian/user account you want to delete: ");
+			setUserEmail(input.nextLine());//Get input
+			DeleteUser(getUserEmail());
+		}else {
+			return;
+		}
 	}
      
 	//it is called when the user turned out a librarian

@@ -1,5 +1,3 @@
-import java.awt.event.ActionEvent;
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -10,19 +8,12 @@ import java.awt.event.ActionEvent;
  * @author iek42
  */
 public class Gui_UserMenu extends javax.swing.JFrame {
-    private String email;
-    private String password;
+
     /**
      * Creates new form Gui_UserMenu
      */
     public Gui_UserMenu() {
         initComponents();
-    }
-
-    public Gui_UserMenu(String email, String password) {
-        initComponents();
-        this.email = email;
-        this.password = password;
     }
 
     /**
@@ -34,19 +25,13 @@ public class Gui_UserMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setTitle("eLibrarian");
-        setSize(500,400);
-        setLocationRelativeTo(null);
-        setResizable(false);
-
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setText("Welcome to the Main Menu");
@@ -56,11 +41,6 @@ public class Gui_UserMenu extends javax.swing.JFrame {
         jButton2.setText("Book Search");
 
         jButton3.setText("Account");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
 
         jButton4.setText("Log out");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -76,7 +56,7 @@ public class Gui_UserMenu extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(79, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30,30, 30))
+                .addGap(43, 43, 43))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -108,18 +88,6 @@ public class Gui_UserMenu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    protected void jButton3ActionPerformed(ActionEvent evt) {
-        Gui_AccountInfo ai = new Gui_AccountInfo(getEmail(), getPassword());
-        ai.setVisible(true);
-        dispose();
-    }
-    private String getEmail() {
-        return email;
-    }
-    private String getPassword() {
-        return password;
-    }
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:

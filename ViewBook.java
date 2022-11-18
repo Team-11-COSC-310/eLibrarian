@@ -13,6 +13,7 @@ public class ViewBook extends connecttodb{
 		System.out.println("Which book would like to look at? (ENTER its ID): ");
 		setInput(reader.next());
 	}
+	
     // set the input
 	public String setInput(String Eml) {
 		return this.answer = Eml;//store user input in answer

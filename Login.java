@@ -25,7 +25,7 @@ public class Login extends connecttodb{
             
         }
 	// This constructor suggests users enter their email and password. This also
-	// check if this user has already account or not.
+	// check if this user has already account or not. 
 	// If they have, return T, if not, F.
 	public Login(int attempt, String uname) throws SQLException, ClassNotFoundException {
                  
@@ -34,19 +34,18 @@ public class Login extends connecttodb{
 			System.out.println("Please enter your email: ");
 			setEmail(reader.next());
 			//handles invalid email entry
-			if(!EmailVerification()) {
+			if(!EmailVerification()) { 
 				InvalidEmailAction();
 				}
 		    System.out.println("Please enter your password");
 		    setPassword(reader.next());
-	
+	 
 		} else if (attempt == 2) { //incorrect password but right username
 			setEmail(uname); //store correct username
 			System.out.println("Forgot password?: y or n");
 			if(reader.next().equals("y")) {
 				System.out.println("Would you like to reset your password?: yes or no");
-				PasswordReset(reader.next());
-				return;
+				PasswordResetAction(reader.next());
 			}else {
 	            System.out.println("Please re-enter your Password: ");
 	            setPassword(reader.next());}
@@ -100,6 +99,7 @@ public class Login extends connecttodb{
 		// Use while loop to check existence until the end of the email column
 		while (r.next()) {
 			if (r.getString(1).equals(uEmail)) {
+				EmailindSet(r.getRow());
 				adminAuthentication = true; 
 				return true;
 			}
@@ -131,7 +131,6 @@ public class Login extends connecttodb{
 			}
 			
 		}
-		System.out.println("The password you have entered is incorrect.");
 		return false;
 	}
         public boolean HasAdminPassword( ) throws SQLException, ClassNotFoundException{
@@ -145,9 +144,7 @@ public class Login extends connecttodb{
 				PassindSet(r.getRow());
 				return true;
 			}
-			
 		}
-		System.out.println("The password you have entered is incorrect.");
 		return false;
         }
 	//check the index of table from database for checking password and email matching
@@ -168,6 +165,7 @@ public class Login extends connecttodb{
 		if(EmailindGet()==PassindGet()) {
 			return true;
 		}else {
+			System.out.println();
 			return false;
 		}
 	}
@@ -175,14 +173,10 @@ public class Login extends connecttodb{
 	// check if this login info match with the database info
 	public boolean HasRegistry() throws SQLException, ClassNotFoundException {
 		if (HasAdminEmail() && HasAdminPassword()&&indCheck()) {
-			System.out.println("e ind and p ind" + EmailindGet()+PassindGet());
-
 			return this.adminAuthentication = true; //authenticates if admin logs in ONLY USED BY ADMIN SCREEN
 		}else if (HasEmail() && HasPassword()&&indCheck()) { //authenticates if anyone logs in
-						
 			return this.authentication = true;
 		} else {
-			System.out.println("your email and password dont match!");
 			return this.authentication = false;
 		}
 	}
@@ -203,8 +197,7 @@ public class Login extends connecttodb{
 	//password encription function. This returns encripted version of password.
 	public String PasswordEncryption(String pass) {
 		String password = pass;
-		String encryptedPassword = null; 
-		
+		String encryptedPassword = null; 		
 		try {
 			MessageDigest m = MessageDigest.getInstance("MD5");
 			m.update(password.getBytes());
@@ -240,10 +233,20 @@ public class Login extends connecttodb{
 	        System.out.println("Your password is updated!");
 	        return pass;
 		}else {
+			System.out.println("Password Reset stopped....");
 			return getPassword();
 		}
 		
 			}
+	public void PasswordResetAction(String answer) throws ClassNotFoundException, SQLException {
+		if(answer.equals("yes")) {
+			System.out.println("Enter your new password: ");
+			PasswordReset(reader.next());
+		}else if(answer.equals("no")) {
+			return;
+		}
+		return;
+	}
 	
         public boolean getAdminAuthentification(){
             return this.adminAuthentication;

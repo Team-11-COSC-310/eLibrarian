@@ -8,18 +8,12 @@
  * @author iek42
  */
 public class Gui_AdminMenu extends javax.swing.JFrame {
-    private String email;
-    private String password;
+
     /**
      * Creates new form Gui_AdminMenu
      */
     public Gui_AdminMenu() {
         initComponents();
-    }
-    public Gui_AdminMenu(String email, String password) {
-        initComponents();
-        this.email = email;
-        this.password = password;
     }
 
     /**
@@ -31,11 +25,6 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setTitle("eLibrarian");
-        setSize(500,400);
-        setLocationRelativeTo(null);
-        setResizable(false);
-
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -44,7 +33,7 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton1.setText("Welcome to the Administration Menu");
@@ -59,32 +48,12 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         });
 
         jButton4.setText("Add Book");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
 
         jButton5.setText("Edit Book");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
 
         jButton6.setText("Update User");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
 
         jButton7.setText("Delete User");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -99,10 +68,10 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(90, 90, 90)
+                        .addGap(58, 58, 58)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(230, 230, 230)
+                        .addGap(195, 195, 195)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -133,44 +102,11 @@ public class Gui_AdminMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    protected void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        new Gui_FirstMenu().setVisible(true);
-        dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword());
-        um.setVisible(true);
-        dispose();
+         new Gui_UserMenu().setVisible(true);
+         dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
-    private String getEmail() {
-        return email;
-    }
-    private String getPassword() {
-        return password;
-    }
-
-    protected void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {
-        new Gui_AddBooks().setVisible(true);
-        dispose();
-    }
-
-    protected void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {
-        new Gui_DeleteBooks().setVisible(true);
-        dispose();
-    }
-
-    protected void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {
-        new Gui_EditUsers().setVisible(true);
-        dispose();
-    }
-
-    protected void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {
-        new Gui_DeleteUsers().setVisible(true);
-        dispose();
-    }
 
     /**
      * @param args the command line arguments

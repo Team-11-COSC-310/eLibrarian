@@ -82,7 +82,7 @@ public class Book extends connecttodb {
  
 	public boolean changeWL(int wl, String bid) throws SQLException, ClassNotFoundException {
 		int id = Integer.parseInt(bid);
-		if (wl >= 0 && bookListLength() > id && id > 0 && !checkAvailability(bid)) {
+		if (wl >= 0 && bookListLength() > id && id > 0 && checkAvailability(bid)==false) { 
 			String sql = "UPDATE books SET wl = ? WHERE id ='" + bid + "'";
 			PreparedStatement stmt = getConnect().prepareStatement(sql);
 			stmt.setInt(1, wl);
@@ -94,11 +94,34 @@ public class Book extends connecttodb {
 			while (list.next()) {
 				setWL(list.getInt(6), bid);// update wl that will displayed
 			}
-			return true;
+			return true; 
 		} else {
 			return false;
 		}
 	}
+	 // check if this login session's email has RENTED THIS book in the database
+		public boolean borrowedBook(String uemail, String bid) throws SQLException, ClassNotFoundException {
+			ResultSet r = getResultSet("SELECT email FROM waitlists where id ='"+bid+"' ORDER BY created_at ASC LIMIT 1");//only is they are the first on the list
+			// Use while loop to check existence until the end of the email column
+			while (r.next()) {
+				if (r.getString("email").equals(uemail)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		// check if this login session's email has JOINED THIS BOOK'S waitlist in the database
+		public boolean inWaitlist(String uemail, String bid) throws SQLException, ClassNotFoundException {
+			ResultSet r = getResultSet("select * from waitlists where id = '"+bid+"'");
+			// Use while loop to check existence until the end of the email column
+			while (r.next()) {
+				if (r.getString("email").equals(uemail)) {
+					return true;
+				}
+			}
+			return false;
+		}
 
 	public int bookListLength() throws ClassNotFoundException, SQLException {
 		String sql = "select * from books";

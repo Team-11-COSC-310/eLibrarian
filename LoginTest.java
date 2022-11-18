@@ -19,7 +19,7 @@ public class LoginTest {
 		 
 	}
 
-	@AfterClass
+	@AfterClass 
 	public static void tearDownAfterClass() throws Exception {
 	}
 
@@ -41,21 +41,21 @@ public class LoginTest {
 	}
 
 	@Test
-	public void testHasRegistery() throws ClassNotFoundException, SQLException {
+	public void testHasRegistry() throws ClassNotFoundException, SQLException {
 		l.setEmail("apple@apple.com");
 		l.setPassword("apple");
 		assertTrue(l.HasRegistry());
 	}
 
 	@Test
-	public void testHasRegistryWrongPassword() throws ClassNotFoundException, SQLException {
+	public void testHasRegistryWrongPasswordFail() throws ClassNotFoundException, SQLException {
 		l.setEmail("apple@apple.com");
 		l.setPassword("green");
 		assertFalse(l.HasRegistry());
 	}
 	
 	@Test
-	public void testHasRegistryWrongEmail() throws ClassNotFoundException, SQLException {
+	public void testHasRegistryWrongEmailFail() throws ClassNotFoundException, SQLException {
 		l.setEmail("green@apple.com");
 		l.setPassword("apple");
 		assertFalse(l.HasRegistry());
@@ -99,12 +99,11 @@ public class LoginTest {
 	@Test
 	public void testPasswordReset() throws ClassNotFoundException, SQLException {
 		assertEquals("green",l.PasswordReset("green"));
-		//after checking the reset function, use it again for the sake of other testing compatibility
-		l.PasswordReset("apple");
 	}
 	@Test
 	public void testPasswordResetNonExisitingEmailFail() throws ClassNotFoundException, SQLException {
 		l.setEmail("green@apple.com");
+		l.PasswordReset("apple");
 		assertEquals("apple",l.PasswordReset("apple"));
 	}
 
