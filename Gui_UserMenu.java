@@ -2,6 +2,14 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -14,6 +22,11 @@ import javax.swing.JOptionPane;
 public class Gui_UserMenu extends javax.swing.JFrame {
     private String email;
     private String password;
+    private boolean check = true; //True no change, False change language
+    private boolean language = true; //True to English, False to French
+    private String fromLang = "en";
+    private String toLang = "fr";
+
     /**
      * Creates new form Gui_UserMenu
      */
@@ -21,7 +34,9 @@ public class Gui_UserMenu extends javax.swing.JFrame {
         initComponents();
     }
 
-    public Gui_UserMenu(String email, String password) {
+    public Gui_UserMenu(String email, String password, boolean check, boolean language) {
+        this.check = check;
+        this.language = language;
         initComponents();
         this.email = email;
         this.password = password;
@@ -35,6 +50,16 @@ public class Gui_UserMenu extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
 
         setTitle("eLibrarian");
         setSize(500,400);
@@ -51,30 +76,53 @@ public class Gui_UserMenu extends javax.swing.JFrame {
         
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Welcome to the Main Menu");
 
-        jButton1.setText("Book List");
+        if(check == false) {
+            try {
+                if(language == false) {
+                    jButton4.setText("Se déconnecter");
+                } else {
+                    jButton4.setText("Log out");
+                }
+                String title = Gui_UserMenu.translate(fromLang, toLang,"Welcome to the Main Menu");
+                title = URLDecoder.decode(new String(title.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jLabel1.setText (title);
+
+                jButton1.setText(Gui_UserMenu.translate(fromLang, toLang,"Book List"));
+                jButton2.setText(Gui_UserMenu.translate(fromLang, toLang,"Book Search"));
+                jButton3.setText(Gui_UserMenu.translate(fromLang, toLang,"Account"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Welcome to the Main Menu");
+            jButton1.setText("Book List");
+            jButton2.setText("Book Search");
+            jButton3.setText("Account");
+            jButton4.setText("Log out");
+        }
+        
+
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Book Search");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Account");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Log out");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -94,12 +142,12 @@ public class Gui_UserMenu extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(133, 133, 133)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -121,21 +169,40 @@ public class Gui_UserMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
 
     protected void jButton1ActionPerformed(ActionEvent evt) {
-        Gui_BooksList bl = new Gui_BooksList(getEmail(), getPassword());
+        Gui_BooksList bl = new Gui_BooksList(getEmail(), getPassword(),check, language);
         bl.setVisible(true);
         dispose();
     }
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
-        Gui_BookSearch bs = new Gui_BookSearch(getEmail(), getPassword());
+        Gui_BookSearch bs = new Gui_BookSearch(getEmail(), getPassword(), check, language);
         bs.setVisible(true);
         dispose();
     }
 
     protected void jButton3ActionPerformed(ActionEvent evt) {
-        Gui_AccountInfo ai = new Gui_AccountInfo(getEmail(), getPassword());
+        Gui_AccountInfo ai = new Gui_AccountInfo(getEmail(), getPassword(), check, language);
         ai.setVisible(true);
         dispose();
     }
@@ -148,7 +215,8 @@ public class Gui_UserMenu extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
          // TODO add your handling code here:
-        new Gui_FirstMenu().setVisible(true);
+        Gui_FirstMenu fm = new Gui_FirstMenu(check, language);
+        fm.setVisible(true);
         dispose();
 
     }//GEN-LAST:event_jButton4ActionPerformed

@@ -5,6 +5,14 @@ import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -17,11 +25,20 @@ import javax.swing.JOptionPane;
 public class Gui_Login extends javax.swing.JFrame {
      private Login log = new Login();
      private boolean librarian=false;
+     private boolean check = true; //True no change, False change language
+     private boolean language = true; //True to English, False to French
+     private String fromLang = "en";
+     private String toLang = "fr";
   
     /**
      * Creates new form Gui_Login
      */
     public Gui_Login() {
+        initComponents();
+    }
+    public Gui_Login(boolean check, boolean language) {
+        this.check = check;
+        this.language = language;
         initComponents();
     }
 
@@ -33,6 +50,16 @@ public class Gui_Login extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
 
         setTitle("eLibrarian");
         setSize(500,400);
@@ -51,11 +78,22 @@ public class Gui_Login extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Login");
+
+        if(check == false) {
+            try {
+                jLabel1.setText(Gui_Login.translate(fromLang, toLang, "Login"));
+                jLabel3.setText(Gui_Login.translate(fromLang, toLang, "Password:"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Login");
+            jLabel3.setText("Password:");
+        }
 
         jLabel2.setText("Email:");
-
-        jLabel3.setText("Password: ");
 
         email_textbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -63,21 +101,37 @@ public class Gui_Login extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Login");
+
+        if(check == false) {
+            try {
+                String librarian = Gui_Login.translate(fromLang, toLang,"Librarian?");
+                librarian = URLDecoder.decode(new String(librarian.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jCheckBox1.setText(librarian);
+                jButton1.setText(Gui_Login.translate(fromLang, toLang, "Login"));
+                jButton2.setText(Gui_Login.translate(fromLang, toLang,"Back"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jCheckBox1.setText("Librarian?");
+            jButton1.setText("Login");
+            jButton2.setText("Back");
+        }
+
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
 
-        jCheckBox1.setText("Librarian?");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox1ActionPerformed(evt);
@@ -95,10 +149,10 @@ public class Gui_Login extends javax.swing.JFrame {
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(67, 67, 67))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(email_textbox)
                     .addComponent(password_textbox, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
                 .addContainerGap(95, Short.MAX_VALUE))
@@ -106,7 +160,7 @@ public class Gui_Login extends javax.swing.JFrame {
                 .addGap(38, 38, 38)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -137,6 +191,25 @@ public class Gui_Login extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
 
     private void email_textboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_email_textboxActionPerformed
         // TODO add your handling code here:
@@ -170,27 +243,55 @@ public class Gui_Login extends javax.swing.JFrame {
          }
          
              if(librarian&&log.getAdminAuthentification()&&log.getAuthentification()){
-                Gui_AdminMenu am = new Gui_AdminMenu(email_textbox.getText(), password_textbox.getText());
+                Gui_AdminMenu am = new Gui_AdminMenu(email_textbox.getText(), password_textbox.getText(), check, language);
                 am.setVisible(true);
                 dispose();
 
              }else if(!librarian&&log.getAuthentification()){
-                Gui_UserMenu um = new Gui_UserMenu(email_textbox.getText(), password_textbox.getText());
+                Gui_UserMenu um = new Gui_UserMenu(email_textbox.getText(), password_textbox.getText(), check, language);
                 um.setVisible(true);
                 dispose();
 
              }else if(librarian&&!log.getAdminAuthentification()&&log.getAuthentification()){
-                 JOptionPane.showMessageDialog(this,"You're not our librarian!!");
+                if(check == false) {
+                    try {
+                        if(language == false) {
+                            JOptionPane.showMessageDialog(this,"Vous n'êtes pas notre bibliothécaire !!");
+                        } else {
+                            JOptionPane.showMessageDialog(this, "You're not our librarian!!");
+                        }
+        
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,"You're not our librarian!!");
+                }
+                
              }else{
-                 JOptionPane.showMessageDialog(this,"Your email or password is invalid");
-             }
+                if(check == false) {
+                    try {
+                        String passinv = Gui_Login.translate(fromLang, toLang, "Your email or password is invalid");
+                        passinv = URLDecoder.decode(new String(passinv.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                        JOptionPane.showMessageDialog(this, passinv);
+        
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,"Your email or password is invalid");
+                }
+            }
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-         new Gui_FirstMenu().setVisible(true);
-         dispose();
+        Gui_FirstMenu fm = new Gui_FirstMenu(check, language);
+        fm.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

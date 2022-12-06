@@ -16,7 +16,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-public class Gui_BookSearchInfo extends javax.swing.JFrame {
+public class Gui_BookListInfoWiki extends javax.swing.JFrame {
     private String email;
     private String password;
     private BookList b = new BookList();
@@ -29,15 +29,17 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
     private String toLang = "fr";
     private String by  = "by ";
     private String waitlist = "Waitlist: ";
+    private Jwiki jwiki1;
+    private Jwiki jwiki2;
 
-    public Gui_BookSearchInfo() {
+    public Gui_BookListInfoWiki() {
         initComponents();
     }
     private void initComponents() {
 
     }
 
-    public Gui_BookSearchInfo(String id, String email, String password, boolean check, boolean language) {
+    public Gui_BookListInfoWiki(String id, String email, String password, boolean check, boolean language) {
         this.check = check;
         this.language = language;
         initComponents(id);
@@ -64,11 +66,7 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -79,52 +77,36 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 18));
+        jwiki1 = new Jwiki(""+booklistinfo.get(0));
+        jwiki2 = new Jwiki(""+booklistinfo.get(1));
 
         if(check == false) {
             try {
-                String title = Gui_BookSearchInfo.translate(fromLang, toLang, booklistinfo.get(0));
+                String title = Gui_BookListInfoWiki.translate(fromLang, toLang, ""+jwiki1.getExtractText());
                 title = URLDecoder.decode(new String(title.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
                 jLabel1.setText(title);
 
-                by = Gui_BookSearchInfo.translate(fromLang, toLang,"by ");
-                jLabel2.setText(by + booklistinfo.get(1));
+                by = Gui_BookListInfoWiki.translate(fromLang, toLang,""+jwiki2.getExtractText());
+                jLabel2.setText(by);
 
-                String desc = Gui_BookSearchInfo.translate(fromLang, toLang,"Description: ");
-                desc = URLDecoder.decode(new String(desc.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
-                jLabel3.setText(desc+ booklistinfo.get(2));
-
-                String ava = Gui_BookSearchInfo.translate(fromLang, toLang,"Availability: ");
-                ava = URLDecoder.decode(new String(ava.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
-                jLabel4.setText(ava + booklistinfo.get(3));
-
-
-                if(check == false) {
-                    if(language == false) {
-                        jLabel5.setText("Liste d'attente: "+ booklistinfo.get(4));
-                        jButton2.setText("Emprunter / Rejoindre la liste d'attente");
-                    } else {
-                        jLabel5.setText(waitlist + booklistinfo.get(4));
-                        jButton2.setText("Borrow / Join Waitlist");
-                    }
-                }
-
-                jButton1.setText(Gui_BookSearchInfo.translate(fromLang, toLang,"Back"));
+                jButton1.setText(Gui_BookListInfoWiki.translate(fromLang, toLang,"Back"));
 
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                jLabel1.setText(booklistinfo.get(0));
+                jLabel2.setText("by" + ""+booklistinfo.get(1));
+                
             }
         } else {
-            jLabel1.setText(booklistinfo.get(0));
-            jLabel2.setText("by " + booklistinfo.get(1));
-            jLabel3.setText("Description: " + booklistinfo.get(2));
-            jLabel4.setText("Availability: " + booklistinfo.get(3));
-            jLabel5.setText("Waitlist: " + booklistinfo.get(4));
-            jButton1.setText("Back");
-            jButton2.setText("Borrow / Join Waitlist");
+            try{
+                jLabel1.setText(""+jwiki1.getExtractText());
+                jButton1.setText("Back");
+                jLabel2.setText("" +jwiki2.getExtractText());
+            } catch (Exception e) {
+                jLabel1.setText(booklistinfo.get(0));
+                jButton1.setText("Back");
+                jLabel2.setText("by" +booklistinfo.get(1));
+            }
         }
-    
 
         setID(id);
 
@@ -134,11 +116,6 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
             }
         });
 
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -147,30 +124,19 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
                 .addGap(45, 45, 45))
-            .addGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(29, 29, 29)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        ))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,false)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
                         )
-                        .addContainerGap(95, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE,javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
                         )
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(50,50,50)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            ))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(458,458,458)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    )
+            )
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,17 +145,10 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(30,30,30)
                 .addComponent(jLabel2)
-                .addGap(35,35,35)
-                .addComponent(jLabel3)
                 .addGap(40,40,40)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addGap(70,70,70))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton1))
                 .addGap(23, 23, 23))
         );
 
@@ -217,8 +176,8 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
     }
 
     protected void jButton1ActionPerformed(ActionEvent evt) {
-        Gui_BookSearch bs = new Gui_BookSearch(getEmail(), getPassword(), check, language);
-        bs.setVisible(true);
+        Gui_BooksListInfo bli = new Gui_BooksListInfo(getID(),getEmail(), getPassword(), check, language);
+        bli.setVisible(true);
         dispose();
     }
     private String getEmail() {
@@ -228,49 +187,6 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
         return password;
     }
 
-    protected void jButton2ActionPerformed(ActionEvent evt) {
-        try {
-            book.binfo(getID());
-            // JOptionPane.showMessageDialog(this,book.getID());
-            if(book.getAvailability()){
-                book.changeAvailability(false, getID());
-                try {
-                    String borrow = Gui_BookSearchInfo.translate(fromLang, toLang,"Enjoy the book!\nIt is due back in 21 day(s).");
-                    borrow = URLDecoder.decode(new String(borrow.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
-                    JOptionPane.showMessageDialog(this,borrow);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    int wtime = book.getWL()*21;
-                    book.changeWL(book.getWL()+1, getID());
-                    try {
-                        if(check == false) {
-                            if(language == false) {
-                                JOptionPane.showMessageDialog(this,"Merci d'avoir rejoint la liste d'attente. tu es le numéro" +book.getWL()+".\nLe temps d'attente estimé est "+wtime+" journées.");
-                            } else {
-                                JOptionPane.showMessageDialog(this,"Thank you for joining the waitlist. You are number " +book.getWL()+".\nThe estimated wait time is "+wtime+" day(s).");
-                            }
-                        }
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                } catch (ClassNotFoundException | SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        } catch (ClassNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-    }
     private String getID() {
         return id;
     }
@@ -305,17 +221,12 @@ public class Gui_BookSearchInfo extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Gui_BookSearchInfo().setVisible(true);
+                new Gui_BooksListInfo().setVisible(true);
             }
         });
     }
 
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
 }
-

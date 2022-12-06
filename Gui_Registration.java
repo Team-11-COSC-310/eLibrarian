@@ -7,6 +7,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -20,6 +28,10 @@ public class Gui_Registration extends javax.swing.JFrame {
    private Create c = new Create();
    private boolean librarian=false;
    private Login l = new Login();
+   private boolean check = true; //True no change, False change language
+   private boolean language = true; //True to English, False to French
+   private String fromLang = "en";
+   private String toLang = "fr";
   
     /**
      * Creates new form Gui_Registration
@@ -28,6 +40,12 @@ public class Gui_Registration extends javax.swing.JFrame {
        
         initComponents();
     }
+    public Gui_Registration(boolean check, boolean language) {
+        this.check = check;
+        this.language = language;
+        initComponents();
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,6 +55,16 @@ public class Gui_Registration extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
 
         setTitle("eLibrarian");
         setSize(500,400);
@@ -55,12 +83,23 @@ public class Gui_Registration extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Create Account");
+        if(check == false) {
+            try {
+                String create = Gui_Registration.translate(fromLang, toLang, "Create Account");
+                create = URLDecoder.decode(new String(create.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jLabel1.setText(create);
+                jLabel3.setText(Gui_Registration.translate(fromLang, toLang, "Password:"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Create Account");
+            jLabel3.setText("Password:");
+        }
 
         jLabel2.setText("Email:");
-
-        jLabel3.setText("Password:");
-
         email_textbox.addInputMethodListener(new java.awt.event.InputMethodListener() {
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
@@ -80,21 +119,38 @@ public class Gui_Registration extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox1.setText("Librarian?");
+
+        if(check == false) {
+            try {
+                String librarian = Gui_Registration.translate(fromLang, toLang, "Librarian?");
+                librarian = URLDecoder.decode(new String(librarian.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jCheckBox1.setText(librarian);
+                jButton1.setText(Gui_Registration.translate(fromLang, toLang,"Submit"));
+                jButton2.setText(Gui_Registration.translate(fromLang, toLang,"Back"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jCheckBox1.setText("Librarian?");
+            jButton1.setText("Submit");
+            jButton2.setText("Back");
+        }
+
+
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox1ActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Submit");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -112,7 +168,7 @@ public class Gui_Registration extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(61, 61, 61)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(40, 40, 40)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,14 +176,14 @@ public class Gui_Registration extends javax.swing.JFrame {
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(email_textbox)
                                 .addComponent(password_textbox, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)))))
                 .addContainerGap(78, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35))
         );
         layout.setVerticalGroup(
@@ -171,6 +227,25 @@ public class Gui_Registration extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         String email = email_textbox.getText();
@@ -184,12 +259,36 @@ public class Gui_Registration extends javax.swing.JFrame {
             userCheck = l.HasEmail();
             adminCheck = l.HasAdminEmail();
             if(password.isEmpty()) {
-                JOptionPane.showMessageDialog(this,"Please enter a password.");
+                if(check == false) {
+                    try {
+                        String passempty = Gui_Registration.translate(fromLang, toLang, "Please enter a password.");
+                        passempty = URLDecoder.decode(new String(passempty.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                        JOptionPane.showMessageDialog(this, passempty);
+
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,"Please enter a password.");
+                }
             } else if(librarian && !adminCheck){
                 try {
                     c.RegisterUser(c.getEmail(), c.getPassword());
                     c.RegisterLibrarian(c.getEmail(), c.getPassword());
-                    JOptionPane.showMessageDialog(this,"Registration Success!");
+                    if(check == false) {
+                        try {
+                            String libcheck = Gui_Registration.translate(fromLang, toLang, "Registration Success!");
+                            libcheck = URLDecoder.decode(new String(libcheck.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                            JOptionPane.showMessageDialog(this, libcheck);
+            
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this,"Registration Success!");
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
@@ -198,15 +297,40 @@ public class Gui_Registration extends javax.swing.JFrame {
             }else if(!librarian && !userCheck){
                 try {
                     c.RegisterUser(c.getEmail(), c.getPassword());
-                    JOptionPane.showMessageDialog(this,"Registration Success!");
-    
+                    if(check == false) {
+                        try {
+                            String usercheck = Gui_Registration.translate(fromLang, toLang, "Registration Success!");
+                            usercheck = URLDecoder.decode(new String(usercheck.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                            JOptionPane.showMessageDialog(this, usercheck);
+            
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this,"Registration Success!");
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                JOptionPane.showMessageDialog(this,"Email is already registered.\nPlease enter another email.");
+                if(check == false) {
+                    try {
+                        if(language == false) {
+                            JOptionPane.showMessageDialog(this,"L'adresse e-mail est déjà utilisée. Veuillez saisir une autre adresse e-mail.");
+                        } else {
+                            JOptionPane.showMessageDialog(this,"Email is already registered.\nPlease enter another email.");
+                        }
+        
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,"Email is already registered.\nPlease enter another email.");
+                }
             }
         } catch (ClassNotFoundException | SQLException e) {
             // TODO Auto-generated catch block
@@ -227,8 +351,9 @@ public class Gui_Registration extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        new Gui_FirstMenu().setVisible(true);
-        dispose();
+            Gui_FirstMenu fm = new Gui_FirstMenu(check, language);
+            fm.setVisible(true);
+            dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

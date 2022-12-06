@@ -6,15 +6,29 @@ import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 public class Gui_AccountInfo extends javax.swing.JFrame {
     private User user = new User();
     private String email;
     private String password;
+    private boolean check = true; //True no change, False change language
+    private boolean language = true; //True to English, False to French
+    private String fromLang = "en";
+    private String toLang = "fr";
 
     /**
      * Creates new form Gui_AccountInfo
      */
-    public Gui_AccountInfo(String email, String password) {
+    public Gui_AccountInfo(String email, String password, boolean check, boolean language) {
+        this.check = check;
+        this.language = language;
         initComponents(email, password);
         this.email = email;
         this.password = password;
@@ -24,6 +38,7 @@ public class Gui_AccountInfo extends javax.swing.JFrame {
     }
 
     private void initComponents() {
+
         setTitle("eLibrarian");
         setSize(500,400);
         setLocationRelativeTo(null);
@@ -40,12 +55,10 @@ public class Gui_AccountInfo extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setText("Account info");
-
         jLabel2.setText("Email:");
-
         jLabel3.setText("Password:");
-
         jButton1.setText("Back");
+
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -104,6 +117,17 @@ public class Gui_AccountInfo extends javax.swing.JFrame {
     }
 
     private void initComponents(String email, String password) {
+
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
+
         setTitle("eLibrarian");
         setSize(500,400);
         setLocationRelativeTo(null);
@@ -119,13 +143,27 @@ public class Gui_AccountInfo extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Account info");
+        if(check == false) {
+            try {
+                String title = Gui_AccountInfo.translate(fromLang, toLang,"Account info");
+                title = URLDecoder.decode(new String(title.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jLabel1.setText(title);
+
+                jLabel3.setText(Gui_AccountInfo.translate(fromLang, toLang,"Password:"));
+                jButton1.setText(Gui_AccountInfo.translate(fromLang, toLang,"Back"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Account info");
+            jLabel3.setText("Password:");
+            jButton1.setText("Back");
+        }
 
         jLabel2.setText("Email:");
 
-        jLabel3.setText("Password:");
-
-        jButton1.setText("Back");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -183,8 +221,27 @@ public class Gui_AccountInfo extends javax.swing.JFrame {
 
     }
 
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
 protected void jButton1ActionPerformed(ActionEvent evt) {
-    Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword());
+    Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword(), check, language);
     um.setVisible(true);
     dispose();
 }

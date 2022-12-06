@@ -6,18 +6,44 @@ import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 public class Gui_DeleteUsers extends javax.swing.JFrame {
     private LibrarianAction la = new LibrarianAction();
     private boolean librarian=false;
     private String email;
     private String password;
+    private boolean check = true; //True no change, False change language
+    private boolean language = true; //True to English, False to French
+    private String fromLang = "en";
+    private String toLang = "fr";
+
     /**
      * Creates new form Gui_EditUsers
      */
     public Gui_DeleteUsers() {
         initComponents();
     }
-    public Gui_DeleteUsers(String email, String password) {
+    public Gui_DeleteUsers(String email, String password, boolean check, boolean language) {
+
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
+
+        this.check = check;
+        this.language = language;
         initComponents();
         this.email = email;
         this.password = password;
@@ -39,10 +65,31 @@ public class Gui_DeleteUsers extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Delete Regular/Librarian Account");
+
+        if(check == false) {
+            try {
+                String title = Gui_DeleteUsers.translate(fromLang, toLang, "Delete Regular/Librarian Account");
+                title = URLDecoder.decode(new String(title.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jLabel1.setText(title);
+
+                String librarian = Gui_DeleteUsers.translate(fromLang, toLang,"Librarian?");
+                librarian = URLDecoder.decode(new String(librarian.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jCheckBox1.setText(librarian);
+                jButton1.setText(Gui_DeleteUsers.translate(fromLang, toLang,"Submit"));
+                jButton2.setText(Gui_DeleteUsers.translate(fromLang, toLang,"Back"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Delete Regular/Librarian Account");
+            jCheckBox1.setText("Librarian?");
+            jButton1.setText("Submit");
+            jButton2.setText("Back");
+        }
 
         jLabel2.setText("Email:");
-
         email_textbox.addInputMethodListener(new java.awt.event.InputMethodListener() {
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
@@ -56,21 +103,18 @@ public class Gui_DeleteUsers extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox1.setText("Librarian?");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox1ActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Submit");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -92,7 +136,7 @@ public class Gui_DeleteUsers extends javax.swing.JFrame {
                                 .addGap(50,50,50)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(email_textbox, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)))))   
                 .addContainerGap(78, Short.MAX_VALUE))
@@ -101,7 +145,7 @@ public class Gui_DeleteUsers extends javax.swing.JFrame {
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35))
         );
         layout.setVerticalGroup(
@@ -128,6 +172,25 @@ public class Gui_DeleteUsers extends javax.swing.JFrame {
 
     }
 
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
 
 protected void email_textboxActionPerformed(ActionEvent evt) {
 }
@@ -150,10 +213,29 @@ protected void jButton1ActionPerformed(ActionEvent evt) {
     la.setEmail(email);
     try {
         if(la.getEmail().equals(getEmail())) {
-            JOptionPane.showMessageDialog(this,"Cannot delete account that in use right now!");
+            try {
+                if(check == false) {
+                    if(language == false) {
+                        JOptionPane.showMessageDialog(this,"Impossible de supprimer le compte en cours d'utilisation !");
+                    } else {
+                        JOptionPane.showMessageDialog(this,"Cannot delete account that in use right now!");
+                    }
+                }
+                
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         } else {
             la.DeleteUserGUI(la.getEmail(), librarian);
-            JOptionPane.showMessageDialog(this,"Account successfully deleted!");
+            try {
+                String accountdelsuc = Gui_DeleteUsers.translate(fromLang, toLang,"Account successfully deleted!");
+                accountdelsuc = URLDecoder.decode(new String(accountdelsuc.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                JOptionPane.showMessageDialog(this,accountdelsuc);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     } catch (SQLException ex) {
         Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
@@ -163,7 +245,7 @@ protected void jButton1ActionPerformed(ActionEvent evt) {
 }
 
 protected void jButton2ActionPerformed(ActionEvent evt) {
-    Gui_AdminMenu am = new Gui_AdminMenu(getEmail(), getPassword());
+    Gui_AdminMenu am = new Gui_AdminMenu(getEmail(), getPassword(), check, language);
     am.setVisible(true);
     dispose();
 }

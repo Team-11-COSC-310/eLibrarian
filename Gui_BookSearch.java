@@ -13,22 +13,47 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputMethodEvent;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 public class Gui_BookSearch extends javax.swing.JFrame {
     private String email;
     private String password;
     private BookList b = new BookList();
     private String id = "";
+    private boolean check = true; //True no change, False change language
+    private boolean language = true; //True to English, False to French
+    private String fromLang = "en";
+    private String toLang = "fr";
 
     public Gui_BookSearch() {
         initComponents();
     }
-    public Gui_BookSearch(String email, String password) {
+    public Gui_BookSearch(String email, String password, boolean check, boolean language) {
+        this.check = check;
+        this.language = language;
         initComponents();
         this.email = email;
         this.password = password;
     }
 
     private void initComponents() {
+
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
+
         setTitle("eLibrarian");
         setSize(500,400);
         setLocationRelativeTo(null);
@@ -43,9 +68,32 @@ public class Gui_BookSearch extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Welcome to Book Search");
 
-        jLabel2.setText("Enter Title/Author:");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        if(check == false) {
+            try {
+                String title = Gui_BookSearch.translate(fromLang, toLang,"Welcome to Book Search");
+                title = URLDecoder.decode(new String(title.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jLabel1.setText (title);
+
+                String author = Gui_BookSearch.translate(fromLang, toLang,"Enter Title/Author:");
+                author = URLDecoder.decode(new String(title.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jLabel2.setText(author);
+
+                jButton1.setText(Gui_BookSearch.translate(fromLang, toLang,"Next"));
+                jButton2.setText(Gui_BookSearch.translate(fromLang, toLang,"Back"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Welcome to Book Search");
+            jLabel2.setText("Enter Title/Author:");
+            jButton1.setText("Next");
+            jButton2.setText("Back");
+        }
 
         titleorauthor_textbox.addInputMethodListener(new java.awt.event.InputMethodListener() {
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
@@ -60,14 +108,12 @@ public class Gui_BookSearch extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Next");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -84,7 +130,7 @@ public class Gui_BookSearch extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(120,120,120)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(50,50,50)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,7 +143,7 @@ public class Gui_BookSearch extends javax.swing.JFrame {
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35))
         );
         layout.setVerticalGroup(
@@ -122,6 +168,25 @@ public class Gui_BookSearch extends javax.swing.JFrame {
 
     }
 
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
 
     protected void titleorauthor_textboxActionPerformed(ActionEvent evt) {
     }
@@ -135,23 +200,37 @@ public class Gui_BookSearch extends javax.swing.JFrame {
             try {
                 if(b.BookSearchGUI(titleorauthor)){
                     id = b.searchInventoryGUI(titleorauthor);
-                    Gui_BookSearchInfo bsi = new Gui_BookSearchInfo(id, getEmail(), getPassword());
+                    Gui_BookSearchInfo bsi = new Gui_BookSearchInfo(id, getEmail(), getPassword(), check, language);
                     bsi.setVisible(true);
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this,"We do not have any books matching "+titleorauthor+".\nPlease renter Title or Author.");
+                    try {
+                        String searchbookfail = Gui_BookSearch.translate(fromLang, toLang,"We do not have any books matching "+titleorauthor+".\nPlease renter Title or Author.");
+                        searchbookfail = URLDecoder.decode(new String(searchbookfail.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                        JOptionPane.showMessageDialog(this,searchbookfail);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }  
             } catch (Exception e){
                
             }
         } else {
-            JOptionPane.showMessageDialog(this,"Please enter Title or Author.");
+            try {
+                String notitle = Gui_BookSearch.translate(fromLang, toLang,"Please enter Title or Author.");
+                notitle = URLDecoder.decode(new String(notitle.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                JOptionPane.showMessageDialog(this,notitle);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
-        Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword());
+        Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword(), check, language);
         um.setVisible(true);
         dispose();
     }

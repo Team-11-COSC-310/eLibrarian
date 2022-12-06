@@ -1,9 +1,17 @@
 
 
+import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.plaf.DimensionUIResource;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -17,10 +25,22 @@ import javax.swing.plaf.DimensionUIResource;
 public class Gui_FirstMenu extends javax.swing.JFrame {
     private static boolean create;
     private static boolean login;
+    private boolean check = true; //True no change, False change language
+    private boolean language = true; //True to English, False to French
+    private String fromLang = "en";
+    private String toLang = "fr";
+    private String jbutton3text = "";
+
+    
     /**
      * Creates new form Gui_Login
      */
     public Gui_FirstMenu() {
+        initComponents();
+    }
+    public Gui_FirstMenu(boolean check, boolean language) {
+        this.check = check;
+        this.language = language;
         initComponents();
     }
 
@@ -33,6 +53,16 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
+
         setTitle("eLibrarian");
         setSize(500,400);
         setLocationRelativeTo(null);
@@ -43,6 +73,7 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         jMenu1.setText("jMenu1");
 
@@ -51,10 +82,28 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
 
         jLabel1.setBackground(new java.awt.Color(102, 255, 102));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Welcome To eLibrarian");
+        if(check == false) {
+            try {
+                jLabel1.setText(Gui_FirstMenu.translate(fromLang, toLang, "Welcome To eLibrarian"));
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Welcome To eLibrarian");
+        }
         
 
-        jButton1.setText("Registration");
+        if(check == false) {
+            try {
+                jButton1.setText(Gui_FirstMenu.translate(fromLang, toLang, "Registration"));
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jButton1.setText("Registration");
+        }
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -67,10 +116,36 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
         });
         
 
-        jButton2.setText("Login");
+        if(check == false) {
+            try {
+                jButton2.setText(Gui_FirstMenu.translate(fromLang, toLang, "Login"));
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jButton2.setText("Login");
+        }
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
+            }
+        });
+
+        if(check == true) {
+            jbutton3text = "Change Language to French";
+        } else {
+            if(language == false) {
+                jbutton3text = "Changer la langue en anglais";
+            } else {
+                jbutton3text = "Change Language to French";
+            }
+        }
+
+        jButton3.setText(jbutton3text);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -87,8 +162,11 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(125, 125, 125)
-                        .addComponent(jLabel1)))
-                .addContainerGap(122, Short.MAX_VALUE))
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(200,200,200)
+                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -99,17 +177,50 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addGap(33, 33, 33)
                 .addComponent(jButton2)
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addGap(60,60,60)
+                .addComponent(jButton3)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    protected void jButton3ActionPerformed(ActionEvent evt) {
+        if(language == false) {
+            Gui_FirstMenu fm = new Gui_FirstMenu(false, true);
+            fm.setVisible(true);
+            dispose();
+        } else {
+            Gui_FirstMenu fm = new Gui_FirstMenu(false, false);
+            fm.setVisible(true);
+            dispose();
+        }
+    }
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-     create = true;
-      new Gui_Registration().setVisible(true);
-      dispose();
+        create = true;
+        Gui_Registration gr = new Gui_Registration(check,language);
+        gr.setVisible(true);
+        dispose();
       
     }//GEN-LAST:event_jButton1ActionPerformed
   
@@ -118,8 +229,9 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_CreateAccount
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-      new Gui_Login().setVisible(true);
-      dispose();
+        Gui_Login gl = new Gui_Login(check,language);
+        gl.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -177,6 +289,7 @@ public class Gui_FirstMenu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;

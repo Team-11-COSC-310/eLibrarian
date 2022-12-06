@@ -5,23 +5,49 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 public class Gui_DeleteBooks extends javax.swing.JFrame {
     private LibrarianAction la = new LibrarianAction();
     private String email;
     private String password;
+    private boolean check = true; //True no change, False change language
+    private boolean language = true; //True to English, False to French
+    private String fromLang = "en";
+    private String toLang = "fr";
+
     /**
      * Creates new form Gui_DeleteBooks
      */
     public Gui_DeleteBooks() {
         initComponents();
     }
-    public Gui_DeleteBooks(String email, String password) {
+    public Gui_DeleteBooks(String email, String password, boolean check, boolean language) {
+        this.check = check;
+        this.language = language;
         initComponents();
         this.email = email;
         this.password = password;
     }
 
     private void initComponents() {
+
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
+
         setTitle("eLibrarian");
         setSize(500,400);
         setLocationRelativeTo(null);
@@ -36,9 +62,28 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Delete Library Books");
 
-        jLabel2.setText("Book Title:");
+        if(check == false) {
+            try {
+                String title = Gui_DeleteBooks.translate(fromLang, toLang, "Delete Library Books");
+                title = URLDecoder.decode(new String(title.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jLabel1.setText(title);
+
+                jLabel2.setText(Gui_DeleteBooks.translate(fromLang, toLang,"Book Title:"));
+                jButton1.setText(Gui_DeleteBooks.translate(fromLang, toLang,"Submit"));
+                jButton2.setText(Gui_DeleteBooks.translate(fromLang, toLang,"Back"));
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Delete Library Books");
+            jLabel2.setText("Book Title:");
+            jButton1.setText("Submit");
+            jButton2.setText("Back");
+        }
+        
 
         bookTitle_textbox.addInputMethodListener(new java.awt.event.InputMethodListener() {
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
@@ -53,14 +98,14 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Submit");
+        
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Back");
+        
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -77,7 +122,7 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(100,100,100)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(60,60,60))
                             // .addGroup(layout.createSequentialGroup()
                             //     .addGap(45, 45, 45)
@@ -88,7 +133,7 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
                         // .addGap(45, 45, 45)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             // .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                             // .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(bookTitle_textbox, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
                             // .addGap(100,100,100)
@@ -98,7 +143,7 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                             
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(38,38,38))
                             
             // .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -127,13 +172,40 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
 
     }
 
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
     protected void jButton1ActionPerformed(ActionEvent evt) {
         String bookTitle = bookTitle_textbox.getText();
         la.setBookname(bookTitle);
 
         try {
             la.EditBookGUI(la.getBookname());
-            JOptionPane.showMessageDialog(this,"Book successfully deleted!");
+            try {
+                String bookdelsuc = Gui_DeleteBooks.translate(fromLang, toLang,"Book successfully deleted!");
+                bookdelsuc = URLDecoder.decode(new String(bookdelsuc.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                JOptionPane.showMessageDialog(this,bookdelsuc);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(Gui_Registration.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -142,7 +214,7 @@ public class Gui_DeleteBooks extends javax.swing.JFrame {
     }
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
-        Gui_AdminMenu am = new Gui_AdminMenu(getEmail(), getPassword());
+        Gui_AdminMenu am = new Gui_AdminMenu(getEmail(), getPassword(), check, language);
         am.setVisible(true);
         dispose();
     }

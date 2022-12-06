@@ -12,6 +12,14 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -27,13 +35,23 @@ public class Gui_BooksList extends javax.swing.JFrame {
     private BookList b = new BookList();
     private ArrayList<ArrayList<String>> booklist =new ArrayList<ArrayList<String>>();
     private String id = "";
+    private boolean check = true; //True no change, False change language
+    private boolean language = true; //True to English, False to French
+    private String fromLang = "en";
+    private String toLang = "fr";
+    private String booktitle = "Book Title";
+    private String bookauthor = "Author";
+    private String bookid = "ID";
+
     /**
      * Creates new form Gui_BooksList
      */
     public Gui_BooksList() {
         initComponents();
     }
-    public Gui_BooksList(String email, String password) {
+    public Gui_BooksList(String email, String password, boolean check, boolean language) {
+        this.check = check;
+        this.language = language;
         initComponents();
         this.email = email;
         this.password = password;
@@ -46,6 +64,16 @@ public class Gui_BooksList extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        if(check == false) {
+            if(language == false) {
+                fromLang = "en";
+                toLang = "fr";
+            } else {
+                fromLang = "fr";
+                toLang = "en";
+            }
+        }
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (screenSize.width - getWidth() -700) / 2;
@@ -117,16 +145,35 @@ public class Gui_BooksList extends javax.swing.JFrame {
         jScrollPane3.setViewportView(jTable2);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Welcome to Book List Page");
 
-        jButton1.setText("Next");
+        if(check == false) {
+            try {
+                String title = Gui_BooksList.translate(fromLang, toLang,"Welcome to Book List Page");
+                title = URLDecoder.decode(new String(title.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8");
+                jLabel1.setText (title);
+
+                jButton1.setText(Gui_BooksList.translate(fromLang, toLang,"Next"));
+                jButton2.setText(Gui_BooksList.translate(fromLang, toLang,"Back"));
+
+                booktitle = Gui_BooksList.translate(fromLang, toLang, "Book Title");
+                bookauthor = Gui_BooksList.translate(fromLang, toLang, "Author"); 
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            jLabel1.setText("Welcome to Book List Page");
+            jButton1.setText("Next");
+            jButton2.setText("Back");
+        }
+
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -148,7 +195,7 @@ public class Gui_BooksList extends javax.swing.JFrame {
                 // {null, null, null, null}
             },
             new String [] {
-                "Book Title", "Author", "ID"
+                booktitle, bookauthor, bookid
             }
         ));
         try {
@@ -189,11 +236,11 @@ public class Gui_BooksList extends javax.swing.JFrame {
             .addGap(50,50,50)
             .addComponent(jButton2,javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jButton1,javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jButton1,javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGap(50,50,50))
             .addGroup(layout.createSequentialGroup()
                 .addGap(215,215,215)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
             )
         );
         layout.setVerticalGroup(
@@ -219,9 +266,28 @@ public class Gui_BooksList extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private static String translate(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw_fxIpgQ1ZkisWUFeomdYYvM112EkwgaEMSXubKSE7U_m0E-R2VfknkPgEAx34CHfz/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+    }
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try{
-            Gui_BooksListInfo bli = new Gui_BooksListInfo(id, getEmail(), getPassword());
+            Gui_BooksListInfo bli = new Gui_BooksListInfo(id, getEmail(), getPassword(), check, language);
             bli.setVisible(true);
             dispose();
         } catch (Exception e) {
@@ -230,7 +296,7 @@ public class Gui_BooksList extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     protected void jButton2ActionPerformed(ActionEvent evt) {
-        Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword());
+        Gui_UserMenu um = new Gui_UserMenu(getEmail(), getPassword(), check, language);
         um.setVisible(true);
         dispose();
     }
